@@ -22,7 +22,8 @@ const modules = [
 
 export function AIWorkflow() {
   return (
-    <section id="workflow" className="py-32 px-6 container max-w-7xl mx-auto">
+    <section id="workflow" className="py-40 relative bg-[#030303] border-y border-white/5 overflow-hidden">
+      <div className="container max-w-7xl mx-auto px-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -76,6 +77,7 @@ export function AIWorkflow() {
         {/* Scanning Line Effect */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-20 animate-scan" />
       </motion.div>
+      </div>
     </section>
   );
 }

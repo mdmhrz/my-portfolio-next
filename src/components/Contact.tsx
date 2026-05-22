@@ -2,88 +2,170 @@
 
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-// import { Mail, Linkedin, FileText, ArrowRight } from "lucide-react";
+import { Envelope, MapPin, Globe, PaperPlaneTilt, GithubLogo, LinkedinLogo, TwitterLogo } from "@phosphor-icons/react";
+
+const contactInfo = [
+  {
+    icon: <Envelope size={24} weight="duotone" className="text-primary" />,
+    label: "Email",
+    value: "hello@mhr.dev",
+    href: "mailto:hello@mhr.dev"
+  },
+  {
+    icon: <MapPin size={24} weight="duotone" className="text-primary" />,
+    label: "Location",
+    value: "Dhaka, Bangladesh",
+    href: "#"
+  },
+  {
+    icon: <Globe size={24} weight="duotone" className="text-primary" />,
+    label: "Timezone",
+    value: "GMT+6 (BST)",
+    href: "#"
+  }
+];
+
+const socials = [
+  { icon: <GithubLogo size={20} />, href: "#" },
+  { icon: <LinkedinLogo size={20} />, href: "#" },
+  { icon: <TwitterLogo size={20} />, href: "#" }
+];
 
 export function Contact() {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer id="contact" className="relative pt-32 overflow-hidden">
-      {/* High Contrast CTA */}
-      <section className="bg-primary py-32 px-6 relative z-10 overflow-hidden">
-        {/* Decorative Background Elements */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-black/5 rounded-full border border-black/10 blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-black/5 rounded-full border border-black/10 blur-2xl pointer-events-none translate-y-1/2 -translate-x-1/4" />
+    <section id="contact" className="py-40 px-6 relative overflow-hidden bg-[#030303] border-t border-white/5">
+      {/* Background Glow */}
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none opacity-50" />
+      
+      <div className="container max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+          
+          {/* Left Column: Info */}
+          <div className="space-y-12">
+            <div className="space-y-6">
+              <motion.span 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-primary text-xs font-bold uppercase tracking-[0.4em]"
+              >
+                Inquiries
+              </motion.span>
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                viewport={{ once: true }}
+                className="text-5xl md:text-7xl font-bold text-white tracking-tighter"
+              >
+                Let&apos;s talk about <br /> your <span className="text-primary">next project.</span>
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                viewport={{ once: true }}
+                className="text-muted-foreground text-lg max-w-md leading-relaxed"
+              >
+                Whether you have a specific project in mind or just want to say hi, my inbox is always open.
+              </motion.p>
+            </div>
 
-        <div className="container max-w-4xl mx-auto text-center relative z-20">
-          <motion.h2
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-7xl font-display font-bold text-black mb-10 tracking-tighter"
-          >
-            Ready to Build<br />the Future?
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="text-lg md:text-xl text-black/70 max-w-2xl mx-auto mb-16 font-sans font-medium"
-          >
-            I am currently accepting new projects and engineering roles. Let's discuss how we can build something extraordinary together.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
-          >
-            <Button className="h-20 px-12 rounded-2xl bg-black text-white hover:bg-black/90 hover:scale-105 active:scale-95 transition-all text-xl font-bold group">
-              Get in Touch <ArrowRight className="ml-3 group-hover:translate-x-2 transition-transform" />
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Footer Info */}
-      <div className="bg-background py-16 px-6 relative z-10">
-        <div className="container max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="space-y-4 text-center md:text-left">
-            <div className="text-primary font-display font-bold text-2xl tracking-tighter">MHR.DEV</div>
-            <p className="text-muted-foreground text-sm font-sans max-w-xs leading-relaxed">
-              © {currentYear} Mobarak Hossain Razu.<br />Engineered for the future.
-            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              {contactInfo.map((info, idx) => (
+                <motion.a 
+                  key={idx}
+                  href={info.href}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 + (idx * 0.1) }}
+                  viewport={{ once: true }}
+                  className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-primary/20 transition-all group"
+                >
+                  <div className="mb-4">{info.icon}</div>
+                  <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1">{info.label}</div>
+                  <div className="text-white font-medium group-hover:text-primary transition-colors">{info.value}</div>
+                </motion.a>
+              ))}
+              
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6 }}
+                viewport={{ once: true }}
+                className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col justify-end"
+              >
+                <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-4">Follow Me</div>
+                <div className="flex gap-4">
+                  {socials.map((social, idx) => (
+                    <a 
+                      key={idx} 
+                      href={social.href}
+                      className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/40 hover:text-primary hover:bg-primary/10 transition-all"
+                    >
+                      {social.icon}
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
           </div>
 
-          {/* <div className="flex flex-wrap justify-center gap-8 md:gap-12">
-            {[
-              { label: "LinkedIn", icon: <Linkedin className="w-4 h-4" />, href: "#" },
-              // { label: "GitHub", icon: <Github className="w-4 h-4" />, href: "#" },
-              { label: "Email", icon: <Mail className="w-4 h-4" />, href: "#" },
-              { label: "Resume", icon: <FileText className="w-4 h-4" />, href: "#" },
-            ].map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="flex items-center gap-2 text-sm font-mono font-bold text-muted-foreground hover:text-primary transition-all tracking-tight group"
-              >
-                {link.icon}
-                <span className="relative overflow-hidden inline-block">
-                  {link.label}
-                  <span className="absolute bottom-0 left-0 w-full h-[1px] bg-primary translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300" />
-                </span>
-              </a>
-            ))}
-          </div> */}
+          {/* Right Column: Form */}
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="glass-card p-8 md:p-12 bg-white/[0.02] backdrop-blur-3xl shadow-2xl z-10"
+          >
+            <form className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest ml-1">Your Name</label>
+                  <input 
+                    type="text" 
+                    placeholder="John Doe"
+                    className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest ml-1">Email Address</label>
+                  <input 
+                    type="email" 
+                    placeholder="john@example.com"
+                    className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest ml-1">Inquiry Type</label>
+                <select className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-4 py-4 text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans cursor-pointer appearance-none">
+                  <option className="bg-black">SaaS Development</option>
+                  <option className="bg-black">UX/UI Engineering</option>
+                  <option className="bg-black">System Architecture</option>
+                  <option className="bg-black">Other</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest ml-1">Message</label>
+                <textarea 
+                  rows={4}
+                  placeholder="Tell me about your project..."
+                  className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans resize-none"
+                />
+              </div>
+
+              <Button className="w-full h-16 rounded-xl bg-primary text-primary-foreground font-bold text-base uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_30px_rgba(20,184,166,0.2)] group">
+                Send Message <PaperPlaneTilt size={20} className="ml-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </Button>
+            </form>
+          </motion.div>
+
         </div>
       </div>
-
-      {/* Bottom Trim */}
-      <div className="h-1 bg-gradient-to-r from-primary/0 via-primary/40 to-primary/0" />
-    </footer>
+    </section>
   );
 }

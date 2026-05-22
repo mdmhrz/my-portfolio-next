@@ -6,6 +6,7 @@ import { Journey } from "@/components/Journey";
 import { Experience } from "@/components/Experience";
 import { AIWorkflow } from "@/components/AIWorkflow";
 import { CaseStudies } from "@/components/CaseStudies";
+import { CTA } from "@/components/CTA";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { MouseFollower } from "@/components/MouseFollower";
@@ -21,6 +22,7 @@ export default function Home() {
         <Experience />
         <AIWorkflow />
         <CaseStudies />
+        <CTA />
         <Contact />
         <Footer />
       </main>

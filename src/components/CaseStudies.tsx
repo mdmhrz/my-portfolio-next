@@ -2,37 +2,42 @@
 
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
+import { ArrowUpRight, GithubLogo, Globe } from "@phosphor-icons/react";
 
-const projects = [
+const personalProjects = [
   {
-    title: "HallPoint",
-    desc: "Revolutionizing the way student halls and communities manage resources and event engagement.",
-    tags: ["Community Tech", "Next.js"],
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuANII3nE3Efhi2sbvU0K49bkSG9Zo9gj0YCAqU-aABp_gMpd1pETktHdbMmTxWzjTZddBWdXxkvhTWa3-4_pWXXxwjaPuvEFrSPfUPTnEWbVein-fedB8IKyTSTVnYIuC5GhiEzwzRZdyl_fxU50-rPxPw3CBYoIqJ68MnSr-4UwIbQyd5FDbAlbsN07i0K2eo8K4EasqMaCQk5JzgxzZSmHw8DkMKw7A-8wq9vBjjhiKAq7n_v39KmgrZNj6BAKQy1Oa3mpdQlgAY",
+    title: "Project Alpha",
+    desc: "A creative exploration into generative art and autonomous SVG animations using specialized algorithms.",
+    tags: ["Personal", "Generative Art", "Creative Coding"],
+    img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
+    link: "#",
     span: "md:col-span-8",
     height: "h-[500px]"
   },
   {
-    title: "AltPick",
-    desc: "Intelligent alternative product discovery engine.",
-    tags: ["Curation"],
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBzNYrVbHL7y7OLjOJoXwuC_mLJ9u31N8h94a88bzfxLFDLYS7W0LM5K9e0zqMs2R7K2RPsrYELzdjC5hcYgeCmzYdrwVyJHr-1zPuYXAo618k2JQV5F5PMQ9RlBn4fq70JjmdrQIQ9cOo2XI5AvzLG8-TdlPrGl7hjUS5VMykoe4DLlgv8xhxgelL03M62_G-AHe8f-6_5tTMA4vLxQcwXnosIoGn2rmdthOdBpJXwHTT9LuyCmyYGHNX_sYhx2c6r8BE3lBP61RI",
+    title: "NeuroTrack",
+    desc: "Personal health dashboard for tracking cognitive load and productivity trends.",
+    tags: ["HealthTech", "Dashboard"],
+    img: "https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=2670&auto=format&fit=crop",
+    link: "#",
     span: "md:col-span-4",
     height: "h-[500px]"
   },
   {
-    title: "JobTrack",
-    desc: "Personal CRM for managing modern career growth.",
-    tags: ["Productivity"],
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDuNhdjIkrnh5CmK7eLZbuC_-rNZfwnRBdnRaKB_vZbll-8MTuHSuHDf80QQzPFyEoY0YAZuYJI2_xaPh6cMomnbKwNuZShQx9OonEMVxtle_MqPHTUmwiC1Nl3snsmW-dQhCYqV6qws5nz8f3qTKlxeP6G75UqeJ6w6fgJLfLMDO6VwD-rwj6_h1kvDxulsjd4fAiLJ1CmD2e655N4BGMtXZM2O2hQbDt4zSrPTz4w9hOIsIGHaDXsNBDdSaGSihX9hHpWA2W1U-Q",
+    title: "Zenith OS",
+    desc: "Experiential web-based operating system mockup focused on hyper-minimalism.",
+    tags: ["Experimental", "UI/UX"],
+    img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2672&auto=format&fit=crop",
+    link: "#",
     span: "md:col-span-4",
     height: "h-[450px]"
   },
   {
-    title: "NexDrop",
-    desc: "Peer-to-peer lightning-fast encrypted file sharing infrastructure.",
-    tags: ["Fintech", "Security"],
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCG61PoDpWZUBtOcQSASuKTblEWem6VW9by6h260Nnrv_NcB0xBMUPbS9NlIqVZ7RGS0brgZG1TZlrPodbJQDBAi3QRAFbzPFNcsNk7m8JNuAoRMAATUJH10Or2BGHwXrcBBe57HVwO6V8UVOTeyvqV_qL6vE85BqyxXRK6xhXkGANUrZO2u8-QHwtJ5f0dtIEGIwm-Enhzj9GWd_KkcdsAlF5kfwbM8Ij2KtDI6sAAY2uFAXHO40ryWgsxhmShsBv-eewT-LVCYUg",
+    title: "Aura Commerce",
+    desc: "A concept high-end luxury e-commerce platform with cinematic transitions.",
+    tags: ["E-commerce", "Framer Motion"],
+    img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2670&auto=format&fit=crop",
+    link: "#",
     span: "md:col-span-8",
     height: "h-[450px]"
   }
@@ -40,28 +45,30 @@ const projects = [
 
 export function CaseStudies() {
   return (
-    <section id="projects" className="py-32 px-6 container max-w-7xl mx-auto">
+    <section id="projects" className="py-40 px-6 container max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
         viewport={{ once: true }}
-        className="mb-20"
+        className="mb-24 space-y-4 text-center md:text-left"
       >
-        <h2 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tighter">Featured Case Studies</h2>
+        <span className="text-primary text-xs font-bold uppercase tracking-[0.4em]">Personal Labs</span>
+        <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter">Case <span className="text-primary">Studies</span></h2>
+        <p className="text-muted-foreground text-lg max-w-xl">Deep dives into my personal ventures, open-source projects, and experimental engineering labs.</p>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        {projects.map((p, i) => (
+        {personalProjects.map((p, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: i * 0.1 }}
             viewport={{ once: true }}
-            className={`${p.span} ${p.height} relative group rounded-[2.5rem] overflow-hidden glass-card border-white/5 cursor-pointer`}
+            className={`${p.span} ${p.height} relative group rounded-[3rem] overflow-hidden glass-card border-white/5 cursor-pointer`}
           >
-            {/* Background Image with Parallax-ish Effect */}
+            {/* Background Image */}
             <div 
               className="absolute inset-0 transition-transform duration-1000 group-hover:scale-110"
               style={{
@@ -77,22 +84,27 @@ export function CaseStudies() {
             <div className="absolute inset-x-0 bottom-0 p-10 lg:p-14 flex flex-col justify-end h-full">
               <div className="flex gap-3 mb-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                 {p.tags.map(tag => (
-                  <Badge key={tag} className="bg-primary text-black font-bold border-none px-4">
+                  <Badge key={tag} className="bg-primary text-black font-bold border-none px-4 rounded-full">
                     {tag}
                   </Badge>
                 ))}
               </div>
-              <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 group-hover:text-primary transition-colors duration-300">
+              <h3 className="text-3xl md:text-5xl font-bold text-white mb-4 group-hover:text-primary transition-colors duration-300">
                 {p.title}
               </h3>
-              <p className="text-muted-foreground font-sans text-sm md:text-lg max-w-xl line-clamp-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 delay-100">
+              <p className="text-white/60 font-sans text-sm md:text-lg max-w-xl line-clamp-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 delay-100">
                 {p.desc}
               </p>
             </div>
 
-            {/* Corner Accent */}
-            <div className="absolute top-8 right-8 w-12 h-12 rounded-full glass border-white/10 flex items-center justify-center translate-x-12 translate-y-[-12px] group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 bg-white/5">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            {/* Links Corner */}
+            <div className="absolute top-10 right-10 flex gap-3 translate-x-12 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+              <a href={p.link} className="w-12 h-12 rounded-2xl glass border-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-black transition-all">
+                <GithubLogo size={20} />
+              </a>
+              <a href={p.link} className="w-12 h-12 rounded-2xl glass border-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-black transition-all">
+                <Globe size={20} />
+              </a>
             </div>
           </motion.div>
         ))}
