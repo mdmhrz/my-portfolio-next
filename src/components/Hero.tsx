@@ -40,7 +40,7 @@ export function Hero() {
 
   return (
     <div className="relative overflow-hidden">
-      <section className="relative min-h-screen flex items-center pt-24 pb-16">
+      <section className="relative min-h-screen flex items-center pt-32 md:pt-24 pb-16">
         <div className="container max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Side: Content */}
           <motion.div
@@ -60,10 +60,10 @@ export function Hero() {
             <div className="space-y-4">
               <motion.h1 
                 variants={itemVariants}
-                className="text-5xl md:text-7xl xl:text-8xl font-display font-bold text-white leading-[0.9] tracking-tighter"
+                className="text-5xl md:text-7xl xl:text-8xl font-display font-bold text-foreground leading-[0.9] tracking-tighter"
               >
                 Mobarak<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/40 leading-tight">Hossain Razu</span>
+                <span className="text-primary leading-tight">Hossain Razu</span>
               </motion.h1>
               
               <motion.p 
@@ -79,7 +79,7 @@ export function Hero() {
                 View Projects <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Button variant="outline" className="h-14 px-10 rounded-xl border-white/10 bg-white/5 backdrop-blur-md text-white font-bold text-base hover:bg-white/10 transition-all active:scale-95">
+              <Button variant="outline" className="h-14 px-10 rounded-xl border-border bg-muted backdrop-blur-md text-foreground font-bold text-base hover:bg-muted/80 transition-all active:scale-95">
                 Contact Me
               </Button>
 
@@ -107,19 +107,27 @@ export function Hero() {
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJCpg_SFwOpUUGthFh9V8ICzXll5sUJL31lRDEGanh7tYGi11O26R_3vVfRF3fcAYs3khGLFDfekeRuckUSLZeRBnlEPAedeC8wGZwnN69Zf_KNbFUmSEURyCLXd_WWxLnpbMFXvl-Zoubnb6C5LCqiYNwU_WIpsviH3KGqmDFl3suW8ykLxgO1MLiQDwfx975-L-hT9rOc1dxkyKJlEe7tDXg86NZzf7xbbjPaM77tVjp8F6FDNxX1tLI-Y92W-am9-eB6tpk7WE" 
                 />
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
 
-                <div className="absolute bottom-6 left-6 right-6 p-5 glass-card border-white/10 backdrop-blur-2xl bg-black/60 shadow-2xl">
+                <div className="absolute bottom-6 left-6 right-6 p-5 bg-background/80 backdrop-blur-3xl border border-border rounded-2xl shadow-2xl">
                   <div className="flex justify-between items-center">
                     <div className="space-y-1">
-                      <span className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest leading-none">Role</span>
+                      <span className="block text-[10px] font-mono font-bold text-foreground/50 uppercase tracking-widest leading-none">Role</span>
                       <span className="block text-sm font-bold text-primary leading-tight">Frontend Dev @ Xgenious</span>
                     </div>
                     
                     <div className="flex -space-x-2">
-                      {["TS", "RT", "NX"].map((tech) => (
-                        <div key={tech} className="w-9 h-9 rounded-full bg-background border border-white/10 flex items-center justify-center text-[10px] font-bold shadow-lg hover:-translate-y-1 transition-transform cursor-help">
-                          {tech}
+                      {[
+                        { name: "TypeScript", slug: "typescript" },
+                        { name: "JavaScript", slug: "javascript" },
+                        { name: "Go", slug: "go" }
+                      ].map((tech) => (
+                        <div key={tech.slug} className="relative w-10 h-10 rounded-full bg-card border border-border shadow-lg hover:-translate-y-1 transition-transform cursor-help overflow-hidden">
+                          <img
+                            src={`https://cdn.simpleicons.org/${tech.slug}/14b8a6`}
+                            alt={tech.name}
+                            className="absolute inset-0 m-auto max-w-[60%] max-h-[60%]"
+                          />
                         </div>
                       ))}
                     </div>
@@ -132,7 +140,7 @@ export function Hero() {
       </section>
 
       {/* Tech Stack Marquee */}
-      <div className="py-12 bg-muted/30 border-y border-white/5 overflow-hidden backdrop-blur-sm relative z-10">
+      <div className="py-12 bg-muted/30 border-y border-border overflow-hidden backdrop-blur-sm relative z-10">
         <div className="marquee-track flex items-center">
           {[...techStack, ...techStack].map((tech, idx) => (
             <div 
@@ -140,9 +148,9 @@ export function Hero() {
               className="flex items-center gap-4 px-12 group/tech cursor-default"
             >
               <img 
-                src={`https://cdn.simpleicons.org/${tech.slug}/ffffff`} 
+                src={`https://cdn.simpleicons.org/${tech.slug}/14b8a6`} 
                 alt={`${tech.name} logo`}
-                className="w-8 h-8 opacity-40 group-hover/tech:opacity-100 group-hover/tech:brightness-125 transition-all duration-300 filter grayscale group-hover/tech:grayscale-0"
+                className="w-8 h-8 opacity-70 dark:opacity-40 group-hover/tech:opacity-100 transition-all duration-300"
               />
               <span className="text-xs md:text-sm font-mono font-bold tracking-[0.3em] text-primary/40 whitespace-nowrap group-hover/tech:text-primary transition-colors">
                 {tech.name.toUpperCase()}

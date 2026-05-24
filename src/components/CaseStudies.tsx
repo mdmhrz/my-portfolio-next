@@ -54,7 +54,7 @@ export function CaseStudies() {
         className="mb-24 space-y-4 text-center md:text-left"
       >
         <span className="text-primary text-xs font-bold uppercase tracking-[0.4em]">Personal Labs</span>
-        <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter">Case <span className="text-primary">Studies</span></h2>
+        <h2 className="text-5xl md:text-7xl font-bold text-foreground tracking-tighter">Case <span className="text-primary">Studies</span></h2>
         <p className="text-muted-foreground text-lg max-w-xl">Deep dives into my personal ventures, open-source projects, and experimental engineering labs.</p>
       </motion.div>
 
@@ -66,7 +66,7 @@ export function CaseStudies() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: i * 0.1 }}
             viewport={{ once: true }}
-            className={`${p.span} ${p.height} relative group rounded-[3rem] overflow-hidden glass-card border-white/5 cursor-pointer`}
+            className={`${p.span} ${p.height} relative group rounded-[3rem] overflow-hidden glass-card border-border cursor-pointer`}
           >
             {/* Background Image */}
             <div 
@@ -77,32 +77,32 @@ export function CaseStudies() {
                 backgroundPosition: 'center',
               }}
             >
-              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-all duration-500" />
+              <div className="absolute inset-0 bg-muted/60 group-hover:bg-muted/40 transition-all duration-500" />
             </div>
 
             {/* Content */}
             <div className="absolute inset-x-0 bottom-0 p-10 lg:p-14 flex flex-col justify-end h-full">
               <div className="flex gap-3 mb-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                 {p.tags.map(tag => (
-                  <Badge key={tag} className="bg-primary text-black font-bold border-none px-4 rounded-full">
+                  <Badge key={tag} className="bg-primary text-primary-foreground font-bold border-none px-4 rounded-full">
                     {tag}
                   </Badge>
                 ))}
               </div>
-              <h3 className="text-3xl md:text-5xl font-bold text-white mb-4 group-hover:text-primary transition-colors duration-300">
+              <h3 className="text-3xl md:text-5xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors duration-300">
                 {p.title}
               </h3>
-              <p className="text-white/60 font-sans text-sm md:text-lg max-w-xl line-clamp-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 delay-100">
+              <p className="text-muted-foreground font-sans text-sm md:text-lg max-w-xl line-clamp-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 delay-100">
                 {p.desc}
               </p>
             </div>
 
             {/* Links Corner */}
             <div className="absolute top-10 right-10 flex gap-3 translate-x-12 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-              <a href={p.link} className="w-12 h-12 rounded-2xl glass border-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-black transition-all">
+              <a href={p.link} className="w-12 h-12 rounded-2xl glass border-border flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
                 <GithubLogo size={20} />
               </a>
-              <a href={p.link} className="w-12 h-12 rounded-2xl glass border-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-black transition-all">
+              <a href={p.link} className="w-12 h-12 rounded-2xl glass border-border flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
                 <Globe size={20} />
               </a>
             </div>

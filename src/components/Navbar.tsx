@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { List, X, GithubLogo, LinkedinLogo, TwitterLogo, Envelope } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Sheet,
   SheetContent,
@@ -36,7 +37,7 @@ export function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 py-6 px-6 pointer-events-none"
     >
       <motion.nav
-        className="mx-auto w-full max-w-7xl flex items-center justify-between px-8 py-4 rounded-3xl border border-white/10 bg-black/80 glass pointer-events-auto backdrop-blur-3xl transition-all duration-300"
+        className="mx-auto w-full max-w-7xl flex items-center justify-between px-8 py-4 rounded-3xl border border-border bg-background/80 glass pointer-events-auto backdrop-blur-3xl transition-all duration-300"
       >
         <div className="text-primary font-display font-bold text-xl tracking-tighter select-none">
           MHR.DEV
@@ -56,7 +57,9 @@ export function Navbar() {
             ))}
           </div>
           
-          <div className="w-px h-6 bg-white/10 hidden md:block" />
+          <div className="w-px h-6 bg-border hidden md:block" />
+
+          <ThemeToggle />
 
           <Button 
             variant="default"
@@ -71,17 +74,18 @@ export function Navbar() {
         <div className="lg:hidden flex items-center">
           <Sheet>
             <SheetTrigger asChild>
-              <button className="p-2 text-white hover:text-primary transition-colors">
+              <button className="p-2 text-foreground hover:text-primary transition-colors">
                 <List size={28} weight="bold" />
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[85vw] sm:w-[400px] border-l border-white/10 bg-black/90 backdrop-blur-3xl p-0 flex flex-col justify-between">
+            <SheetContent side="right" className="w-[85vw] sm:w-[400px] border-l border-border bg-background/90 backdrop-blur-3xl p-0 flex flex-col justify-between">
               <div>
-                <SheetHeader className="p-8 border-b border-white/5 items-start">
+                <SheetHeader className="p-8 border-b border-border items-start">
                   <div className="flex items-center justify-between w-full">
                     <SheetTitle className="text-primary font-display font-bold text-2xl tracking-tighter">
                       MHR.DEV
                     </SheetTitle>
+                    <ThemeToggle />
                   </div>
                 </SheetHeader>
 
@@ -90,7 +94,7 @@ export function Navbar() {
                     <SheetClose asChild key={link.name}>
                       <a
                         href={link.href}
-                        className="text-3xl font-display font-bold text-white/50 hover:text-primary hover:pl-4 transition-all duration-300"
+                        className="text-3xl font-display font-bold text-muted-foreground hover:text-primary hover:pl-4 transition-all duration-300"
                       >
                         {link.name}
                       </a>
@@ -101,13 +105,13 @@ export function Navbar() {
 
               <div className="p-8 space-y-12 mb-8">
                 <div className="space-y-4">
-                  <span className="text-[10px] font-mono font-bold text-white/20 uppercase tracking-[0.4em]">Connect</span>
+                  <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.4em]">Connect</span>
                   <div className="flex gap-4">
                     {SocialLinks.map((social, i) => (
                       <a
                         key={i}
                         href={social.href}
-                        className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-primary hover:bg-primary/10 hover:border-primary/20 transition-all"
+                        className="w-12 h-12 rounded-xl bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/20 transition-all"
                       >
                         {social.icon}
                       </a>

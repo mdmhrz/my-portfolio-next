@@ -22,24 +22,24 @@ const modules = [
 
 export function AIWorkflow() {
   return (
-    <section id="workflow" className="py-40 relative bg-[#030303] border-y border-white/5 overflow-hidden">
+    <section id="workflow" className="py-40 relative bg-background border-y border-border overflow-hidden">
       <div className="container max-w-7xl mx-auto px-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as any }}
         viewport={{ once: true }}
-        className="glass-card rounded-[2rem] overflow-hidden border-primary/20 bg-black/40 backdrop-blur-3xl shadow-2xl relative"
+        className="glass-card rounded-[2rem] overflow-hidden border-primary/20 bg-muted/40 backdrop-blur-3xl shadow-2xl relative"
       >
         {/* Terminal Header */}
-        <div className="px-10 py-8 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
+        <div className="px-10 py-8 border-b border-border flex items-center justify-between bg-muted">
           <div className="flex items-center gap-6">
             <div className="flex gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)]" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/50 shadow-[0_0_10px_rgba(234,179,8,0.3)]" />
               <div className="w-3 h-3 rounded-full bg-primary/50 shadow-[0_0_10px_rgba(20,184,166,0.3)]" />
             </div>
-            <div className="h-4 w-px bg-white/10 mx-2" />
+            <div className="h-4 w-px bg-border mx-2" />
             <span className="font-mono text-xs font-bold text-muted-foreground uppercase tracking-[0.3em] overflow-hidden whitespace-nowrap">
               AI_INTEGRATION_MODULE.V2
             </span>
@@ -51,7 +51,7 @@ export function AIWorkflow() {
         </div>
 
         {/* Content Modules */}
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
           {modules.map((m, i) => (
             <motion.div
               key={i}
@@ -64,7 +64,7 @@ export function AIWorkflow() {
               <span className="inline-block font-mono text-[10px] font-bold text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 tracking-widest group-hover:bg-primary group-hover:text-black transition-all">
                 {m.tag}
               </span>
-              <h4 className="text-2xl font-display font-bold text-white tracking-tight group-hover:translate-x-1 transition-transform">
+              <h4 className="text-2xl font-display font-bold text-foreground tracking-tight group-hover:translate-x-1 transition-transform">
                 {m.title}
               </h4>
               <p className="text-muted-foreground font-sans leading-relaxed text-sm lg:text-base">

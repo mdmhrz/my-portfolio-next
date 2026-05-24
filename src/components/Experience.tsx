@@ -15,7 +15,6 @@ import {
   ShieldCheck,
   Browser,
   ArrowUpRight,
-  Calendar,
   CheckCircle,
   Clock,
   ChartLine,
@@ -140,7 +139,7 @@ export function Experience() {
   const selectedProject = profProjects.find(p => p.id === selectedProjectId);
 
   return (
-    <section id="experience" className="py-40 relative bg-black overflow-hidden border-y border-white/5">
+    <section id="experience" className="py-40 relative bg-background overflow-hidden border-y border-border">
       <div className="container max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -150,7 +149,7 @@ export function Experience() {
           className="mb-24 flex flex-col items-start gap-4"
         >
           <span className="text-primary text-xs font-bold uppercase tracking-[0.4em] ml-1">The Career Record</span>
-          <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter leading-tight">
+          <h2 className="text-5xl md:text-7xl font-bold text-foreground tracking-tighter leading-tight">
             Professional <span className="text-primary">Tenure</span>
           </h2>
         </motion.div>
@@ -160,11 +159,11 @@ export function Experience() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="glass-card mb-20 p-8 md:p-12 bg-white/[0.02] border-primary/20 backdrop-blur-3xl overflow-hidden relative group"
+          className="glass-card mb-20 p-8 md:p-12 bg-muted border-primary/20 backdrop-blur-3xl overflow-hidden relative group"
         >
           <div className="absolute top-0 right-0 p-8 flex flex-col items-end gap-2 opacity-50">
             <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-widest uppercase"><MapPin size={14} /> Dhaka, BD</div>
-            <div className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em]">Active Since 2024</div>
+            <div className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.4em]">Active Since 2024</div>
           </div>
 
           <div className="space-y-8 relative z-10">
@@ -173,7 +172,7 @@ export function Experience() {
                 <Briefcase className="text-primary w-10 h-10" />
               </div>
               <div>
-                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight leading-none mb-3">XGENIOUS</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-none mb-3">XGENIOUS</h3>
                 <div className="flex items-center gap-2 text-primary/60 font-bold text-[10px] uppercase tracking-[0.3em]">
                   <Lightning size={16} weight="duotone" /> Senior Frontend Developer
                 </div>
@@ -186,13 +185,13 @@ export function Experience() {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                <div className="flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+                <div className="flex gap-4 p-4 rounded-xl bg-muted border border-border">
                   <CheckCircle size={20} className="text-primary shrink-0" />
-                  <span className="text-sm text-white/70">Architected 30+ CRM modules across integrated SaaS ecosystems.</span>
+                  <span className="text-sm text-muted-foreground">Architected 30+ CRM modules across integrated SaaS ecosystems.</span>
                 </div>
-                <div className="flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+                <div className="flex gap-4 p-4 rounded-xl bg-muted border border-border">
                   <CheckCircle size={20} className="text-primary shrink-0" />
-                  <span className="text-sm text-white/70">Optimized build performance and frontend latency for global users.</span>
+                  <span className="text-sm text-muted-foreground">Optimized build performance and frontend latency for global users.</span>
                 </div>
               </div>
             </div>
@@ -202,9 +201,9 @@ export function Experience() {
         {/* Work Projects Inventory */}
         <div className="space-y-10">
           <div className="flex items-center gap-4">
-            <div className="h-px bg-white/10 flex-grow" />
-            <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.5em] whitespace-nowrap">Core Engineering Accomplishments</span>
-            <div className="h-px bg-white/10 flex-grow" />
+            <div className="h-px bg-border flex-grow" />
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.5em] whitespace-nowrap">Core Engineering Accomplishments</span>
+            <div className="h-px bg-border flex-grow" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -216,21 +215,21 @@ export function Experience() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                className="group relative h-[450px] rounded-[2.5rem] overflow-hidden glass-card border border-white/5 hover:border-primary/40 transition-all cursor-pointer"
+                className="group relative h-[450px] rounded-[2.5rem] overflow-hidden glass-card border border-border hover:border-primary/40 transition-all cursor-pointer"
               >
                 {/* Technical Abstract Pattern (No humans) */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-black transition-all group-hover:scale-105 duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-br from-muted to-background transition-all group-hover:scale-105 duration-1000" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20 group-hover:opacity-40 transition-opacity">
-                  <Cpu size={240} weight="thin" className="text-white" />
+                  <Cpu size={240} weight="thin" className="text-foreground" />
                 </div>
 
-                <div className="absolute inset-0 p-10 flex flex-col justify-end bg-gradient-to-t from-black via-black/40 to-transparent">
+                <div className="absolute inset-0 p-10 flex flex-col justify-end bg-gradient-to-t from-background via-background/40 to-transparent">
                   <div className="space-y-6 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
                     <div>
                       <Badge className="bg-primary/20 text-primary border-primary/30 mb-4 px-4 py-1 rounded-full text-[9px] font-bold tracking-widest">{p.category.toUpperCase()}</Badge>
-                      <h4 className="text-3xl font-bold text-white">{p.title}</h4>
+                      <h4 className="text-3xl font-bold text-foreground">{p.title}</h4>
                     </div>
-                    <p className="text-white/50 text-sm leading-relaxed line-clamp-3 line-clamp-none-group-hover">
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 line-clamp-none-group-hover">
                       {p.desc}
                     </p>
                     <div className="flex items-center gap-3 text-primary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -252,15 +251,15 @@ export function Experience() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100000] bg-black overflow-y-auto no-scrollbar scroll-smooth"
+              className="fixed inset-0 z-[100000] bg-background overflow-y-auto no-scrollbar scroll-smooth"
             >
-              <div className="min-h-screen relative bg-black">
+              <div className="min-h-screen relative bg-background">
                 {/* Immersive Header (Hides Navbar) */}
-                <div className="fixed top-0 left-0 w-full p-8 flex justify-between items-center z-[100001] bg-black/80 backdrop-blur-3xl border-b border-white/5">
-                  <div className="text-primary font-bold text-xl tracking-tighter">MHR.DEV <span className="text-white/20 ml-3">/ PROJECT STAGE</span></div>
+                <div className="fixed top-0 left-0 w-full p-8 flex justify-between items-center z-[100001] bg-background/80 backdrop-blur-3xl border-b border-border">
+                  <div className="text-primary font-bold text-xl tracking-tighter">MHR.DEV <span className="text-muted-foreground ml-3">/ PROJECT STAGE</span></div>
                   <button
                     onClick={() => setSelectedProjectId(null)}
-                    className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all bg-white/5 group"
+                    className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-foreground hover:bg-muted transition-all bg-muted group"
                   >
                     <X size={24} weight="bold" className="group-hover:rotate-90 transition-transform duration-300" />
                   </button>
@@ -271,16 +270,16 @@ export function Experience() {
                   <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 blur-[150px] rounded-full pointer-events-none opacity-40 translate-x-1/2 -translate-y-1/2" />
 
                   <div className="container max-w-7xl mx-auto relative z-10 text-center space-y-10">
-                    <Badge className="bg-primary text-black px-8 py-3 rounded-full font-black tracking-[0.4em] h-auto border-none">
+                    <Badge className="bg-primary text-primary-foreground px-8 py-3 rounded-full font-black tracking-[0.4em] h-auto border-none">
                       {selectedProject.category.toUpperCase()}
                     </Badge>
-                    <h2 className="text-6xl md:text-[8vw] font-black text-white tracking-tighter leading-[0.8] uppercase">
+                    <h2 className="text-6xl md:text-[8vw] font-black text-foreground tracking-tighter leading-[0.8] uppercase">
                       {selectedProject.title}
                     </h2>
 
                     <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
                       {selectedProject.tech.map(t => (
-                        <span key={t} className="text-[10px] font-bold text-white/40 border border-white/10 px-6 py-2 rounded-full uppercase tracking-[0.2em] bg-white/5 backdrop-blur-md">
+                        <span key={t} className="text-[10px] font-bold text-muted-foreground border border-border px-6 py-2 rounded-full uppercase tracking-[0.2em] bg-muted backdrop-blur-md">
                           {t}
                         </span>
                       ))}
@@ -290,7 +289,7 @@ export function Experience() {
                       {selectedProject.quickFacts.map((fact, i) => (
                         <div key={i} className="p-4 border-l border-primary/20 text-left">
                           <div className="text-[9px] font-bold text-primary/40 uppercase tracking-widest mb-1">Quick Fact</div>
-                          <div className="text-white font-medium text-sm">{fact}</div>
+                          <div className="text-foreground font-medium text-sm">{fact}</div>
                         </div>
                       ))}
                     </div>
@@ -300,14 +299,14 @@ export function Experience() {
                 {/* Technical Content Deep-Dive */}
                 <div className="container max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 lg:grid-cols-12 gap-20">
                   <div className="lg:col-span-12">
-                    <div className="h-px bg-white/10 mb-20" />
+                    <div className="h-px bg-border mb-20" />
                   </div>
 
                   {/* Left Column: Description & Features */}
                   <div className="lg:col-span-7 space-y-24">
                     <div className="space-y-10">
                       <h4 className="text-primary text-xs font-bold uppercase tracking-[0.5em]">Project Vision & Architecture</h4>
-                      <p className="text-2xl md:text-3xl text-white/90 font-medium leading-relaxed">
+                      <p className="text-2xl md:text-3xl text-foreground/90 font-medium leading-relaxed">
                         {selectedProject.fullDesc}
                       </p>
                     </div>
@@ -316,12 +315,12 @@ export function Experience() {
                       <h4 className="text-primary text-xs font-bold uppercase tracking-[0.5em]">Core Capabilities</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {selectedProject.keyFeatures.map((f, i) => (
-                          <div key={i} className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-primary/20 transition-all group">
+                          <div key={i} className="p-8 rounded-[2rem] bg-muted border border-border hover:border-primary/20 transition-all group">
                             <div className="text-primary mb-6 group-hover:scale-110 transition-transform duration-300">
                               {f.icon}
                               <div className="w-12 h-12 absolute scale-[2] blur-xl bg-primary/10 rounded-full opacity-50" />
                             </div>
-                            <h5 className="text-xl font-bold text-white mb-3">{f.title}</h5>
+                            <h5 className="text-xl font-bold text-foreground mb-3">{f.title}</h5>
                             <p className="text-muted-foreground leading-relaxed text-sm">
                               {f.desc}
                             </p>
@@ -334,31 +333,31 @@ export function Experience() {
                   {/* Right Column: Roles & Personal Impact */}
                   <div className="lg:col-span-5 space-y-12">
                     <div className="sticky top-40 space-y-8">
-                      <div className="glass-card p-10 bg-white/[0.03] space-y-12 border-white/10 shadow-2xl">
+                      <div className="glass-card p-10 bg-muted space-y-12 border-border shadow-2xl">
                         <div className="space-y-6">
-                          <h4 className="text-white text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
+                          <h4 className="text-foreground text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
                             <Users size={18} className="text-primary" /> Professional Role
                           </h4>
                           <div className="text-primary font-black text-2xl uppercase tracking-tighter">{selectedProject.role}</div>
                         </div>
 
                         <div className="space-y-8">
-                          <h4 className="text-white text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
+                          <h4 className="text-foreground text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
                             <CheckCircle size={18} className="text-primary" /> Key Contributions & Optimization
                           </h4>
                           <div className="space-y-4">
                             {selectedProject.contributions.map((imp, i) => (
-                              <div key={i} className="flex gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/5 items-start">
+                              <div key={i} className="flex gap-4 p-5 rounded-2xl bg-card border border-border items-start">
                                 <CheckCircle size={16} className="text-primary mt-1 shrink-0" />
-                                <span className="text-sm text-white/70 leading-relaxed font-medium">{imp}</span>
+                                <span className="text-sm text-muted-foreground leading-relaxed font-medium">{imp}</span>
                               </div>
                             ))}
                           </div>
                         </div>
 
-                        <div className="pt-8 border-t border-white/5 flex flex-col gap-4">
+                        <div className="pt-8 border-t border-border flex flex-col gap-4">
                           <a href={selectedProject.live} target="_blank" rel="noreferrer" className="block">
-                            <Button className="w-full h-18 rounded-2xl bg-primary text-black font-black uppercase tracking-widest group shadow-[0_0_40px_rgba(20,184,166,0.3)]">
+                            <Button className="w-full h-18 rounded-2xl bg-primary text-primary-foreground font-black uppercase tracking-widest group shadow-[0_0_40px_rgba(20,184,166,0.3)]">
                               View Live Operation <ArrowUpRight size={20} className="ml-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                             </Button>
                           </a>
@@ -370,7 +369,7 @@ export function Experience() {
 
                 {/* Footer Signature */}
                 <div className="py-40 text-center opacity-5 select-none pointer-events-none sticky bottom-0">
-                  <h3 className="text-[18vw] font-black text-white leading-none tracking-tighter uppercase whitespace-nowrap">
+                  <h3 className="text-[18vw] font-black text-foreground leading-none tracking-tighter uppercase whitespace-nowrap">
                     {selectedProject.title}
                   </h3>
                 </div>

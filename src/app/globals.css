@@ -133,7 +133,7 @@
   }
 
   body {
-    @apply antialiased selection:bg-primary selection:text-black bg-background text-foreground;
+    @apply antialiased selection:bg-primary selection:text-primary-foreground bg-background text-foreground;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -143,9 +143,9 @@
 }
 
 @utility glass {
-  background: rgba(10, 10, 10, 0.4);
+  background-color: var(--muted);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
 }
 
 @utility glass-card {
@@ -157,10 +157,8 @@
 }
 
 @utility premium-gradient {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(135deg, var(--muted) 0%, transparent 100%);
 }
-
-
 
 @utility teal-glow {
   box-shadow: 0 0 15px rgba(20, 184, 166, 0.2);
@@ -187,7 +185,6 @@
   100% { transform: translateX(-50%); }
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -197,5 +194,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full transition-all hover:bg-white/20;
+  @apply bg-foreground/10 rounded-full transition-all hover:bg-foreground/20;
 }

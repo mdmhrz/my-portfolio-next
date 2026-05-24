@@ -46,7 +46,7 @@ export function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/20 transition-all duration-300 group"
+                  className="w-12 h-12 rounded-xl bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/20 transition-all duration-300 group"
                   title={social.name}
                 >
                   <span className="group-hover:scale-110 transition-transform">{social.icon}</span>
@@ -57,7 +57,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-8">
-            <h4 className="text-white font-display font-bold text-lg uppercase tracking-widest">Navigation</h4>
+            <h4 className="text-foreground font-display font-bold text-lg uppercase tracking-widest">Navigation</h4>
             <ul className="space-y-4">
               {["Hero", "Journey", "Experience", "Workflow", "Projects"].map((item) => (
                 <li key={item}>
@@ -75,7 +75,7 @@ export function Footer() {
 
           {/* Availability Status */}
           <div className="space-y-8">
-            <h4 className="text-white font-display font-bold text-lg uppercase tracking-widest">Status</h4>
+            <h4 className="text-foreground font-display font-bold text-lg uppercase tracking-widest">Status</h4>
             <div className="glass-card p-6 border-primary/20 bg-primary/5 space-y-4">
               <div className="flex items-center gap-3">
                 <span className="relative flex h-2.5 w-2.5">
@@ -95,16 +95,16 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between pt-12 border-t border-white/5 gap-8">
-          <div className="flex items-center gap-8 text-[10px] font-mono font-bold text-white/20 uppercase tracking-[0.3em]">
+        <div className="flex flex-col md:flex-row items-center justify-between pt-12 border-t border-border gap-8">
+          <div className="flex items-center gap-8 text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.3em]">
             <span>© {currentYear} ALL RIGHTS RESERVED</span>
-            <span className="hidden md:block w-px h-3 bg-white/10" />
+            <span className="hidden md:block w-px h-3 bg-border" />
             <span className="hidden md:block">LOCATED IN BANGLADESH</span>
           </div>
 
           <div className="relative group">
             <div className="absolute -inset-4 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative font-display font-black text-4xl text-white/[0.03] select-none tracking-tighter">
+            <div className="relative font-display font-black text-4xl text-foreground/[0.03] select-none tracking-tighter">
               MOBARAK HOSSAIN RAZU
             </div>
           </div>
@@ -112,7 +112,7 @@ export function Footer() {
       </div>
 
       {/* Cinematic Logo Outline Background */}
-      <div className="absolute -bottom-24 -left-20 text-[20rem] font-black text-white/[0.02] select-none pointer-events-none leading-none tracking-tighter">
+      <div className="absolute -bottom-24 -left-20 text-[20rem] font-black text-foreground/[0.02] select-none pointer-events-none leading-none tracking-tighter">
         MHR
       </div>
     </footer>

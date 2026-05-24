@@ -33,7 +33,7 @@ const socials = [
 
 export function Contact() {
   return (
-    <section id="contact" className="py-40 px-6 relative overflow-hidden bg-[#030303] border-t border-white/5">
+    <section id="contact" className="py-40 px-6 relative overflow-hidden bg-background border-t border-border">
       {/* Background Glow */}
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none opacity-50" />
       
@@ -56,7 +56,7 @@ export function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 viewport={{ once: true }}
-                className="text-5xl md:text-7xl font-bold text-white tracking-tighter"
+                className="text-5xl md:text-7xl font-bold text-foreground tracking-tighter"
               >
                 Let&apos;s talk about <br /> your <span className="text-primary">next project.</span>
               </motion.h2>
@@ -80,11 +80,11 @@ export function Contact() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.3 + (idx * 0.1) }}
                   viewport={{ once: true }}
-                  className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-primary/20 transition-all group"
+                  className="p-6 rounded-2xl bg-muted border border-border hover:border-primary/20 transition-all group"
                 >
                   <div className="mb-4">{info.icon}</div>
-                  <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1">{info.label}</div>
-                  <div className="text-white font-medium group-hover:text-primary transition-colors">{info.value}</div>
+                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">{info.label}</div>
+                  <div className="text-foreground font-medium group-hover:text-primary transition-colors">{info.value}</div>
                 </motion.a>
               ))}
               
@@ -93,15 +93,15 @@ export function Contact() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6 }}
                 viewport={{ once: true }}
-                className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col justify-end"
+                className="p-6 rounded-2xl bg-muted border border-border flex flex-col justify-end"
               >
-                <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-4">Follow Me</div>
+                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4">Follow Me</div>
                 <div className="flex gap-4">
                   {socials.map((social, idx) => (
                     <a 
                       key={idx} 
                       href={social.href}
-                      className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/40 hover:text-primary hover:bg-primary/10 transition-all"
+                      className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                     >
                       {social.icon}
                     </a>
@@ -117,44 +117,44 @@ export function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="glass-card p-8 md:p-12 bg-white/[0.02] backdrop-blur-3xl shadow-2xl z-10"
+            className="glass-card p-8 md:p-12 bg-muted backdrop-blur-3xl shadow-2xl z-10"
           >
             <form className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest ml-1">Your Name</label>
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Your Name</label>
                   <input 
                     type="text" 
                     placeholder="John Doe"
-                    className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans"
+                    className="w-full bg-card border border-border rounded-xl px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest ml-1">Email Address</label>
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Email Address</label>
                   <input 
                     type="email" 
                     placeholder="john@example.com"
-                    className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans"
+                    className="w-full bg-card border border-border rounded-xl px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest ml-1">Inquiry Type</label>
-                <select className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-4 py-4 text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans cursor-pointer appearance-none">
-                  <option className="bg-black">SaaS Development</option>
-                  <option className="bg-black">UX/UI Engineering</option>
-                  <option className="bg-black">System Architecture</option>
-                  <option className="bg-black">Other</option>
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Inquiry Type</label>
+                <select className="w-full bg-card border border-border rounded-xl px-4 py-4 text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans cursor-pointer appearance-none">
+                  <option className="bg-background">SaaS Development</option>
+                  <option className="bg-background">UX/UI Engineering</option>
+                  <option className="bg-background">System Architecture</option>
+                  <option className="bg-background">Other</option>
                 </select>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest ml-1">Message</label>
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Message</label>
                 <textarea 
                   rows={4}
                   placeholder="Tell me about your project..."
-                  className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans resize-none"
+                  className="w-full bg-card border border-border rounded-xl px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans resize-none"
                 />
               </div>
 
