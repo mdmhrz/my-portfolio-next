@@ -1,0 +1,76 @@
+[     126ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[     167ms] [LOG] [Fast Refresh] done in 144ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[    2347ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[    2621ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[    4530ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  141982ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  142170ms] [LOG] [Fast Refresh] done in 236ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  143695ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  143929ms] [LOG] [Fast Refresh] done in 317ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  192136ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  192327ms] [LOG] [Fast Refresh] done in 292ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  192433ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  192648ms] [ERROR] ./work/portfilio/my-app/src/components/hero/shaders/blob.vert.ts:8:6
+Parsing ecmascript source code failed
+   6 |
+   7 | // --- Ashima Arts simplex noise (3D) ---
+>  8 | vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+     |      ^^^^^^
+   9 | vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+  10 | vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+  11 | vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+Expected ';', '}' or <eof>
+
+Import trace:
+  Client Component Browser:
+    ./work/portfilio/my-app/src/components/hero/shaders/blob.vert.ts [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Blob.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Scene.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Hero.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:3127
+[  209408ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  209530ms] [ERROR] ./work/portfilio/my-app/src/components/hero/shaders/blob.vert.ts:8:6
+Parsing ecmascript source code failed
+   6 |
+   7 | // --- Ashima Arts simplex noise (3D) ---
+>  8 | vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+     |      ^^^^^^
+   9 | vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+  10 | vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+  11 | vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+Expected ';', '}' or <eof>
+
+Import trace:
+  Client Component Browser:
+    ./work/portfilio/my-app/src/components/hero/shaders/blob.vert.ts [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Blob.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Scene.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Hero.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:3127
+[  209652ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  210015ms] [ERROR] ./work/portfilio/my-app/src/components/hero/shaders/blob.vert.ts:8:6
+Parsing ecmascript source code failed
+   6 |
+   7 | // --- Ashima Arts simplex noise (3D) ---
+>  8 | vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+     |      ^^^^^^
+   9 | vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+  10 | vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+  11 | vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+Expected ';', '}' or <eof>
+
+Import trace:
+  Client Component Browser:
+    ./work/portfilio/my-app/src/components/hero/shaders/blob.vert.ts [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Blob.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Scene.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/components/hero/Hero.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:3127
+[  244975ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  246412ms] [LOG] [Fast Refresh] done in 349ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297

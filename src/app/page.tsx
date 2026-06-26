@@ -1,7 +1,7 @@
 'use client';
 
 import { Navbar } from "@/components/Navbar";
-import { Hero } from "@/components/Hero";
+import { Hero } from "@/components/hero/Hero";
 import { Journey } from "@/components/Journey";
 import { Experience } from "@/components/Experience";
 import { AIWorkflow } from "@/components/AIWorkflow";

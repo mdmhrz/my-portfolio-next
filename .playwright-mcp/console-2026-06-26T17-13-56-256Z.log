@@ -1,0 +1,17 @@
+[    1515ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[    1782ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[    3660ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  228772ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  229009ms] [LOG] [Fast Refresh] done in 338ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  237562ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  237765ms] [LOG] [Fast Refresh] done in 323ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  251436ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  251626ms] [LOG] [Fast Refresh] done in 305ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  271823ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  272399ms] [LOG] [Fast Refresh] done in 616ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  272631ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  273384ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  282346ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  282429ms] [LOG] [Fast Refresh] done in 185ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  366270ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  366309ms] [LOG] [Fast Refresh] done in 161ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297

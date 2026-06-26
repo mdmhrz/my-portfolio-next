@@ -1,0 +1,391 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner:
+      - navigation [ref=e3]:
+        - generic [ref=e4]: MHR.DEV
+        - generic [ref=e5]:
+          - generic [ref=e6]:
+            - link "Journey" [ref=e7] [cursor=pointer]:
+              - /url: "#journey"
+            - link "Experience" [ref=e8] [cursor=pointer]:
+              - /url: "#experience"
+            - link "Projects" [ref=e9] [cursor=pointer]:
+              - /url: "#projects"
+            - link "Workflow" [ref=e10] [cursor=pointer]:
+              - /url: "#workflow"
+            - link "Contact" [ref=e11] [cursor=pointer]:
+              - /url: "#contact"
+          - button "Toggle theme" [ref=e13]:
+            - img
+            - generic [ref=e14]: Toggle theme
+          - button "Hire Me" [ref=e15]
+    - main [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e23]:
+          - generic [ref=e25]:
+            - generic [ref=e26]: $
+            - generic [ref=e27]: nod
+            - generic [ref=e29]: // stack
+          - paragraph [ref=e30]: Mobarak Hossain Razu
+          - heading "Full-Stack Developer" [level=1] [ref=e31]:
+            - text: Full-Stack
+            - generic [ref=e32]: Developer
+          - paragraph [ref=e34]: I build production SaaS and full-stack web apps — from Next.js interfaces to Node.js APIs, PostgreSQL, and Docker-on-AWS deployments.
+          - generic [ref=e35]:
+            - generic [ref=e36]: Frontend Dev @ Xgenious
+            - generic [ref=e38]: SaaS & Commercial Apps
+            - generic [ref=e40]: Docker · AWS · CI/CD
+          - generic [ref=e42]:
+            - link "View work" [ref=e43] [cursor=pointer]:
+              - /url: "#work"
+              - text: View work
+              - img [ref=e44]
+            - generic [ref=e47]:
+              - link "GitHub" [ref=e48] [cursor=pointer]:
+                - /url: https://github.com/mdmhrz
+                - img [ref=e49]
+              - link "LinkedIn" [ref=e51] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/mdmhrz
+                - img [ref=e52]
+              - link "Facebook" [ref=e54] [cursor=pointer]:
+                - /url: https://www.facebook.com/mdmhrz
+                - img [ref=e55]
+              - link "Email" [ref=e57] [cursor=pointer]:
+                - /url: mailto:mdmobarakhossainrazu@gmail.com
+                - img [ref=e58]
+        - generic [ref=e61]: Scroll
+      - generic [ref=e66]:
+        - generic [ref=e69]:
+          - generic [ref=e70]:
+            - generic [ref=e71]: Chronology
+            - heading "Engineering Journey" [level=2] [ref=e72]:
+              - text: Engineering
+              - text: Journey
+          - paragraph [ref=e73]: A timeline of technical evolution, from initial curiosity to scaling complex enterprise systems.
+          - generic [ref=e74]:
+            - generic [ref=e77] [cursor=pointer]: 2018 – FOUNDATION
+            - generic [ref=e80] [cursor=pointer]: 2021 – BUSINESS
+            - generic [ref=e83] [cursor=pointer]: 2022 – EVOLUTION
+            - generic [ref=e86] [cursor=pointer]: 2023 – MASTERY
+            - generic [ref=e89] [cursor=pointer]: 2024 – IMPACT
+        - generic [ref=e90]:
+          - generic [ref=e93]:
+            - generic: "2018"
+            - generic [ref=e95]:
+              - img [ref=e97]
+              - generic [ref=e100]: 2018 — 2021
+            - generic [ref=e101]:
+              - heading "Mechanical Engineering" [level=3] [ref=e102]
+              - paragraph [ref=e103]: Diploma Foundations. Understanding precision, systems, and hardware architecture before shifting to software.
+            - generic [ref=e105]: Engineering Milestone
+          - generic [ref=e108]:
+            - generic: "2021"
+            - generic [ref=e110]:
+              - img [ref=e112]
+              - generic [ref=e115]: 2021 — 2022
+            - generic [ref=e116]:
+              - heading "Tech Business Venture" [level=3] [ref=e117]
+              - paragraph [ref=e118]: Entrepreneurial phase. Learning the market needs and how digital products solve real-world business challenges.
+            - generic [ref=e120]: Engineering Milestone
+          - generic [ref=e123]:
+            - generic: "2022"
+            - generic [ref=e125]:
+              - img [ref=e127]
+              - generic [ref=e132]: 2022 — 2023
+            - generic [ref=e133]:
+              - heading "Self-Taught Dev Phase" [level=3] [ref=e134]
+              - paragraph [ref=e135]: Deep dive into documentation, open source, and building 100+ small-scale components.
+            - generic [ref=e137]: Engineering Milestone
+          - generic [ref=e140]:
+            - generic: "2023"
+            - generic [ref=e142]:
+              - img [ref=e144]
+              - generic [ref=e148]: 2023 — 2024
+            - generic [ref=e149]:
+              - heading "MERN Stack Transition" [level=3] [ref=e150]
+              - paragraph [ref=e151]: Mastering Full-stack capabilities with Node, Express, React, and MongoDB. Building complex state-driven apps.
+            - generic [ref=e153]: Engineering Milestone
+          - generic [ref=e156]:
+            - generic: "2024"
+            - generic [ref=e157]:
+              - generic [ref=e158]:
+                - img [ref=e160]
+                - generic [ref=e165]: 2024 — PRESENT
+              - generic [ref=e166]:
+                - generic [ref=e167]: SaaS
+                - generic [ref=e168]: Scalability
+                - generic [ref=e169]: Performance
+            - generic [ref=e170]:
+              - heading "SaaS Engineering Era" [level=3] [ref=e171]
+              - paragraph [ref=e172]: Focusing on scalability, performance optimization, and professional engineering standards at Xgenious.
+            - generic [ref=e174]: Engineering Milestone
+      - generic [ref=e176]:
+        - generic [ref=e177]:
+          - generic [ref=e178]: The Career Record
+          - heading "Professional Tenure" [level=2] [ref=e179]
+        - generic [ref=e180]:
+          - generic [ref=e181]:
+            - generic [ref=e182]:
+              - img [ref=e183]
+              - text: Dhaka, BD
+            - generic [ref=e185]: Active Since 2024
+          - generic [ref=e186]:
+            - generic [ref=e187]:
+              - img [ref=e189]
+              - generic [ref=e191]:
+                - heading "XGENIOUS" [level=3] [ref=e192]
+                - generic [ref=e193]:
+                  - img [ref=e194]
+                  - text: Senior Frontend Developer
+            - generic [ref=e197]:
+              - paragraph [ref=e198]: Leading the frontend evolution of complex SaaS architectures and enterprise marketplace solutions. Specialized in optimizing massive React/Next.js codebases and implementing advanced state machines.
+              - generic [ref=e199]:
+                - generic [ref=e200]:
+                  - img [ref=e201]
+                  - generic [ref=e203]: Architected 30+ CRM modules across integrated SaaS ecosystems.
+                - generic [ref=e204]:
+                  - img [ref=e205]
+                  - generic [ref=e207]: Optimized build performance and frontend latency for global users.
+        - generic [ref=e208]:
+          - generic [ref=e211]: Core Engineering Accomplishments
+          - generic [ref=e213]:
+            - generic [ref=e214] [cursor=pointer]:
+              - img "Taskip" [ref=e216]
+              - generic [ref=e219]:
+                - generic [ref=e220]:
+                  - generic [ref=e221]: FULL-SCALE AGENCY OS
+                  - heading "Taskip" [level=4] [ref=e222]
+                - paragraph [ref=e223]: All-in-one agency management and white-label client portal platform for digital service teams.
+                - generic [ref=e224]:
+                  - text: Explore Technical Scope
+                  - img [ref=e225]
+            - generic [ref=e227] [cursor=pointer]:
+              - img "Reportgenix" [ref=e229]
+              - generic [ref=e232]:
+                - generic [ref=e233]:
+                  - generic [ref=e234]: AI E-COMMERCE ANALYTICS
+                  - heading "Reportgenix" [level=4] [ref=e235]
+                - paragraph [ref=e236]: AI-powered reporting platform for Shopify merchants to track sales, profits, and behavior instantly.
+                - generic [ref=e237]:
+                  - text: Explore Technical Scope
+                  - img [ref=e238]
+            - generic [ref=e240] [cursor=pointer]:
+              - img "Xilancer" [ref=e242]
+              - generic [ref=e245]:
+                - generic [ref=e246]:
+                  - generic [ref=e247]: FREELANCE MARKETPLACE
+                  - heading "Xilancer" [level=4] [ref=e248]
+                - paragraph [ref=e249]: Pre-built marketplace clone script enabling entrepreneurs to launch service platforms globally.
+                - generic [ref=e250]:
+                  - text: Explore Technical Scope
+                  - img [ref=e251]
+      - generic [ref=e254]:
+        - generic [ref=e255]:
+          - text: Development Stack
+          - heading "Technical Ecosystem" [level=2] [ref=e256]
+          - paragraph [ref=e257]: Leveraging modern web technologies and AI integration to build scalable, high-performance applications.
+        - generic [ref=e258]:
+          - generic [ref=e259]:
+            - generic [ref=e266]: AI_INTEGRATION_MODULE.V2
+            - generic [ref=e269]: SYSTEM STABLE
+          - generic [ref=e270]:
+            - generic [ref=e271]:
+              - generic [ref=e272]: AGENTIC CODING
+              - heading "Automated Logic Synthesis" [level=4] [ref=e273]
+              - paragraph [ref=e274]: Leveraging autonomous AI agents for boiler-plating, unit testing, and complex logic refactoring to 10x development velocity.
+            - generic [ref=e275]:
+              - generic [ref=e276]: RAG ARCHITECTURE
+              - heading "Knowledge-Augmented Apps" [level=4] [ref=e277]
+              - paragraph [ref=e278]: Building Retrieval-Augmented Generation systems to give LLMs private context and precise data interaction capabilities.
+            - generic [ref=e279]:
+              - generic [ref=e280]: AI CLI TOOLING
+              - heading "Custom Dev Automations" [level=4] [ref=e281]
+              - paragraph [ref=e282]: Developing internal CLI tools integrated with AI models to automate deployments, code reviews, and environment setups.
+      - generic [ref=e284]:
+        - generic [ref=e285]:
+          - text: Personal Labs
+          - heading "Case Studies" [level=2] [ref=e286]
+          - paragraph [ref=e287]: Deep dives into my personal ventures, open-source projects, and experimental engineering labs.
+        - generic [ref=e288]:
+          - generic [ref=e289] [cursor=pointer]:
+            - generic [ref=e293]:
+              - generic [ref=e294]:
+                - generic [ref=e295]: Personal
+                - generic [ref=e296]: Generative Art
+                - generic [ref=e297]: Creative Coding
+              - heading "NextDrop" [level=3] [ref=e298]
+              - paragraph [ref=e299]: A multi tenant based Parcel Managementt System for inside bangladesh with Admin, Rider, Customer dedicated dashboard.
+            - generic [ref=e300]:
+              - link [ref=e301]:
+                - /url: "#"
+                - img [ref=e302]
+              - link [ref=e304]:
+                - /url: "#"
+                - img [ref=e305]
+          - generic [ref=e307] [cursor=pointer]:
+            - generic [ref=e311]:
+              - generic [ref=e312]:
+                - generic [ref=e313]: HealthTech
+                - generic [ref=e314]: Dashboard
+              - heading "NeuroTrack" [level=3] [ref=e315]
+              - paragraph [ref=e316]: Personal health dashboard for tracking cognitive load and productivity trends.
+            - generic [ref=e317]:
+              - link [ref=e318]:
+                - /url: "#"
+                - img [ref=e319]
+              - link [ref=e321]:
+                - /url: "#"
+                - img [ref=e322]
+          - generic [ref=e324] [cursor=pointer]:
+            - generic [ref=e328]:
+              - generic [ref=e329]:
+                - generic [ref=e330]: Experimental
+                - generic [ref=e331]: UI/UX
+              - heading "Zenith OS" [level=3] [ref=e332]
+              - paragraph [ref=e333]: Experiential web-based operating system mockup focused on hyper-minimalism.
+            - generic [ref=e334]:
+              - link [ref=e335]:
+                - /url: "#"
+                - img [ref=e336]
+              - link [ref=e338]:
+                - /url: "#"
+                - img [ref=e339]
+          - generic [ref=e341] [cursor=pointer]:
+            - generic [ref=e345]:
+              - generic [ref=e346]:
+                - generic [ref=e347]: E-commerce
+                - generic [ref=e348]: Framer Motion
+              - heading "Medicare" [level=3] [ref=e349]
+              - paragraph [ref=e350]: A Hostel management system including multi role based users.
+            - generic [ref=e351]:
+              - link [ref=e352]:
+                - /url: "#"
+                - img [ref=e353]
+              - link [ref=e355]:
+                - /url: "#"
+                - img [ref=e356]
+      - generic [ref=e361]:
+        - heading "Ready to Build the Future?" [level=2] [ref=e362]:
+          - text: Ready to Build
+          - text: the Future?
+        - paragraph [ref=e363]: I am currently accepting new projects and engineering roles. Let's discuss how we can build something extraordinary together.
+        - button "Get in Touch" [ref=e365]:
+          - text: Get in Touch
+          - img
+      - generic [ref=e368]:
+        - generic [ref=e369]:
+          - generic [ref=e370]:
+            - text: Inquiries
+            - heading "Let's talk about your next project." [level=2] [ref=e371]:
+              - text: Let's talk about
+              - text: your next project.
+            - paragraph [ref=e372]: Whether you have a specific project in mind or just want to say hi, my inbox is always open.
+          - generic [ref=e373]:
+            - link "Email hello@mhr.dev" [ref=e374] [cursor=pointer]:
+              - /url: mailto:hello@mhr.dev
+              - img [ref=e376]
+              - generic [ref=e379]: Email
+              - generic [ref=e380]: hello@mhr.dev
+            - link "Location Dhaka, Bangladesh" [ref=e381] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e383]
+              - generic [ref=e386]: Location
+              - generic [ref=e387]: Dhaka, Bangladesh
+            - link "Timezone GMT+6 (BST)" [ref=e388] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e390]
+              - generic [ref=e393]: Timezone
+              - generic [ref=e394]: GMT+6 (BST)
+            - generic [ref=e395]:
+              - generic [ref=e396]: Follow Me
+              - generic [ref=e397]:
+                - link [ref=e398] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e399]
+                - link [ref=e401] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e402]
+                - link [ref=e404] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e405]
+        - generic [ref=e408]:
+          - generic [ref=e409]:
+            - generic [ref=e410]:
+              - text: Your Name
+              - textbox "John Doe" [ref=e411]
+            - generic [ref=e412]:
+              - text: Email Address
+              - textbox "john@example.com" [ref=e413]
+          - generic [ref=e414]:
+            - text: Inquiry Type
+            - combobox [ref=e415] [cursor=pointer]:
+              - option "SaaS Development" [selected]
+              - option "UX/UI Engineering"
+              - option "System Architecture"
+              - option "Other"
+          - generic [ref=e416]:
+            - text: Message
+            - textbox "Tell me about your project..." [ref=e417]
+          - button "Send Message" [ref=e418]:
+            - text: Send Message
+            - img
+      - generic [ref=e419]:
+        - generic [ref=e421]:
+          - generic [ref=e422]:
+            - generic [ref=e423]:
+              - generic [ref=e424]:
+                - generic [ref=e425]: MHR.DEV
+                - paragraph [ref=e426]: Engineering high-performance digital products and immersive experiences with a focus on scalability and precision.
+              - generic [ref=e427]:
+                - link "GitHub" [ref=e428] [cursor=pointer]:
+                  - /url: https://github.com
+                  - img [ref=e430]
+                - link "LinkedIn" [ref=e432] [cursor=pointer]:
+                  - /url: https://linkedin.com
+                  - img [ref=e434]
+                - link "Twitter" [ref=e436] [cursor=pointer]:
+                  - /url: https://twitter.com
+                  - img [ref=e438]
+                - link "Email" [ref=e440] [cursor=pointer]:
+                  - /url: mailto:hello@mhr.dev
+                  - img [ref=e442]
+            - generic [ref=e444]:
+              - heading "Navigation" [level=4] [ref=e445]
+              - list [ref=e446]:
+                - listitem [ref=e447]:
+                  - link "Hero" [ref=e448] [cursor=pointer]:
+                    - /url: "#hero"
+                    - text: Hero
+                - listitem [ref=e450]:
+                  - link "Journey" [ref=e451] [cursor=pointer]:
+                    - /url: "#journey"
+                    - text: Journey
+                - listitem [ref=e453]:
+                  - link "Experience" [ref=e454] [cursor=pointer]:
+                    - /url: "#experience"
+                    - text: Experience
+                - listitem [ref=e456]:
+                  - link "Workflow" [ref=e457] [cursor=pointer]:
+                    - /url: "#workflow"
+                    - text: Workflow
+                - listitem [ref=e459]:
+                  - link "Projects" [ref=e460] [cursor=pointer]:
+                    - /url: "#projects"
+                    - text: Projects
+            - generic [ref=e462]:
+              - heading "Status" [level=4] [ref=e463]
+              - generic [ref=e464]:
+                - generic [ref=e469]: Available for Hire
+                - paragraph [ref=e470]: Currently open to new opportunities and interesting technical challenges.
+                - button "Get In Touch" [ref=e471]:
+                  - text: Get In Touch
+                  - img
+          - generic [ref=e472]:
+            - generic [ref=e473]:
+              - generic [ref=e474]: © 2026 ALL RIGHTS RESERVED
+              - generic [ref=e476]: LOCATED IN BANGLADESH
+            - generic [ref=e479]: MOBARAK HOSSAIN RAZU
+        - generic: MHR
+  - button "Open Next.js Dev Tools" [ref=e485] [cursor=pointer]:
+    - img [ref=e486]
+  - alert [ref=e489]
