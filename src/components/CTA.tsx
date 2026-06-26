@@ -1,52 +1,35 @@
 'use client';
 
-import { motion } from "motion/react";
-import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-// import { Mail, Linkedin, FileText, ArrowRight } from "lucide-react";
+import { Reveal } from "@/components/Reveal";
 
 export function CTA() {
   return (
-    <section id="contact" className="relative py-32 overflow-hidden bg-background">
-      {/* High Contrast CTA */}
-      <div className="container max-w-7xl mx-auto px-6">
-        <div className="bg-primary py-32 px-6 relative z-10 overflow-hidden rounded-[3rem]">
-          {/* Decorative Background Elements */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-foreground/5 rounded-full border border-foreground/10 blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-foreground/5 rounded-full border border-foreground/10 blur-2xl pointer-events-none translate-y-1/2 -translate-x-1/4" />
-
-          <div className="container max-w-4xl mx-auto text-center relative z-20">
-            <motion.h2
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="text-4xl md:text-7xl font-bold text-primary-foreground mb-10 tracking-tighter"
-            >
-              Ready to Build<br />the Future?
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="text-lg md:text-xl text-primary-foreground/70 max-w-2xl mx-auto mb-16"
-            >
-              I am currently accepting new projects and engineering roles. Let&apos;s discuss how we can build something extraordinary together.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <Button className="h-20 px-12 rounded-2xl bg-background text-foreground hover:bg-background/90 hover:scale-105 active:scale-95 transition-all text-xl font-bold group">
-                Get in Touch <ArrowRight className="ml-3 group-hover:translate-x-2 transition-transform" />
-              </Button>
-            </motion.div>
+    <section className="relative overflow-hidden bg-background px-6 py-20 md:py-28">
+      <div className="container mx-auto max-w-6xl">
+        <Reveal y={40}>
+          <div className="relative overflow-hidden rounded-3xl bg-foreground px-8 py-20 text-center md:px-12 md:py-28">
+            <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center">
+              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-background/60">
+                Available for new projects &amp; roles
+              </span>
+              <h2 className="mt-5 text-4xl font-medium leading-[0.95] tracking-tight text-background md:text-6xl">
+                Let&apos;s build something solid.
+              </h2>
+              <p className="mt-6 max-w-xl text-base leading-relaxed text-background/70 md:text-lg">
+                Frontend &amp; full-stack engineering — from Next.js interfaces to Node &amp; Go
+                services. Open to freelance work and full-time roles.
+              </p>
+              <a
+                href="#contact"
+                className="group mt-10 inline-flex h-12 items-center gap-2 rounded-full bg-background px-7 text-sm font-medium text-foreground transition-transform hover:scale-[1.03]"
+              >
+                Get in touch
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </a>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

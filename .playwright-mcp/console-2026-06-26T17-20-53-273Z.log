@@ -1,3 +1,35 @@
 [    1077ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
 [    1309ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
 [    3216ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  487263ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  487665ms] [LOG] [Fast Refresh] done in 475ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  488860ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  488966ms] [LOG] [Fast Refresh] done in 207ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  505903ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  505943ms] [LOG] [Fast Refresh] done in 157ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  518722ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  519153ms] [LOG] [Fast Refresh] done in 407ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  519357ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  520191ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  523451ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  523510ms] [LOG] [Fast Refresh] done in 169ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  589255ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  589654ms] [LOG] [Fast Refresh] done in 433ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  589827ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  590333ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  590440ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  590556ms] [LOG] [Fast Refresh] done in 224ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  590663ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  590807ms] [LOG] [Fast Refresh] done in 245ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  591371ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  591462ms] [LOG] [Fast Refresh] done in 193ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  591656ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  591843ms] [LOG] [Fast Refresh] done in 277ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  591962ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  592027ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  592792ms] [LOG] [Fast Refresh] done in 874ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  592798ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  592938ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  593443ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  607758ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[  607764ms] [LOG] [Fast Refresh] done in 118ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297

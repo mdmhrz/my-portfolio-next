@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const STACK = ['next.js', 'node.js', 'typescript', 'postgres', 'docker', 'aws'];
+const STACK = ['next.js', 'react', 'node.js', 'go', 'typescript', 'postgres', 'docker'];
 
 // Small typewriter that cycles the dev stack, with a blinking caret.
 export function Terminal() {
@@ -37,7 +37,7 @@ export function Terminal() {
   }, [text, deleting, idx]);
 
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-4 py-1.5 font-mono text-[11px] tracking-wide text-muted-foreground backdrop-blur">
+    <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-4 py-1.5 text-[11px] tracking-[0.04em] text-muted-foreground backdrop-blur">
       <span className="text-foreground/80">$</span>
       <span className="text-foreground">{text}</span>
       <span className="ml-0.5 inline-block h-3 w-1.5 animate-pulse bg-foreground/70" />

@@ -1,154 +1,124 @@
 'use client';
 
-import { Badge } from "@/components/ui/badge";
-import { GithubLogo, Globe } from "@phosphor-icons/react";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
+import { ArrowUpRight } from "@phosphor-icons/react";
+import { Reveal } from "@/components/Reveal";
 
-const personalProjects = [
+const featured = [
   {
-    title: "NextDrop",
-    desc: "A multi tenant based Parcel Managementt System for inside bangladesh with Admin, Rider, Customer dedicated dashboard.",
-    tags: ["Personal", "Generative Art", "Creative Coding"],
-    img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
-    link: "#",
-    span: "md:col-span-8",
-    height: "h-[500px]"
+    title: "NexDrop",
+    subtitle: "Parcel Delivery Management Platform",
+    desc: "Full-stack parcel delivery platform with dedicated dashboards for customers, riders, admins & super-admins. Real-time tracking, rider earnings, and Stripe + SSLCommerz payments.",
+    tags: ["Full-stack", "Real-time", "Payments"],
+    tech: ["Next.js", "TypeScript", "Node.js", "Express.js", "PostgreSQL", "Prisma", "Docker", "AWS EC2"],
+    live: "https://nexdrop.mhrazu.com",
+    image: null,
+    span: "lg:col-span-7",
   },
   {
-    title: "NeuroTrack",
-    desc: "Personal health dashboard for tracking cognitive load and productivity trends.",
-    tags: ["HealthTech", "Dashboard"],
-    img: "https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=2670&auto=format&fit=crop",
-    link: "#",
-    span: "md:col-span-4",
-    height: "h-[500px]"
+    title: "Taskip",
+    subtitle: "SaaS Client Portal & CRM",
+    desc: "Multi-tenant SaaS for agencies — CRM, project management, ticketing and client collaboration in one workspace.",
+    tags: ["SaaS", "CRM", "Multi-tenant"],
+    tech: ["Next.js", "TypeScript", "Zustand", "ShadCN UI"],
+    live: "https://taskip.app",
+    image: "/projects/taskip.png",
+    span: "lg:col-span-5",
   },
-  {
-    title: "Zenith OS",
-    desc: "Experiential web-based operating system mockup focused on hyper-minimalism.",
-    tags: ["Experimental", "UI/UX"],
-    img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2672&auto=format&fit=crop",
-    link: "#",
-    span: "md:col-span-4",
-    height: "h-[450px]"
-  },
-  {
-    title: "Medicare",
-    desc: "A Hostel management system including multi role based users.",
-    tags: ["E-commerce", "Framer Motion"],
-    img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2670&auto=format&fit=crop",
-    link: "#",
-    span: "md:col-span-8",
-    height: "h-[450px]"
-  }
 ];
 
 export function CaseStudies() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(titleRef.current,
-        { opacity: 0, y: 50 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 1, 
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 80%",
-          }
-        }
-      );
-
-      cardsRef.current.forEach((card) => {
-        if (!card) return;
-        gsap.fromTo(card,
-          { opacity: 0, scale: 0.9, y: 50 },
-          {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            duration: 1,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-            }
-          }
-        );
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section ref={containerRef} id="projects" className="py-40 px-6 container max-w-7xl mx-auto">
-      <div
-        ref={titleRef}
-        className="mb-24 space-y-4 text-center md:text-left"
-      >
-        <span className="text-primary text-xs font-bold uppercase tracking-[0.4em]">Personal Labs</span>
-        <h2 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter uppercase">Case <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/50">Studies</span></h2>
-        <p className="text-muted-foreground text-lg max-w-xl">Deep dives into my personal ventures, open-source projects, and experimental engineering labs.</p>
-      </div>
+    <section id="work" className="container mx-auto max-w-6xl px-6 py-28 md:py-40">
+      <Reveal className="mb-14 flex flex-col gap-4">
+        <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+          Selected work
+        </span>
+        <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
+          Things I&apos;ve shipped.
+        </h2>
+      </Reveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        {personalProjects.map((p, i) => (
-          <div
-            key={i}
-            ref={el => { if (el) cardsRef.current[i] = el; }}
-            className={`${p.span} ${p.height} relative group overflow-hidden glass-card border-border cursor-pointer bg-card shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none`}
-          >
-            {/* Background Image */}
-            <div 
-              className="absolute inset-0 transition-transform duration-1000 group-hover:scale-110"
-              style={{
-                backgroundImage: `url('${p.img}')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {featured.map((p, i) => (
+          <Reveal key={p.title} y={40} delay={i * 0.08} className={p.span}>
+            <a
+              href={p.live}
+              target="_blank"
+              rel="noreferrer"
+              className="group relative block h-[460px] overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-colors duration-500 hover:border-foreground/20 md:h-[520px]"
             >
-              <div className="absolute inset-0 bg-background/50 group-hover:bg-background/20 transition-all duration-500 mix-blend-multiply" />
-            </div>
-
-            <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-background/80 to-transparent opacity-80" />
-
-            {/* Content */}
-            <div className="absolute inset-x-0 bottom-0 p-10 lg:p-14 flex flex-col justify-end h-full z-10">
-              <div className="flex gap-3 mb-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                {p.tags.map(tag => (
-                  <Badge key={tag} className="bg-foreground/5 text-foreground font-bold border-border px-4 rounded-full backdrop-blur-md">
-                    {tag}
-                  </Badge>
-                ))}
+              {/* Visual */}
+              <div className="absolute inset-0">
+                {p.image ? (
+                  <Image
+                    src={p.image}
+                    alt={p.title}
+                    fill
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                ) : (
+                  // NexDrop has no screenshot — a monochrome route/tracking motif.
+                  <div className="relative h-full w-full bg-card">
+                    <svg
+                      className="absolute inset-0 h-full w-full text-foreground/[0.07]"
+                      viewBox="0 0 400 400"
+                      fill="none"
+                      preserveAspectRatio="xMidYMid slice"
+                    >
+                      <path
+                        d="M40 320 C 120 280, 120 120, 220 140 S 360 200, 360 80"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeDasharray="6 8"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <circle cx="40" cy="320" r="8" fill="currentColor" />
+                      <circle cx="360" cy="80" r="8" fill="currentColor" />
+                      <circle cx="220" cy="140" r="5" fill="currentColor" />
+                    </svg>
+                    <div className="absolute inset-0 bg-[radial-gradient(80%_60%_at_30%_30%,transparent,background)]" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
               </div>
-              <h3 className="text-3xl md:text-5xl font-black text-foreground mb-4 transition-colors duration-300 tracking-tighter drop-shadow-sm">
-                {p.title}
-              </h3>
-              <p className="text-muted-foreground font-sans text-sm md:text-lg max-w-xl line-clamp-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 delay-100">
-                {p.desc}
-              </p>
-            </div>
 
-            {/* Links Corner */}
-            <div className="absolute top-10 right-10 flex gap-3 translate-x-12 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 transition-all duration-500 z-10">
-              <a href={p.link} className="w-12 h-12 rounded-2xl bg-card border border-border flex items-center justify-center text-foreground hover:bg-foreground hover:text-background transition-all shadow-sm">
-                <GithubLogo size={20} />
-              </a>
-              <a href={p.link} className="w-12 h-12 rounded-2xl bg-card border border-border flex items-center justify-center text-foreground hover:bg-foreground hover:text-background transition-all shadow-sm">
-                <Globe size={20} />
-              </a>
-            </div>
-          </div>
+              {/* Top-right external marker */}
+              <div className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/70 text-foreground opacity-0 backdrop-blur transition-all duration-500 group-hover:opacity-100 group-hover:-translate-y-0.5">
+                <ArrowUpRight className="h-4 w-4" />
+              </div>
+
+              {/* Content */}
+              <div className="absolute inset-x-0 bottom-0 p-7 md:p-9">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {p.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full border border-border bg-background/60 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-foreground backdrop-blur"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <h3 className="text-3xl font-medium tracking-tight text-foreground md:text-4xl">
+                  {p.title}
+                </h3>
+                <p className="mt-1 text-sm font-medium text-foreground/70">{p.subtitle}</p>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+                  {p.desc}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {p.tech.map((t) => (
+                    <span key={t} className="text-[11px] text-muted-foreground/80">
+                      {t}
+                      <span className="mx-1.5 text-muted-foreground/30">·</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </a>
+          </Reveal>
         ))}
       </div>
     </section>

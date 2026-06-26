@@ -1,186 +1,211 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { Envelope, MapPin, Globe, PaperPlaneTilt, GithubLogo, LinkedinLogo, TwitterLogo } from "@phosphor-icons/react";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  EnvelopeSimple,
+  WhatsappLogo,
+  MapPin,
+  Clock,
+  PaperPlaneTilt,
+  GithubLogo,
+  LinkedinLogo,
+  FacebookLogo,
+} from "@phosphor-icons/react";
+import { Reveal } from "@/components/Reveal";
 
-const contactInfo = [
+const EMAIL = "mdmobarakhossainrazu@gmail.com";
+
+const info = [
   {
-    icon: <Envelope size={24} weight="duotone" className="text-primary" />,
+    icon: EnvelopeSimple,
     label: "Email",
-    value: "hello@mhr.dev",
-    href: "mailto:hello@mhr.dev"
+    value: EMAIL,
+    href: `mailto:${EMAIL}`,
   },
   {
-    icon: <MapPin size={24} weight="duotone" className="text-primary" />,
+    icon: WhatsappLogo,
+    label: "WhatsApp",
+    value: "+880 1824975616",
+    href: "https://wa.me/8801824975616",
+  },
+  {
+    icon: MapPin,
     label: "Location",
     value: "Dhaka, Bangladesh",
-    href: "#"
+    href: undefined,
   },
   {
-    icon: <Globe size={24} weight="duotone" className="text-primary" />,
+    icon: Clock,
     label: "Timezone",
     value: "GMT+6 (BST)",
-    href: "#"
-  }
+    href: undefined,
+  },
 ];
 
 const socials = [
-  { icon: <GithubLogo size={20} />, href: "#" },
-  { icon: <LinkedinLogo size={20} />, href: "#" },
-  { icon: <TwitterLogo size={20} />, href: "#" }
+  { Icon: GithubLogo, href: "https://github.com/mdmhrz", label: "GitHub" },
+  { Icon: LinkedinLogo, href: "https://www.linkedin.com/in/mdmhrz", label: "LinkedIn" },
+  { Icon: FacebookLogo, href: "https://www.facebook.com/mdmhrz", label: "Facebook" },
 ];
 
 export function Contact() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
-  const infoRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const ctx = gsap.context(() => {
-      // Info column animation
-      gsap.fromTo(infoRef.current,
-        { opacity: 0, x: -50 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 75%",
-          }
-        }
-      );
-
-      // Form animation
-      gsap.fromTo(formRef.current,
-        { opacity: 0, x: 50, rotateY: 10 },
-        {
-          opacity: 1,
-          x: 0,
-          rotateY: 0,
-          duration: 1.2,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 75%",
-          }
-        }
-      );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") || "");
+    const email = String(data.get("email") || "");
+    const type = String(data.get("type") || "");
+    const message = String(data.get("message") || "");
+    const subject = encodeURIComponent(`[${type || "Inquiry"}] New message from ${name || "someone"}`);
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+  };
 
   return (
-    <section ref={containerRef} id="contact" className="py-40 px-6 relative overflow-hidden bg-background border-t border-border">
-      {/* Background Glow */}
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none opacity-50" />
-      
-      <div className="container max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-          
-          {/* Left Column: Info */}
-          <div ref={infoRef} className="space-y-12">
-            <div className="space-y-6">
-              <span className="text-primary text-xs font-bold uppercase tracking-[0.4em]">
-                Inquiries
+    <section id="contact" className="relative overflow-hidden border-t border-border bg-background px-6 py-28 md:py-40">
+      <div className="container mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
+          {/* Left: info */}
+          <div>
+            <Reveal>
+              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                Contact
               </span>
-              <h2 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter uppercase leading-[0.9]">
-                Let&apos;s talk about <br /> your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/50">next project.</span>
+            </Reveal>
+            <Reveal delay={0.05}>
+              <h2 className="mt-4 text-4xl font-medium leading-[0.95] tracking-tight text-foreground md:text-6xl">
+                Let&apos;s talk about your next project.
               </h2>
-              <p className="text-muted-foreground text-lg max-w-md leading-relaxed">
-                Whether you have a specific project in mind or just want to say hi, my inbox is always open.
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">
+                Freelance work, full-time roles, or just a hello — my inbox is always open.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              {contactInfo.map((info, idx) => (
-                <a 
-                  key={idx}
-                  href={info.href}
-                  className="p-6 rounded-2xl bg-card border border-border hover:border-primary/20 transition-all group shadow-sm dark:shadow-none"
-                >
-                  <div className="mb-4">{info.icon}</div>
-                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">{info.label}</div>
-                  <div className="text-foreground font-medium group-hover:text-primary transition-colors">{info.value}</div>
-                </a>
-              ))}
-              
-              <div className="p-6 rounded-2xl bg-card border border-border flex flex-col justify-end shadow-sm dark:shadow-none">
-                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4">Follow Me</div>
-                <div className="flex gap-4">
-                  {socials.map((social, idx) => (
-                    <a 
-                      key={idx} 
-                      href={social.href}
-                      className="w-10 h-10 rounded-xl bg-background flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
-                    >
-                      {social.icon}
+            <Reveal delay={0.15}>
+              <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {info.map(({ icon: Icon, label, value, href }) => {
+                  const inner = (
+                    <div className="flex h-full items-start gap-4 rounded-2xl border border-border bg-card p-5 transition-colors duration-300 hover:border-foreground/20">
+                      <Icon className="mt-0.5 h-5 w-5 shrink-0 text-foreground" />
+                      <div>
+                        <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                          {label}
+                        </div>
+                        <div className="mt-1 break-words text-sm font-medium text-foreground">
+                          {value}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                  return href ? (
+                    <a key={label} href={href} target="_blank" rel="noreferrer">
+                      {inner}
                     </a>
-                  ))}
-                </div>
+                  ) : (
+                    <div key={label}>{inner}</div>
+                  );
+                })}
               </div>
-            </div>
+            </Reveal>
+
+            <Reveal delay={0.2}>
+              <div className="mt-6 flex items-center gap-3">
+                {socials.map(({ Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={label}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                ))}
+              </div>
+            </Reveal>
           </div>
 
-          {/* Right Column: Form */}
-          <div 
-            ref={formRef}
-            className="glass-card p-8 md:p-12 bg-card backdrop-blur-3xl shadow-lg z-10 perspective-[1000px]"
-          >
-            <form className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Your Name</label>
-                  <input 
-                    type="text" 
-                    placeholder="John Doe"
-                    className="w-full bg-card border border-border rounded-xl px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans"
+          {/* Right: form */}
+          <Reveal y={40} delay={0.1}>
+            <form
+              onSubmit={handleSubmit}
+              className="rounded-2xl border border-border bg-card p-7 shadow-sm md:p-9"
+            >
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <Field label="Your name">
+                  <input
+                    name="name"
+                    type="text"
+                    required
+                    placeholder="Your name"
+                    className={inputClass}
                   />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Email Address</label>
-                  <input 
-                    type="email" 
-                    placeholder="john@example.com"
-                    className="w-full bg-card border border-border rounded-xl px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans"
+                </Field>
+                <Field label="Email">
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="you@example.com"
+                    className={inputClass}
                   />
-                </div>
+                </Field>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Inquiry Type</label>
-                <select className="w-full bg-card border border-border rounded-xl px-4 py-4 text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans cursor-pointer appearance-none">
-                  <option className="bg-background">SaaS Development</option>
-                  <option className="bg-background">UX/UI Engineering</option>
-                  <option className="bg-background">System Architecture</option>
-                  <option className="bg-background">Other</option>
-                </select>
+              <div className="mt-5">
+                <Field label="Inquiry type">
+                  <select name="type" className={`${inputClass} cursor-pointer`} defaultValue="">
+                    <option value="" disabled>
+                      Select a type
+                    </option>
+                    <option>Freelance project</option>
+                    <option>Full-time role</option>
+                    <option>Collaboration</option>
+                    <option>Other</option>
+                  </select>
+                </Field>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Message</label>
-                <textarea 
-                  rows={4}
-                  placeholder="Tell me about your project..."
-                  className="w-full bg-card border border-border rounded-xl px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans resize-none"
-                />
+              <div className="mt-5">
+                <Field label="Message">
+                  <textarea
+                    name="message"
+                    rows={4}
+                    required
+                    placeholder="Tell me about your project..."
+                    className={`${inputClass} resize-none`}
+                  />
+                </Field>
               </div>
 
-              <Button className="w-full h-16 rounded-xl bg-foreground text-background font-bold text-base uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg group border border-border">
-                Send Message <PaperPlaneTilt size={20} className="ml-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              </Button>
+              <button
+                type="submit"
+                className="group mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground text-sm font-medium text-background transition-transform hover:scale-[1.01]"
+              >
+                Send message
+                <PaperPlaneTilt className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </button>
             </form>
-          </div>
-
+          </Reveal>
         </div>
       </div>
     </section>
+  );
+}
+
+const inputClass =
+  "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70 transition-colors focus:border-foreground/40 focus:outline-none focus:ring-2 focus:ring-foreground/15";
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block space-y-2">
+      <span className="ml-1 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        {label}
+      </span>
+      {children}
+    </label>
   );
 }

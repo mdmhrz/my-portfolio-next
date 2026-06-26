@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SmoothScroll } from "@/components/SmoothScroll";
 
 const satoshi = localFont({
   src: [
@@ -32,7 +33,7 @@ const satoshi = localFont({
 
 export const metadata: Metadata = {
   title: "MHR.DEV | Mobarak Hossain Razu",
-  description: "Premium Full Stack Developer portfolio with cinematic glassmorphism and advanced motion design.",
+  description: "Mobarak Hossain Razu — Frontend Developer & full-stack engineer. Next.js, React, Node.js, Go, PostgreSQL, Docker, AWS.",
 };
 
 export default function RootLayout({
@@ -46,7 +47,7 @@ export default function RootLayout({
         className={`antialiased font-sans bg-background text-foreground`}
       >
         <ThemeProvider>
-          {children}
+          <SmoothScroll>{children}</SmoothScroll>
         </ThemeProvider>
       </body>
     </html>

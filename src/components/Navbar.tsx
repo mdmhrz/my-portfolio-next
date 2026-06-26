@@ -1,8 +1,7 @@
 'use client';
 
 import { motion } from "motion/react";
-import { List, GithubLogo, LinkedinLogo, TwitterLogo } from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
+import { List, GithubLogo, LinkedinLogo, FacebookLogo } from "@phosphor-icons/react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Sheet,
@@ -16,15 +15,15 @@ import {
 const NavLinks = [
   { name: "Journey", href: "#journey" },
   { name: "Experience", href: "#experience" },
-  { name: "Projects", href: "#projects" },
-  { name: "Workflow", href: "#workflow" },
+  { name: "Skills", href: "#skills" },
+  { name: "Work", href: "#work" },
   { name: "Contact", href: "#contact" },
 ];
 
 const SocialLinks = [
-  { icon: <GithubLogo weight="bold" />, href: "#" },
-  { icon: <LinkedinLogo weight="bold" />, href: "#" },
-  { icon: <TwitterLogo weight="bold" />, href: "#" },
+  { Icon: GithubLogo, href: "https://github.com/mdmhrz", label: "GitHub" },
+  { Icon: LinkedinLogo, href: "https://www.linkedin.com/in/mdmhrz", label: "LinkedIn" },
+  { Icon: FacebookLogo, href: "https://www.facebook.com/mdmhrz", label: "Facebook" },
 ];
 
 export function Navbar() {
@@ -32,98 +31,96 @@ export function Navbar() {
     <motion.header
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 py-6 px-6 pointer-events-none"
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+      className="fixed inset-x-0 top-0 z-50 px-4 py-4 pointer-events-none md:px-6"
     >
-      <motion.nav
-        className="mx-auto w-full max-w-7xl flex items-center justify-between px-8 py-4 rounded-3xl border border-border bg-background/80 dark:bg-background/90 glass pointer-events-auto backdrop-blur-3xl transition-all duration-300"
-      >
-        <div className="text-foreground font-display font-bold text-xl tracking-tighter select-none">
-          MHR.DEV
+      <motion.nav className="pointer-events-auto mx-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-border bg-background/70 px-5 py-3 backdrop-blur-xl transition-colors duration-300 md:px-7">
+        <a
+          href="#home"
+          className="select-none text-base font-semibold tracking-tight text-foreground"
+        >
+          MHR<span className="text-muted-foreground">.DEV</span>
+        </a>
+
+        {/* Desktop links */}
+        <div className="hidden items-center gap-8 lg:flex">
+          {NavLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
+            >
+              {link.name}
+            </a>
+          ))}
         </div>
 
-        {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-10">
-          <div className="flex items-center gap-8">
-            {NavLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-xs font-sans font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all duration-300"
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
-          
-          <div className="w-px h-6 bg-border hidden md:block" />
-
+        <div className="flex items-center gap-3">
           <ThemeToggle />
-
-          <Button 
-            variant="default"
-            size="sm"
-            className="rounded-xl bg-foreground text-background font-bold text-xs uppercase tracking-wider hover:scale-105 active:scale-95 transition-all shadow-sm px-8 h-10"
+          <a
+            href="#contact"
+            className="hidden h-9 items-center rounded-full bg-foreground px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-background transition-transform duration-300 hover:scale-[1.03] active:scale-95 sm:inline-flex"
           >
-            Hire Me
-          </Button>
-        </div>
+            Get in touch
+          </a>
 
-        {/* Mobile Sidebar */}
-        <div className="lg:hidden flex items-center">
-          <Sheet>
-            <SheetTrigger asChild>
-              <button className="p-2 text-foreground hover:text-muted-foreground transition-colors">
-                <List size={28} weight="bold" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[85vw] sm:w-[400px] border-l border-border bg-background/90 backdrop-blur-3xl p-0 flex flex-col justify-between">
-              <div>
-                <SheetHeader className="p-8 border-b border-border items-start">
-                  <div className="flex items-center justify-between w-full">
-                    <SheetTitle className="text-foreground font-display font-bold text-2xl tracking-tighter">
-                      MHR.DEV
-                    </SheetTitle>
-                    <ThemeToggle />
-                  </div>
+          {/* Mobile sidebar */}
+          <div className="lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <button
+                  aria-label="Open menu"
+                  className="p-1.5 text-foreground transition-colors hover:text-muted-foreground"
+                >
+                  <List size={24} weight="bold" />
+                </button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="w-[85vw] border-l border-border bg-background/95 p-0 backdrop-blur-xl sm:w-[400px]"
+              >
+                <SheetHeader className="flex flex-row items-center justify-between border-b border-border p-6">
+                  <SheetTitle className="text-lg font-semibold tracking-tight text-foreground">
+                    MHR<span className="text-muted-foreground">.DEV</span>
+                  </SheetTitle>
+                  <ThemeToggle />
                 </SheetHeader>
 
-                <nav className="p-8 flex flex-col gap-6">
+                <nav className="flex flex-col gap-2 p-6">
                   {NavLinks.map((link) => (
                     <SheetClose asChild key={link.name}>
                       <a
                         href={link.href}
-                        className="text-3xl font-display font-bold text-muted-foreground hover:text-foreground hover:pl-4 transition-all duration-300"
+                        className="text-2xl font-medium tracking-tight text-muted-foreground transition-all duration-300 hover:translate-x-1 hover:text-foreground"
                       >
                         {link.name}
                       </a>
                     </SheetClose>
                   ))}
                 </nav>
-              </div>
 
-              <div className="p-8 space-y-12 mb-8">
-                <div className="space-y-4">
-                  <span className="text-[10px] font-sans font-bold text-muted-foreground uppercase tracking-[0.4em]">Connect</span>
-                  <div className="flex gap-4">
-                    {SocialLinks.map((social, i) => (
+                <div className="space-y-4 p-6">
+                  <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                    Connect
+                  </span>
+                  <div className="flex gap-3">
+                    {SocialLinks.map(({ Icon, href, label }) => (
                       <a
-                        key={i}
-                        href={social.href}
-                        className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-all shadow-sm"
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={label}
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
                       >
-                        {social.icon}
+                        <Icon className="h-5 w-5" />
                       </a>
                     ))}
                   </div>
                 </div>
-
-                <Button className="w-full h-16 rounded-2xl bg-foreground text-background font-bold text-lg uppercase tracking-wider shadow-sm border border-border">
-                  Message Me
-                </Button>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </motion.nav>
     </motion.header>

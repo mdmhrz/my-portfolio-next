@@ -1,11 +1,12 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ArrowUpRight } from 'lucide-react';
 import { GithubLogo, LinkedinLogo, FacebookLogo, EnvelopeSimple } from '@phosphor-icons/react';
 import { Terminal } from './Terminal';
+import { CodeCard } from './CodeCard';
 
 // WebGL never ships to the server bundle.
 const Scene = dynamic(() => import('./Scene').then((m) => m.Scene), {
@@ -13,7 +14,7 @@ const Scene = dynamic(() => import('./Scene').then((m) => m.Scene), {
   loading: () => null,
 });
 
-const CHIPS = ['Frontend Dev @ Xgenious', 'SaaS & Commercial Apps', 'Docker · AWS · CI/CD'];
+const CHIPS = ['Frontend Dev @ Xgenious', 'SaaS · CRM · Shopify Apps', 'Docker · AWS · CI/CD'];
 
 const SOCIALS = [
   { Icon: GithubLogo, href: 'https://github.com/mdmhrz', label: 'GitHub' },
@@ -22,31 +23,26 @@ const SOCIALS = [
   { Icon: EnvelopeSimple, href: 'mailto:mdmobarakhossainrazu@gmail.com', label: 'Email' },
 ];
 
-export function Hero() {
+export function Hero({ start, reduced = false }: { start: boolean; reduced?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const cardWrapRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
 
-  const [reduced, setReduced] = useState(false);
-
+  // Entrance — only plays once the loader has signalled `start`.
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-  }, []);
-
-  // Entrance animation.
-  useEffect(() => {
-    if (reduced) return;
+    if (!start || reduced) return;
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-      tl.fromTo(
-        overlayRef.current,
-        { scaleY: 1 },
-        { scaleY: 0, transformOrigin: 'top', duration: 1.4, ease: 'power4.inOut' },
-      ).from('.hero-reveal', { y: 28, opacity: 0, duration: 1, stagger: 0.09 }, '-=0.7');
+      gsap.from('.hero-reveal', {
+        y: 42,
+        autoAlpha: 0,
+        duration: 0.8,
+        stagger: 0.09,
+        ease: 'power3.out',
+        delay: 0.1,
+      });
     }, sectionRef);
     return () => ctx.revert();
-  }, [reduced]);
+  }, [start, reduced]);
 
   // Magnetic CTA.
   useEffect(() => {
@@ -67,12 +63,34 @@ export function Hero() {
     };
   }, [reduced]);
 
+  // 3D tilt on the code card following the cursor.
+  useEffect(() => {
+    if (reduced) return;
+    const el = cardWrapRef.current;
+    const section = sectionRef.current;
+    if (!el || !section) return;
+    const onMove = (e: MouseEvent) => {
+      const r = section.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      gsap.to(el, {
+        rotationY: px * 16,
+        rotationX: -py * 12,
+        transformPerspective: 900,
+        duration: 0.6,
+        ease: 'power2.out',
+      });
+    };
+    section.addEventListener('mousemove', onMove);
+    return () => section.removeEventListener('mousemove', onMove);
+  }, [reduced]);
+
   return (
     <section
       ref={sectionRef}
       className="relative min-h-[100svh] w-full overflow-hidden bg-background"
     >
-      {/* WebGL: calm dust + interactive 3D glass monogram */}
+      {/* WebGL: black & white interactive 3D environment */}
       <Scene reduced={reduced} />
 
       {/* Left-side vignette keeps foreground text legible over the 3D */}
@@ -85,67 +103,70 @@ export function Hero() {
         }}
       />
 
-      {/* Entrance overlay */}
-      <div ref={overlayRef} className="pointer-events-none absolute inset-0 z-50 bg-foreground" />
-
       <div className="container relative z-10 mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-center px-6 pt-24">
-        <div className="max-w-xl">
-          <div className="hero-reveal mb-6">
-            <Terminal />
-          </div>
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+          {/* Left: identity */}
+          <div className="max-w-xl">
+            <div className="hero-reveal mb-6">
+              <Terminal />
+            </div>
 
-          <p className="hero-reveal mb-3 font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-            Mobarak Hossain Razu
-          </p>
+            <p className="hero-reveal mb-3 font-mono text-base uppercase tracking-[0.25em] text-muted-foreground font-semibold">
+              Mobarak Hossain Razu
+            </p>
 
-          <h1 className="hero-reveal text-5xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
-            Full-Stack{' '}
-            <span className="relative inline-block">
-              Developer
-              <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-[var(--constellation-accent)]" />
-            </span>
-          </h1>
+            <h1 className="hero-reveal text-5xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
+              Full-Stack{' '}
+              <span className="relative inline-block">
+                Developer
+                <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-foreground" />
+              </span>
+            </h1>
 
-          <p className="hero-reveal mt-6 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
-            I build production SaaS and full-stack web apps — from Next.js interfaces to Node.js
-            APIs, PostgreSQL, and Docker-on-AWS deployments.
-          </p>
+            <p className="hero-reveal mt-6 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
+              I build production SaaS, CRM, and full-stack web apps — from Next.js interfaces to
+              Node.js &amp; Go APIs, PostgreSQL, and Docker-on-AWS deployments.
+            </p>
 
-          {/* Verifiable chips */}
-          <div className="hero-reveal mt-8 flex flex-col gap-2">
-            {CHIPS.map((c) => (
-              <div key={c} className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-                <span className="h-1 w-1 rounded-full bg-[var(--constellation-accent)]" />
-                {c}
-              </div>
-            ))}
-          </div>
-
-          {/* CTA + socials */}
-          <div className="hero-reveal mt-10 flex items-center gap-6">
-            <a
-              ref={ctaRef}
-              href="#work"
-              className="group inline-flex h-12 items-center gap-2 rounded-full bg-foreground px-7 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
-            >
-              View work
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
-
-            <div className="flex items-center gap-4 text-muted-foreground">
-              {SOCIALS.map(({ Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  target={href.startsWith('http') ? '_blank' : undefined}
-                  rel="noreferrer"
-                  className="transition-colors hover:text-foreground"
-                >
-                  <Icon className="h-[18px] w-[18px]" weight="regular" />
-                </a>
+            <div className="hero-reveal mt-8 flex flex-col gap-2">
+              {CHIPS.map((c) => (
+                <div key={c} className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+                  <span className="h-1 w-1 rounded-full bg-foreground" />
+                  {c}
+                </div>
               ))}
             </div>
+
+            <div className="hero-reveal mt-10 flex items-center gap-6">
+              <a
+                ref={ctaRef}
+                href="#work"
+                className="group inline-flex h-12 items-center gap-2 rounded-full bg-foreground px-7 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+              >
+                View work
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+
+              <div className="flex items-center gap-4 text-muted-foreground">
+                {SOCIALS.map(({ Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel="noreferrer"
+                    className="transition-colors hover:text-foreground"
+                  >
+                    <Icon className="h-[18px] w-[18px]" weight="regular" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right: typing terminal card */}
+          <div ref={cardWrapRef} className="hero-reveal flex justify-center lg:justify-end" style={{ transformStyle: 'preserve-3d' }}>
+            <CodeCard start={start} />
           </div>
         </div>
       </div>

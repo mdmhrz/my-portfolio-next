@@ -161,26 +161,8 @@
   @apply relative overflow-hidden rounded-2xl glass transition-all duration-500 hover:border-primary/30 shadow-sm dark:shadow-none;
 }
 
-@utility text-glow {
-  text-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
-}
-
 @utility premium-gradient {
   background: linear-gradient(135deg, var(--muted) 0%, transparent 100%);
-}
-
-@utility teal-glow {
-  box-shadow: 0 0 15px rgba(20, 184, 166, 0.2);
-}
-
-@utility teal-glow-hover {
-  &:hover {
-    box-shadow: 0 0 25px rgba(20, 184, 166, 0.4);
-  }
-}
-
-@utility text-shadow-glow {
-  text-shadow: 0 0 10px rgba(20, 184, 166, 0.5);
 }
 
 .marquee-track {
@@ -204,4 +186,16 @@
 
 ::-webkit-scrollbar-thumb {
   @apply bg-foreground/10 rounded-full transition-all hover:bg-foreground/20;
+}
+
+/* Lenis smooth-scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
