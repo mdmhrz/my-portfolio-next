@@ -32,7 +32,7 @@ const satoshi = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "MHR.DEV | Mobarak Hossain Razu",
+  title: "Mobarak Hossain | Portfolio",
   description: "Mobarak Hossain Razu — Frontend Developer & full-stack engineer. Next.js, React, Node.js, Go, PostgreSQL, Docker, AWS.",
 };
 
