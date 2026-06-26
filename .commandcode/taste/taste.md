@@ -5,6 +5,9 @@
 # Package Management
 - Use pnpm for package management. Confidence: 0.65
 
+# Favicon / Icon
+- Favicon SVG: Use white logo (#fff) on a dark background (#000) with rounded rect backdrop for browser tab visibility. Confidence: 0.65
+
 # UI Patterns
 - For theme toggles: Use direct on-click toggle instead of dropdown menus. Confidence: 0.70
 

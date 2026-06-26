@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, type CSSProperties, type ElementType, type ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type ElementType, type ReactNode, type ComponentPropsWithoutRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
@@ -33,7 +33,7 @@ export function Reveal({
   blur = false,
   style,
 }: RevealProps) {
-  const Tag = (as || 'div') as ElementType;
+  const Tag = ((as || 'div') as ElementType) as React.ComponentType<ComponentPropsWithoutRef<ElementType>>;
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
