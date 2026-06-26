@@ -209,3 +209,135 @@
 [ 5262350ms] [LOG] [Fast Refresh] done in 410ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
 [ 5262476ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
 [ 5263309ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6282937ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6283323ms] [LOG] [Fast Refresh] done in 410ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6283497ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6284348ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6296235ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6299086ms] [LOG] [Fast Refresh] done in 801ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6299202ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6301650ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6304077ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6304285ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6306905ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6308829ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6309418ms] [LOG] [Fast Refresh] done in 682ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6410011ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6410283ms] [ERROR] ./work/portfilio/my-app/src/components/Navbar.tsx:7:1
+Export useLenis doesn't exist in target module
+   5 | import { List, GithubLogo, LinkedinLogo, FacebookLogo } from "@phosphor-icons/react";
+   6 | import { ThemeToggle } from "@/components/ThemeToggle";
+>  7 | import { useLenis } from "@/components/SmoothScroll";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import {
+   9 |   Sheet,
+  10 |   SheetContent,
+
+The export useLenis was not found in module [project]/work/portfilio/my-app/src/components/SmoothScroll.tsx [app-client] (ecmascript).
+Did you mean to import useLenisRef?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./work/portfilio/my-app/src/components/Navbar.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./work/portfilio/my-app/src/components/Navbar.tsx [Client Component SSR]
+    ./work/portfilio/my-app/src/app/page.tsx [Client Component SSR]
+    ./work/portfilio/my-app/src/app/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:3127
+[ 6410288ms] [ERROR] ./work/portfilio/my-app/src/components/Navbar.tsx:7:1
+Export useLenis doesn't exist in target module
+   5 | import { List, GithubLogo, LinkedinLogo, FacebookLogo } from "@phosphor-icons/react";
+   6 | import { ThemeToggle } from "@/components/ThemeToggle";
+>  7 | import { useLenis } from "@/components/SmoothScroll";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import {
+   9 |   Sheet,
+  10 |   SheetContent,
+
+The export useLenis was not found in module [project]/work/portfilio/my-app/src/components/SmoothScroll.tsx [app-ssr] (ecmascript).
+Did you mean to import useLenisRef?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./work/portfilio/my-app/src/components/Navbar.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Client Component Browser]
+    ./work/portfilio/my-app/src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./work/portfilio/my-app/src/components/Navbar.tsx [Client Component SSR]
+    ./work/portfilio/my-app/src/app/page.tsx [Client Component SSR]
+    ./work/portfilio/my-app/src/app/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:3127
+[ 6413229ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6413579ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6413689ms] [LOG] [Fast Refresh] done in 452ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6413822ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6414108ms] [LOG] [Fast Refresh] done in 386ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6416385ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/:0
+[ 6417588ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6417867ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6418785ms] ReferenceError: useLenis is not defined
+    at Navbar (http://localhost:3000/_next/static/chunks/work_portfilio_my-app_src_dd0c452e._.js:611:19)
+    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:14826:24)
+    at renderWithHooks (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:4651:24)
+    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:6112:21)
+    at beginWork (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:6708:24)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:9562:97)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:9456:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:9440:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:9105:47)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_react-dom_b880f9f6._.js:10230:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/e2981_next_dist_compiled_990ffcc9._.js:2647:64)
+[ 6422000ms] [WARNING] The resource http://localhost:3000/_next/static/chunks/work_portfilio_my-app_src_app_635dfe0d._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/:0
+[ 6509818ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6510350ms] [LOG] [Fast Refresh] done in 634ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6614234ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6615775ms] [LOG] [Fast Refresh] done in 936ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6616061ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6619587ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6620009ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 6622353ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7068740ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7069000ms] [LOG] [Fast Refresh] done in 314ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7076057ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7076281ms] [LOG] [Fast Refresh] done in 297ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7207670ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7208852ms] [LOG] [Fast Refresh] done in 838ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7406293ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7407795ms] [LOG] [Fast Refresh] done in 1173ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7411494ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7411608ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7412663ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7412694ms] [LOG] [Fast Refresh] done in 148ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7415563ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7532564ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7533354ms] [LOG] [Fast Refresh] done in 797ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7573501ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7573723ms] [LOG] [Fast Refresh] done in 290ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7598009ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297
+[ 7599191ms] [LOG] [Fast Refresh] done in 1026ms @ http://localhost:3000/_next/static/chunks/e2981_next_dist_2a4927b8._.js:2297

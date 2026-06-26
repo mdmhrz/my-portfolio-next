@@ -1,11 +1,18 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, createContext, useContext } from 'react';
+import type { ReactNode, RefObject } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-export function SmoothScroll({ children }: { children: React.ReactNode }) {
+const LenisContext = createContext<RefObject<Lenis | null> | null>(null);
+
+export function useLenisRef() {
+  return useContext(LenisContext);
+}
+
+export function SmoothScroll({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
   const rafIdRef = useRef<number | null>(null);
 
@@ -29,14 +36,15 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       lenis.raf(time);
       rafIdRef.current = requestAnimationFrame(raf);
     }
-    
+
     rafIdRef.current = requestAnimationFrame(raf);
 
     return () => {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
 
-  return <>{children}</>;
+  return <LenisContext.Provider value={lenisRef}>{children}</LenisContext.Provider>;
 }

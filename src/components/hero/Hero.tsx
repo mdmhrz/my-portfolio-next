@@ -87,6 +87,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
 
   return (
     <section
+      id="home"
       ref={sectionRef}
       className="relative min-h-[100svh] w-full overflow-hidden bg-background"
     >
