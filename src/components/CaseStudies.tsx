@@ -29,7 +29,7 @@ const featured = [
 
 export function CaseStudies() {
   return (
-    <section id="work" className="container mx-auto max-w-6xl px-6 py-28 md:py-40">
+    <section id="work" className="container mx-auto max-w-7xl px-6 py-28 md:py-40">
       <Reveal className="mb-14 flex flex-col gap-4">
         <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
           Selected work

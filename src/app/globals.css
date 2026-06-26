@@ -151,6 +151,27 @@
   }
 }
 
+@utility container {
+  margin-inline: auto;
+  width: 100%;
+  
+  @variant sm {
+    max-width: 640px;
+  }
+  @variant md {
+    max-width: 768px;
+  }
+  @variant lg {
+    max-width: 1024px;
+  }
+  @variant xl {
+    max-width: 1280px;
+  }
+  @variant 2xl {
+    max-width: 1280px;
+  }
+}
+
 @utility glass {
   background-color: color-mix(in oklch, var(--card) 80%, transparent); /* transparent card color */
   backdrop-filter: blur(16px);

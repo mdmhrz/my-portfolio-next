@@ -110,7 +110,7 @@ export function Experience() {
 
   return (
     <section id="experience" className="relative overflow-hidden border-y border-border bg-background px-6 py-28 md:py-40">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         <Reveal className="mb-16 flex flex-col gap-4">
           <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
             Career record
@@ -219,7 +219,7 @@ export function Experience() {
 
                   {/* Hero */}
                   <div className="px-6 pb-12 pt-32 md:px-10 md:pt-40">
-                    <div className="mx-auto max-w-6xl">
+                    <div className="mx-auto max-w-7xl">
                       <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
                         {open.category}
                       </span>

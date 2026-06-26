@@ -63,7 +63,7 @@ export function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden border-t border-border bg-background px-6 py-28 md:py-40">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left: info */}
           <div>

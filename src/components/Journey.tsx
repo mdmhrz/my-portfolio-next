@@ -53,7 +53,7 @@ const journey = [
 export function Journey() {
   return (
     <section id="journey" className="relative border-y border-border bg-background px-6 py-28 md:py-40">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Left: title (sticky on desktop) */}
           <div className="lg:col-span-4">

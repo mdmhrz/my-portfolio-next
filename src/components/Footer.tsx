@@ -55,7 +55,7 @@ export function Footer() {
       {/* Top hairline accent */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
 
-      <div className="container mx-auto max-w-6xl px-6">
+      <div className="container mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 gap-12 py-20 md:grid-cols-12 md:gap-10">
           {/* Brand */}
           <div className="space-y-5 md:col-span-5">

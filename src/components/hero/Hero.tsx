@@ -23,6 +23,18 @@ const SOCIALS = [
   { Icon: EnvelopeSimple, href: 'mailto:mdmobarakhossainrazu@gmail.com', label: 'Email' },
 ];
 
+const splitText = (text: string) => {
+  return text.split('').map((char, index) => (
+    <span
+      key={index}
+      className="inline-block hero-char"
+      style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
+    >
+      {char === ' ' ? '\u00A0' : char}
+    </span>
+  ));
+};
+
 export function Hero({ start, reduced = false }: { start: boolean; reduced?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const cardWrapRef = useRef<HTMLDivElement>(null);
@@ -32,13 +44,50 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
   useEffect(() => {
     if (!start || reduced) return;
     const ctx = gsap.context(() => {
-      gsap.from('.hero-reveal', {
+      // General hero-reveal elements (excluding the heading characters)
+      gsap.from('.hero-reveal:not(.hero-reveal-heading)', {
         y: 42,
         autoAlpha: 0,
         duration: 0.8,
         stagger: 0.09,
         ease: 'power3.out',
         delay: 0.1,
+      });
+
+      // Set initial states for underline
+      gsap.set('.hero-underline', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+      });
+
+      // Animate characters (premium coming-from-far and joining-together effect)
+      gsap.from('.hero-char', {
+        x: (index, target) => {
+          const word = (target as HTMLElement).closest('.word-wrapper');
+          if (!word) return 0;
+          const chars = Array.from(word.querySelectorAll('.hero-char'));
+          const idx = chars.indexOf(target as HTMLElement);
+          const mid = (chars.length - 1) / 2;
+          return (idx - mid) * 24; // Start spread out horizontally
+        },
+        scale: 2.5,
+        opacity: 0,
+        filter: 'blur(8px)',
+        duration: 1.4,
+        stagger: {
+          each: 0.035,
+          from: 'center',
+        },
+        ease: 'power4.out',
+        delay: 0.2,
+      });
+
+      // Animate underline
+      gsap.to('.hero-underline', {
+        scaleX: 1,
+        duration: 0.8,
+        ease: 'power3.out',
+        delay: 1.2,
       });
     }, sectionRef);
     return () => ctx.revert();
@@ -104,7 +153,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
         }}
       />
 
-      <div className="container relative z-10 mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-center px-6 pt-24">
+      <div className="container relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center px-6 pt-24">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           {/* Left: identity */}
           <div className="max-w-xl">
@@ -116,11 +165,13 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
               Mobarak Hossain Razu
             </p>
 
-            <h1 className="hero-reveal text-5xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
-              Full-Stack{' '}
-              <span className="relative inline-block">
-                Developer
-                <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-foreground" />
+            <h1 className="hero-reveal hero-reveal-heading text-5xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
+              <span className="word-wrapper inline-block">
+                {splitText("Full-Stack")}
+              </span>{' '}
+              <span className="word-wrapper relative inline-block">
+                {splitText("Developer")}
+                <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-foreground hero-underline" />
               </span>
             </h1>
 

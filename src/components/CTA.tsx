@@ -6,7 +6,7 @@ import { Reveal } from "@/components/Reveal";
 export function CTA() {
   return (
     <section className="relative overflow-hidden bg-background px-6 py-20 md:py-28">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         <Reveal y={40}>
           <div className="relative overflow-hidden rounded-3xl bg-foreground px-8 py-20 text-center md:px-12 md:py-28">
             <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center">

@@ -87,7 +87,7 @@ export function Navbar() {
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
       className="fixed inset-x-0 top-0 z-50 px-4 py-4 pointer-events-none md:px-6"
     >
-      <motion.nav className="pointer-events-auto mx-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-border bg-background/70 px-5 py-3 backdrop-blur-xl transition-colors duration-300 md:px-7">
+      <motion.nav className="pointer-events-auto mx-auto flex w-full max-w-7xl items-center justify-between rounded-full border border-border bg-background/70 px-5 py-3 backdrop-blur-xl transition-colors duration-300 md:px-7">
         <a
           href="#home"
           onClick={(e) => handleNavClick(e, "#home")}

@@ -6,7 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/hero/Hero";
 import { Journey } from "@/components/Journey";
 import { Experience } from "@/components/Experience";
-import { AIWorkflow } from "@/components/AIWorkflow";
+import { Tools } from "@/components/Tools";
 import { CaseStudies } from "@/components/CaseStudies";
 import { CTA } from "@/components/CTA";
 import { Contact } from "@/components/Contact";
@@ -31,7 +31,7 @@ export default function Home() {
         <Hero start={introDone} reduced={reduced} />
         <Journey />
         <Experience />
-        <AIWorkflow />
+        <Tools />
         <CaseStudies />
         <CTA />
         <Contact />
