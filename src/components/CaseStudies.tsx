@@ -1,37 +1,22 @@
 'use client';
 
 import Image from "next/image";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import { useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
-
-const featured = [
-  {
-    title: "NexDrop",
-    subtitle: "Parcel Delivery Management Platform",
-    desc: "Full-stack parcel delivery platform with dedicated dashboards for customers, riders, admins & super-admins. Real-time tracking, rider earnings, and Stripe + SSLCommerz payments.",
-    tags: ["Full-stack", "Real-time", "Payments"],
-    tech: ["Next.js", "TypeScript", "Node.js", "Express.js", "PostgreSQL", "Prisma", "Docker", "AWS EC2"],
-    live: "https://nexdrop.mhrazu.com",
-    image: "/nex-drop.png",
-    span: "lg:col-span-7",
-  },
-  {
-    title: "Taskip",
-    subtitle: "SaaS Client Portal & CRM",
-    desc: "Multi-tenant SaaS for agencies — CRM, project management, ticketing and client collaboration in one workspace.",
-    tags: ["SaaS", "CRM", "Multi-tenant"],
-    tech: ["Next.js", "TypeScript", "Zustand", "ShadCN UI"],
-    live: "https://taskip.app",
-    image: "/projects/taskip.png",
-    span: "lg:col-span-5",
-  },
-];
+import { projects, ProjectDetails } from "@/data/projects";
+import { ProjectDetailsModal } from "@/components/ProjectDetailsModal";
 
 export function CaseStudies() {
+  const [selectedProject, setSelectedProject] = useState<ProjectDetails | null>(null);
+
+  // Focus on NexDrop and Taskip as our highly featured case studies
+  const featured = projects.filter(p => p.id === "nexdrop" || p.id === "taskip");
+
   return (
     <section id="work" className="container mx-auto max-w-7xl px-6 py-28 md:py-40">
       <Reveal className="mb-14 flex flex-col gap-4">
-        <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+        <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground font-semibold">
           Selected work
         </span>
         <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -39,87 +24,103 @@ export function CaseStudies() {
         </h2>
       </Reveal>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        {featured.map((p, i) => (
-          <Reveal key={p.title} y={40} delay={i * 0.08} className={p.span}>
-            <a
-              href={p.live}
-              target="_blank"
-              rel="noreferrer"
-              className="group relative flex h-[460px] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-500 hover:border-foreground/25 hover:shadow-md md:h-[560px]"
-            >
-              {/* App window frame */}
-              <div className="relative shrink-0 overflow-hidden border-b border-border bg-muted/30">
-                {/* Window chrome */}
-                <div className="flex items-center gap-2 px-4 py-2.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
-                  <span className="ml-2 truncate text-[10px] font-medium tracking-tight text-muted-foreground/70">
-                    {p.live.replace(/^https?:\/\//, "")}
-                  </span>
-                </div>
-                {/* Screenshot */}
-                <div className="relative h-[200px] w-full overflow-hidden md:h-[240px]">
-                  <Image
-                    src={p.image}
-                    alt={p.title}
-                    fill
-                    className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/60 via-transparent to-transparent" />
-                </div>
-              </div>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        {featured.map((p, i) => {
+          const isNexDrop = p.id === "nexdrop";
+          const cardSpan = isNexDrop ? "lg:col-span-7" : "lg:col-span-5";
 
-              {/* Content panel */}
-              <div className="flex flex-1 flex-col p-6 md:p-7">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="mb-2 flex flex-wrap gap-1.5">
-                      {p.tags.map((t) => (
-                        <span
-                          key={t}
-                          className="rounded-full border border-border bg-background px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-[0.14em] text-muted-foreground"
-                        >
-                          {t}
+          return (
+            <Reveal key={p.title} y={40} delay={i * 0.08} className={cardSpan}>
+              <div
+                onClick={() => setSelectedProject(p)}
+                className="group relative flex h-[480px] flex-col overflow-hidden rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 shadow-sm transition-all duration-500 hover:border-foreground/25 hover:shadow-md md:h-[580px] cursor-pointer"
+              >
+                {/* App window frame mockup */}
+                <div className="relative shrink-0 overflow-hidden border-b border-neutral-200 dark:border-zinc-700 bg-neutral-100/30 dark:bg-zinc-800/50">
+                  {/* Window chrome header */}
+                  <div className="flex items-center gap-2 px-5 py-3">
+                    <span className="h-2 w-2 rounded-full bg-foreground/10" />
+                    <span className="h-2 w-2 rounded-full bg-foreground/10" />
+                    <span className="h-2 w-2 rounded-full bg-foreground/10" />
+                    <span className="ml-3 truncate font-mono text-[9px] text-muted-foreground/60">
+                      {p.live.replace(/^https?:\/\//, "")}
+                    </span>
+                  </div>
+                  {/* Screenshot Container */}
+                  <div className="relative h-[220px] w-full overflow-hidden md:h-[260px]">
+                    <Image
+                      src={p.image}
+                      alt={p.title}
+                      fill
+                      className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                  </div>
+                </div>
+
+                {/* Content description panel */}
+                <div className="flex flex-1 flex-col p-7 md:p-8">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <div className="mb-2.5 flex flex-wrap gap-1.5">
+                        {/* We use tags for high-level highlights */}
+                        {p.category.split("·").map((t) => (
+                          <span
+                            key={t}
+                            className="rounded-full border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 px-2.5 py-0.5 text-[9px] font-mono uppercase tracking-wider text-muted-foreground"
+                          >
+                            {t.trim()}
+                          </span>
+                        ))}
+                      </div>
+                      <h3 className="text-2xl font-medium tracking-tight text-foreground md:text-3xl">
+                        {p.title}
+                      </h3>
+                      <p className="mt-1 text-xs font-mono text-muted-foreground">{p.subtitle}</p>
+                    </div>
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-neutral-200 dark:border-zinc-700 text-foreground transition-all duration-500 group-hover:-translate-y-0.5 group-hover:border-indigo-600 dark:group-hover:border-indigo-500 group-hover:bg-indigo-600 dark:group-hover:bg-indigo-500 group-hover:text-white">
+                      <ArrowUpRight className="h-4 w-4" />
+                    </span>
+                  </div>
+
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+                    {p.desc}
+                  </p>
+
+                  {/* Primary Tech Badges footer */}
+                  <div className="mt-auto pt-6">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 border-t border-border/80 pt-4">
+                      {p.tech.slice(0, 6).map((t, idx) => (
+                        <span key={t} className="flex items-center gap-2">
+                          <span className="font-mono text-[10px] text-muted-foreground/80">
+                            {t}
+                          </span>
+                          {idx < Math.min(p.tech.length, 6) - 1 && (
+                            <span className="h-1 w-1 rounded-full bg-indigo-500/80" />
+                          )}
                         </span>
                       ))}
-                    </div>
-                    <h3 className="text-2xl font-medium tracking-tight text-foreground md:text-3xl">
-                      {p.title}
-                    </h3>
-                    <p className="mt-0.5 text-sm font-medium text-foreground/60">{p.subtitle}</p>
-                  </div>
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-all duration-500 group-hover:-translate-y-0.5 group-hover:border-foreground/40 group-hover:bg-foreground group-hover:text-background">
-                    <ArrowUpRight className="h-4 w-4" />
-                  </span>
-                </div>
-
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {p.desc}
-                </p>
-
-                {/* Tech stack */}
-                <div className="mt-auto pt-5">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 border-t border-border pt-4">
-                    {p.tech.map((t, idx) => (
-                      <span key={t} className="flex items-center gap-2">
-                        <span className="text-[11px] font-medium tracking-tight text-muted-foreground/80">
-                          {t}
+                      {p.tech.length > 6 && (
+                        <span className="font-mono text-[9px] text-muted-foreground/40">
+                          +{p.tech.length - 6} more
                         </span>
-                        {idx < p.tech.length - 1 && (
-                          <span className="h-1 w-1 rounded-full bg-muted-foreground/25" />
-                        )}
-                      </span>
-                    ))}
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </a>
-          </Reveal>
-        ))}
+            </Reveal>
+          );
+        })}
       </div>
+
+      {/* Project Detail Modal */}
+      <ProjectDetailsModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+        onNavigate={setSelectedProject}
+      />
     </section>
   );
 }

@@ -171,7 +171,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
               </span>{' '}
               <span className="word-wrapper relative inline-block">
                 {splitText("Developer")}
-                <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-foreground hero-underline" />
+                <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-indigo-600 dark:bg-indigo-500 hero-underline" />
               </span>
             </h1>
 
@@ -183,7 +183,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
             <div className="hero-reveal mt-8 flex flex-col gap-2">
               {CHIPS.map((c) => (
                 <div key={c} className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-                  <span className="h-1 w-1 rounded-full bg-foreground" />
+                  <span className="h-1 w-1 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                   {c}
                 </div>
               ))}
@@ -193,7 +193,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
               <a
                 ref={ctaRef}
                 href="#work"
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-foreground px-7 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+                className="group inline-flex h-12 items-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-7 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(99,102,241,0.25)]"
               >
                 View work
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -227,7 +227,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
       <div className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-4 opacity-70 md:flex">
         <span className="text-xs text-muted-foreground">Scroll</span>
         <div className="flex h-8 w-5 items-start justify-center rounded-full border border-muted-foreground p-1">
-          <div className="h-1.5 w-1 animate-bounce rounded-full bg-muted-foreground" />
+          <div className="h-1.5 w-1 animate-bounce rounded-full bg-indigo-600 dark:bg-indigo-500" />
         </div>
       </div>
     </section>

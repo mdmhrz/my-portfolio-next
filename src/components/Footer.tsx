@@ -53,7 +53,7 @@ export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-border bg-background">
       {/* Top hairline accent */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent" />
 
       <div className="container mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 gap-12 py-20 md:grid-cols-12 md:gap-10">
@@ -74,7 +74,7 @@ export function Footer() {
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel="noreferrer"
                   aria-label={name}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-300 hover:border-foreground/30 hover:bg-card hover:text-foreground"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-300 hover:border-indigo-600/40 dark:hover:border-indigo-400/40 hover:bg-indigo-600/5 dark:hover:bg-indigo-400/5 hover:text-indigo-600 dark:hover:text-indigo-400"
                 >
                   <Icon className="h-[18px] w-[18px]" weight="regular" />
                 </a>
@@ -95,7 +95,7 @@ export function Footer() {
                     onClick={(e) => handleNavClick(e, item.href)}
                     className="group flex items-center gap-2 text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground"
                   >
-                    <span className="h-1 w-1 rounded-full bg-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <span className="h-1 w-1 rounded-full bg-indigo-600 dark:bg-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                     {item.label}
                   </a>
                 </li>
@@ -111,8 +111,8 @@ export function Footer() {
             <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
               <div className="flex items-center gap-3">
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-foreground opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-foreground" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-600 dark:bg-indigo-500 opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                 </span>
                 <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-foreground">
                   Available for hire
@@ -125,7 +125,7 @@ export function Footer() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="mt-4 w-full rounded-full border-border text-foreground hover:bg-foreground/5"
+                  className="mt-4 w-full rounded-full border-indigo-600/20 dark:border-indigo-400/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600/5 dark:hover:bg-indigo-400/5 hover:border-indigo-600/40 dark:hover:border-indigo-400/40"
                 >
                   Get in touch
                   <ArrowUpRight weight="bold" className="ml-1 h-3 w-3" />
@@ -156,7 +156,7 @@ export function Footer() {
             className="group flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
           >
             Back to top
-            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border transition-colors duration-300 group-hover:border-foreground/30">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border transition-colors duration-300 group-hover:border-indigo-600 dark:group-hover:border-indigo-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
               <ArrowUp weight="bold" className="h-3 w-3" />
             </span>
           </a>

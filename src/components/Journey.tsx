@@ -52,7 +52,7 @@ const journey = [
 
 export function Journey() {
   return (
-    <section id="journey" className="relative border-y border-border bg-background px-6 py-28 md:py-40">
+    <section id="journey" className="relative border-y border-neutral-200 dark:border-zinc-800/80 bg-background px-6 py-28 md:py-40">
       <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Left: title (sticky on desktop) */}
@@ -80,7 +80,7 @@ export function Journey() {
                 {journey.map((item) => (
                   <div key={item.year} className="flex items-center gap-3">
                     <span
-                      className={`h-1.5 w-1.5 rounded-full ${item.highlight ? "bg-foreground" : "bg-muted-foreground/40"}`}
+                      className={`h-1.5 w-1.5 rounded-full ${item.highlight ? "bg-indigo-600 dark:bg-indigo-500" : "bg-muted-foreground/40"}`}
                     />
                     <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
                       {item.year}
@@ -102,10 +102,10 @@ export function Journey() {
                   className="lg:sticky lg:ml-auto lg:w-[94%] lg:pb-8"
                   style={{ top: `${128 + idx * 36}px` }}
                 >
-                  <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-7 shadow-sm transition-colors duration-500 hover:border-foreground/20 md:p-10">
+                  <div className="group relative overflow-hidden rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 p-7 shadow-sm transition-colors duration-500 hover:border-foreground/20 md:p-10">
                     <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                       <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border bg-foreground/[0.03] text-foreground transition-transform duration-500 group-hover:scale-105">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-neutral-200 dark:border-zinc-850 bg-neutral-100 dark:bg-zinc-950 text-indigo-600 dark:text-indigo-400 transition-transform duration-500 group-hover:scale-105">
                           <Icon className="h-5 w-5" />
                         </div>
                         <div>
@@ -131,7 +131,7 @@ export function Journey() {
                         {item.tags.map((t) => (
                           <span
                             key={t}
-                            className="rounded-full border border-border bg-foreground/[0.03] px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-foreground"
+                            className="rounded-full border border-indigo-600/10 dark:border-indigo-400/15 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] px-3 py-1 text-[10px] font-mono tracking-wider text-indigo-600 dark:text-indigo-400"
                           >
                             {t}
                           </span>

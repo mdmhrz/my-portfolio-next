@@ -106,7 +106,7 @@ export function Navbar() {
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className={`text-[11px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ${
-                  isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                  isActive ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {link.name}
@@ -120,7 +120,7 @@ export function Navbar() {
           <a
             href="#contact"
             onClick={(e) => handleNavClick(e, "#contact")}
-            className="hidden h-9 items-center rounded-full bg-foreground px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-background transition-transform duration-300 hover:scale-[1.03] active:scale-95 sm:inline-flex"
+            className="hidden h-9 items-center rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:scale-[1.03] active:scale-95 sm:inline-flex"
           >
             Get in touch
           </a>
@@ -159,7 +159,7 @@ export function Navbar() {
                           onClick={(e) => handleNavClick(e, link.href)}
                           className={`text-2xl font-medium tracking-tight transition-all duration-300 hover:translate-x-1 ${
                             isActive
-                              ? "text-foreground"
+                              ? "text-indigo-600 dark:text-indigo-400"
                               : "text-muted-foreground hover:text-foreground"
                           }`}
                         >

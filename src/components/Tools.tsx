@@ -561,13 +561,13 @@ export function Tools() {
                   <div className="space-y-4">
                     {/* Category Label */}
                     <div className="flex items-center gap-3">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 text-muted-foreground">
                         <Icon className="h-3.5 w-3.5" />
                       </div>
                       <h3 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold">
                         {g.label}
                       </h3>
-                      <span className="h-px flex-1 bg-border/40" />
+                      <span className="h-px flex-1 bg-neutral-200 dark:bg-zinc-700/40" />
                     </div>
 
                     {/* Desc */}
@@ -586,8 +586,8 @@ export function Tools() {
                             onMouseLeave={handleMouseLeave}
                             className={`group/tag flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs transition-all duration-300 ${
                               isHovered
-                                ? "border-foreground bg-foreground/[0.05] text-foreground font-medium shadow-sm"
-                                : "border-border bg-foreground/[0.01] text-muted-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] hover:text-foreground"
+                                ? "border-indigo-600/40 dark:border-indigo-400/40 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] text-indigo-600 dark:text-indigo-400 font-medium shadow-sm"
+                                : "border-neutral-200 dark:border-zinc-700 bg-foreground/[0.01] text-muted-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] hover:text-foreground"
                             }`}
                           >
                             <span>{it.name}</span>
@@ -615,10 +615,10 @@ export function Tools() {
             <div className="sticky top-28 space-y-6">
               <Reveal y={30} delay={0.1}>
                 {/* Mock IDE Window */}
-                <div className="relative overflow-hidden rounded-2xl border border-border bg-[#0c0c0e]/95 shadow-2xl backdrop-blur-xl transition-all duration-500 hover:border-foreground/15 dark:bg-[#08080a]/95">
+                <div className="relative overflow-hidden rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/95 shadow-2xl backdrop-blur-xl transition-all duration-500 hover:border-foreground/15">
                   
                   {/* macOS Chrome Header */}
-                  <div className="flex items-center justify-between border-b border-border/40 bg-zinc-950/40 px-5 py-3.5">
+                  <div className="flex items-center justify-between border-b border-neutral-200 dark:border-zinc-700 bg-neutral-100/50 dark:bg-zinc-950/40 px-5 py-3.5">
                     {/* Window Controls */}
                     <div className="flex items-center gap-2">
                       <span className="h-3 w-3 rounded-full bg-[#ff5f56]/80" />
@@ -628,7 +628,7 @@ export function Tools() {
 
                     {/* Window Title */}
                     <div className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/80 uppercase tracking-widest">
-                      <FileCode2 className="h-3.5 w-3.5 text-blue-400" />
+                      <FileCode2 className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
                       <span className={`transition-all duration-200 ${isFading ? 'opacity-0 -translate-x-1.5' : 'opacity-100 translate-x-0'}`}>
                         {activeSnippet.filename}
                       </span>
@@ -641,22 +641,22 @@ export function Tools() {
                   </div>
 
                   {/* Code Editor Tab Bar */}
-                  <div className="flex border-b border-border/20 bg-zinc-950/20 px-4">
-                    <div className="flex items-center gap-2 border-r border-border/40 border-t border-t-foreground/30 bg-[#0c0c0e] px-4 py-2 font-mono text-[10px] text-foreground">
-                      <FileCode2 className="h-3 w-3 text-blue-400" />
+                  <div className="flex border-b border-neutral-200/50 dark:border-zinc-700/40 bg-neutral-100/30 dark:bg-zinc-950/20 px-4">
+                    <div className="flex items-center gap-2 border-r border-neutral-200/50 dark:border-zinc-700/40 border-t border-t-foreground/30 bg-white dark:bg-[#0c0c0e] px-4 py-2 font-mono text-[10px] text-foreground">
+                      <FileCode2 className="h-3 w-3 text-indigo-600 dark:text-indigo-400" />
                       <span className={`transition-all duration-200 ${isFading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'}`}>
                         {activeSnippet.filename}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 px-4 py-2 font-mono text-[10px] text-muted-foreground/40 hover:text-muted-foreground/75 cursor-pointer">
-                      <TerminalSquare className="h-3 w-3" />
-                      <span>terminal.sh</span>
-                    </div>
                   </div>
 
-                  {/* Code Editor Workspace */}
-                  <div className={`overflow-x-auto p-6 font-mono text-xs leading-relaxed text-zinc-300 min-h-[220px] transition-all duration-200 ${isFading ? 'opacity-0 translate-y-1.5' : 'opacity-100 translate-y-0'}`}>
-                    <table className="w-full border-collapse">
+                  {/* Code Workspace Editor Area */}
+                  <div className="relative overflow-x-auto bg-white dark:bg-[#0c0c0e]/95 p-6 min-h-[280px]">
+                    <div className="absolute top-4 right-5 flex items-center gap-1.5 font-mono text-[9px] text-muted-foreground/35 select-none">
+                      <TerminalSquare className="h-3 w-3" /> EDITOR ACTIVE
+                    </div>
+                    
+                    <table className="border-spacing-0 font-mono text-xs leading-normal text-muted-foreground select-text w-full">
                       <tbody>
                         {activeSnippet.lines.map((line, idx) => (
                           <tr key={idx} className="group/line hover:bg-foreground/[0.02]">
@@ -679,7 +679,7 @@ export function Tools() {
                   </div>
 
                   {/* Integrated Mock Terminal */}
-                  <div className="border-t border-border/40 bg-zinc-950/80 px-6 py-4 font-mono text-[11px] text-zinc-400 min-h-[90px]">
+                  <div className="border-t border-neutral-200 dark:border-zinc-700 bg-neutral-50/90 dark:bg-zinc-900/80 px-6 py-4 font-mono text-[11px] text-zinc-400 min-h-[90px]">
                     <div className="flex items-center gap-2 text-muted-foreground/60 mb-2">
                       <Terminal className="h-3.5 w-3.5" />
                       <span>INTEGRATED TERMINAL</span>

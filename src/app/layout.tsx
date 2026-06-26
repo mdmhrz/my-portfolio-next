@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { Toaster } from "@/components/ui/sonner";
 
 const satoshi = localFont({
   src: [
@@ -48,6 +49,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <SmoothScroll>{children}</SmoothScroll>
+          <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>
     </html>
