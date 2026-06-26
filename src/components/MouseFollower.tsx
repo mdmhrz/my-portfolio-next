@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion, useSpring, useMotionValue } from "motion/react";
 
 export function MouseFollower() {
@@ -33,7 +33,7 @@ export function MouseFollower() {
       
       {/* Magnetic Cursor Ring */}
       <motion.div
-        className="fixed top-0 left-0 w-10 h-10 border border-primary/40 rounded-full pointer-events-none z-[9999] hidden md:block"
+        className="fixed top-0 left-0 w-10 h-10 rounded-full border border-primary/40 pointer-events-none z-[9999] hidden md:block"
         style={{
           x: springX,
           y: springY,
@@ -41,7 +41,7 @@ export function MouseFollower() {
           translateY: "-50%",
         }}
       >
-        <div className="absolute inset-0 bg-primary/5 blur-sm rounded-full" />
+        <div className="absolute inset-0 bg-primary/5 blur-sm" />
       </motion.div>
     </>
   );

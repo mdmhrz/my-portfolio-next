@@ -1,16 +1,18 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "motion/react";
 import { Badge } from "@/components/ui/badge";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Briefcase,
   MapPin,
   Lightning,
   X,
   Globe,
-  Cpu,
   Users,
   ShieldCheck,
   Browser,
@@ -39,6 +41,7 @@ interface ProfProject {
   role: string;
   live: string;
   accent: string;
+  image: string;
 }
 
 const profProjects: ProfProject[] = [
@@ -65,7 +68,8 @@ const profProjects: ProfProject[] = [
     ],
     role: "Frontend Developer",
     live: "https://taskip.app",
-    accent: "#14b8a6"
+    accent: "#14b8a6",
+    image: "/projects/taskip.png"
   },
   {
     id: "reportgenix",
@@ -89,7 +93,8 @@ const profProjects: ProfProject[] = [
     ],
     role: "Frontend Developer",
     live: "https://reportgenix.com/",
-    accent: "#8b5cf6"
+    accent: "#8b5cf6",
+    image: "/projects/reportgenix.png"
   },
   {
     id: "xilancer",
@@ -113,16 +118,58 @@ const profProjects: ProfProject[] = [
     ],
     role: "Frontend Developer",
     live: "https://xilancer.xgenious.com/",
-    accent: "#f59e0b"
+    accent: "#f59e0b",
+    image: "/projects/xilancer.png"
   }
 ];
 
 export function Experience() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    setMounted(true);
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Initial load animations
+    const ctx = gsap.context(() => {
+      // Title reveal
+      gsap.fromTo(titleRef.current,
+        { opacity: 0, y: 50 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 1, 
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 80%",
+          }
+        }
+      );
+
+      // Stagger cards reveal
+      cardsRef.current.forEach((card) => {
+        if (!card) return;
+        gsap.fromTo(card,
+          { opacity: 0, y: 100, rotateX: 10 },
+          {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            duration: 1.2,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+            }
+          }
+        );
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   useEffect(() => {
@@ -139,41 +186,36 @@ export function Experience() {
   const selectedProject = profProjects.find(p => p.id === selectedProjectId);
 
   return (
-    <section id="experience" className="py-40 relative bg-background overflow-hidden border-y border-border">
+    <section ref={containerRef} id="experience" className="py-40 relative bg-background overflow-hidden border-y border-border">
       <div className="container max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+        <div
+          ref={titleRef}
           className="mb-24 flex flex-col items-start gap-4"
         >
-          <span className="text-primary text-xs font-bold uppercase tracking-[0.4em] ml-1">The Career Record</span>
-          <h2 className="text-5xl md:text-7xl font-bold text-foreground tracking-tighter leading-tight">
-            Professional <span className="text-primary">Tenure</span>
+          <span className="text-foreground/50 text-xs font-bold uppercase tracking-[0.4em] ml-1">The Career Record</span>
+          <h2 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter leading-tight uppercase">
+            Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/50">Tenure</span>
           </h2>
-        </motion.div>
+        </div>
 
         {/* Company Node: XGENIOUS */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass-card mb-20 p-8 md:p-12 bg-muted border-primary/20 backdrop-blur-3xl overflow-hidden relative group"
+        <div
+          ref={el => { if (el) cardsRef.current[0] = el; }}
+          className="glass-card mb-20 p-8 md:p-12 bg-card border-border overflow-hidden relative group shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none"
         >
           <div className="absolute top-0 right-0 p-8 flex flex-col items-end gap-2 opacity-50">
-            <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-widest uppercase"><MapPin size={14} /> Dhaka, BD</div>
+            <div className="flex items-center gap-2 text-foreground font-bold text-sm tracking-widest uppercase"><MapPin size={14} /> Dhaka, BD</div>
             <div className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.4em]">Active Since 2024</div>
           </div>
 
           <div className="space-y-8 relative z-10">
             <div className="flex items-center gap-6">
-              <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                <Briefcase className="text-primary w-10 h-10" />
+              <div className="w-20 h-20 rounded-2xl bg-foreground/5 border border-border flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                <Briefcase className="text-foreground w-10 h-10" />
               </div>
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-none mb-3">XGENIOUS</h3>
-                <div className="flex items-center gap-2 text-primary/60 font-bold text-[10px] uppercase tracking-[0.3em]">
+                <div className="flex items-center gap-2 text-muted-foreground font-bold text-[10px] uppercase tracking-[0.3em]">
                   <Lightning size={16} weight="duotone" /> Senior Frontend Developer
                 </div>
               </div>
@@ -185,18 +227,18 @@ export function Experience() {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                <div className="flex gap-4 p-4 rounded-xl bg-muted border border-border">
-                  <CheckCircle size={20} className="text-primary shrink-0" />
+                <div className="flex gap-4 p-4 rounded-xl bg-card border border-border">
+                  <CheckCircle size={20} className="text-foreground shrink-0" />
                   <span className="text-sm text-muted-foreground">Architected 30+ CRM modules across integrated SaaS ecosystems.</span>
                 </div>
-                <div className="flex gap-4 p-4 rounded-xl bg-muted border border-border">
-                  <CheckCircle size={20} className="text-primary shrink-0" />
+                <div className="flex gap-4 p-4 rounded-xl bg-card border border-border">
+                  <CheckCircle size={20} className="text-foreground shrink-0" />
                   <span className="text-sm text-muted-foreground">Optimized build performance and frontend latency for global users.</span>
                 </div>
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Work Projects Inventory */}
         <div className="space-y-10">
@@ -208,43 +250,52 @@ export function Experience() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {profProjects.map((p, idx) => (
-              <motion.div
+              <div
                 key={p.id}
+                ref={el => { if (el) cardsRef.current[idx + 1] = el; }}
                 onClick={() => setSelectedProjectId(p.id)}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className="group relative h-[450px] rounded-[2.5rem] overflow-hidden glass-card border border-border hover:border-primary/40 transition-all cursor-pointer"
+                className="group relative h-[450px] rounded-[2.5rem] overflow-hidden glass-card border-border hover:border-foreground/20 transition-all cursor-pointer bg-card shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none"
               >
-                {/* Technical Abstract Pattern (No humans) */}
-                <div className="absolute inset-0 bg-gradient-to-br from-muted to-background transition-all group-hover:scale-105 duration-1000" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20 group-hover:opacity-40 transition-opacity">
-                  <Cpu size={240} weight="thin" className="text-foreground" />
+                {/* Image Container with inner shadow for depth */}
+                <div className="absolute inset-x-0 top-0 h-[60%] overflow-hidden z-0">
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20 z-10 pointer-events-none" />
+                  <Image 
+                    src={p.image} 
+                    alt={p.title} 
+                    fill
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  {/* Overlay to blend image with card background slightly */}
+                  <div className="absolute inset-0 bg-background/10 mix-blend-multiply transition-opacity group-hover:opacity-0" />
                 </div>
+                
+                {/* Gradient transition from image to solid content area */}
+                <div className="absolute inset-x-0 top-[40%] h-[25%] bg-gradient-to-b from-transparent via-background/80 to-background z-10 pointer-events-none" />
+                <div className="absolute inset-x-0 bottom-0 h-[45%] bg-card z-10 pointer-events-none" />
 
-                <div className="absolute inset-0 p-10 flex flex-col justify-end bg-gradient-to-t from-background via-background/40 to-transparent">
-                  <div className="space-y-6 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                <div className="absolute inset-0 p-8 flex flex-col justify-end z-20">
+                  <div className="space-y-4 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
                     <div>
-                      <Badge className="bg-primary/20 text-primary border-primary/30 mb-4 px-4 py-1 rounded-full text-[9px] font-bold tracking-widest">{p.category.toUpperCase()}</Badge>
-                      <h4 className="text-3xl font-bold text-foreground">{p.title}</h4>
+                      <Badge className="bg-foreground/5 text-foreground border-border mb-3 px-3 py-1 rounded-full text-[9px] font-bold tracking-widest backdrop-blur-md">{p.category.toUpperCase()}</Badge>
+                      <h4 className="text-2xl md:text-3xl font-black text-foreground drop-shadow-sm tracking-tighter">{p.title}</h4>
                     </div>
-                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 line-clamp-none-group-hover">
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
                       {p.desc}
                     </p>
-                    <div className="flex items-center gap-3 text-primary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="flex items-center gap-2 text-foreground font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300 pt-2">
                       Explore Technical Scope <ArrowUpRight weight="bold" />
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </div>
 
       {/* FULL-PAGE IMMERSIVE STAGE - PORTAL */}
-      {mounted && createPortal(
+      {typeof window !== 'undefined' && createPortal(
         <AnimatePresence>
           {selectedProject && (
             <motion.div
@@ -255,72 +306,90 @@ export function Experience() {
             >
               <div className="min-h-screen relative bg-background">
                 {/* Immersive Header (Hides Navbar) */}
-                <div className="fixed top-0 left-0 w-full p-8 flex justify-between items-center z-[100001] bg-background/80 backdrop-blur-3xl border-b border-border">
-                  <div className="text-primary font-bold text-xl tracking-tighter">MHR.DEV <span className="text-muted-foreground ml-3">/ PROJECT STAGE</span></div>
+                <div className="fixed top-0 left-0 w-full p-6 md:p-8 flex justify-between items-center z-[100001] bg-background/80 backdrop-blur-3xl border-b border-border">
+                  <div className="text-foreground font-bold text-xl tracking-tighter">MHR.DEV <span className="text-muted-foreground ml-3">/ PROJECT STAGE</span></div>
                   <button
                     onClick={() => setSelectedProjectId(null)}
-                    className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-foreground hover:bg-muted transition-all bg-muted group"
+                    className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-foreground hover:bg-card transition-all bg-background group shadow-sm dark:shadow-none"
                   >
                     <X size={24} weight="bold" className="group-hover:rotate-90 transition-transform duration-300" />
                   </button>
                 </div>
 
-                {/* Hero Section */}
-                <div className="relative pt-40 pb-32 px-6 overflow-hidden">
-                  <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 blur-[150px] rounded-full pointer-events-none opacity-40 translate-x-1/2 -translate-y-1/2" />
+                  {/* Hero Section (Cleaned Up & Restyled) */}
+                <div className="relative pt-40 pb-20 px-6 overflow-hidden border-b border-border">
+                  <div className="absolute inset-0 z-0 bg-background">
+                    <Image 
+                      src={selectedProject.image} 
+                      alt={selectedProject.title} 
+                      fill
+                      className="object-cover object-top opacity-[0.15] mix-blend-overlay blur-xl"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-background/95 backdrop-blur-3xl" />
+                  </div>
 
-                  <div className="container max-w-7xl mx-auto relative z-10 text-center space-y-10">
-                    <Badge className="bg-primary text-primary-foreground px-8 py-3 rounded-full font-black tracking-[0.4em] h-auto border-none">
-                      {selectedProject.category.toUpperCase()}
-                    </Badge>
-                    <h2 className="text-6xl md:text-[8vw] font-black text-foreground tracking-tighter leading-[0.8] uppercase">
-                      {selectedProject.title}
-                    </h2>
+                  <div className="container max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-end justify-between gap-12">
+                    
+                    {/* Left: Huge Title */}
+                    <div className="space-y-6 max-w-4xl">
+                      <Badge className="bg-foreground/5 text-foreground border-border px-6 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase">
+                        {selectedProject.category}
+                      </Badge>
+                      <h2 className="text-6xl md:text-[6rem] lg:text-[8rem] font-medium tracking-tight leading-[0.9] text-foreground">
+                        {selectedProject.title}
+                      </h2>
+                    </div>
 
-                    <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+                    {/* Right: Quick Tech Tags */}
+                    <div className="flex flex-wrap md:justify-end gap-2 max-w-sm mb-4">
                       {selectedProject.tech.map(t => (
-                        <span key={t} className="text-[10px] font-bold text-muted-foreground border border-border px-6 py-2 rounded-full uppercase tracking-[0.2em] bg-muted backdrop-blur-md">
+                        <span key={t} className="text-[10px] font-medium text-muted-foreground border border-border px-4 py-1.5 rounded-full bg-card shadow-sm dark:shadow-none">
                           {t}
                         </span>
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-10">
-                      {selectedProject.quickFacts.map((fact, i) => (
-                        <div key={i} className="p-4 border-l border-primary/20 text-left">
-                          <div className="text-[9px] font-bold text-primary/40 uppercase tracking-widest mb-1">Quick Fact</div>
-                          <div className="text-foreground font-medium text-sm">{fact}</div>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
 
                 {/* Technical Content Deep-Dive */}
-                <div className="container max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 lg:grid-cols-12 gap-20">
-                  <div className="lg:col-span-12">
-                    <div className="h-px bg-border mb-20" />
-                  </div>
-
-                  {/* Left Column: Description & Features */}
-                  <div className="lg:col-span-7 space-y-24">
-                    <div className="space-y-10">
-                      <h4 className="text-primary text-xs font-bold uppercase tracking-[0.5em]">Project Vision & Architecture</h4>
-                      <p className="text-2xl md:text-3xl text-foreground/90 font-medium leading-relaxed">
+                <div className="container max-w-7xl mx-auto py-20 px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+                  
+                  {/* Left Column: Vision & Features */}
+                  <div className="lg:col-span-8 space-y-24">
+                    
+                    {/* Vision Text */}
+                    <div className="space-y-8">
+                      <p className="text-xl md:text-3xl text-foreground font-medium leading-[1.6] tracking-tight">
                         {selectedProject.fullDesc}
                       </p>
+                      
+                      {/* Image Presentation */}
+                      <div className="w-full aspect-[16/10] relative rounded-3xl overflow-hidden border border-border bg-card mt-16 shadow-lg dark:shadow-none">
+                         <Image 
+                           src={selectedProject.image}
+                           alt={selectedProject.title}
+                           fill
+                           className="object-cover object-top"
+                         />
+                      </div>
                     </div>
 
+                    {/* Features Grid */}
                     <div className="space-y-12">
-                      <h4 className="text-primary text-xs font-bold uppercase tracking-[0.5em]">Core Capabilities</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-foreground" />
+                        <h4 className="text-foreground text-sm font-bold uppercase tracking-[0.2em]">Core Capabilities</h4>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         {selectedProject.keyFeatures.map((f, i) => (
-                          <div key={i} className="p-8 rounded-[2rem] bg-muted border border-border hover:border-primary/20 transition-all group">
-                            <div className="text-primary mb-6 group-hover:scale-110 transition-transform duration-300">
+                          <div key={i} className="p-8 rounded-3xl bg-card border border-border hover:border-foreground/20 transition-all group shadow-sm dark:shadow-none">
+                            <div className="text-foreground mb-6 group-hover:scale-110 transition-transform duration-300">
                               {f.icon}
-                              <div className="w-12 h-12 absolute scale-[2] blur-xl bg-primary/10 rounded-full opacity-50" />
                             </div>
-                            <h5 className="text-xl font-bold text-foreground mb-3">{f.title}</h5>
+                            <h5 className="text-lg font-bold text-foreground mb-2">{f.title}</h5>
                             <p className="text-muted-foreground leading-relaxed text-sm">
                               {f.desc}
                             </p>
@@ -330,39 +399,46 @@ export function Experience() {
                     </div>
                   </div>
 
-                  {/* Right Column: Roles & Personal Impact */}
-                  <div className="lg:col-span-5 space-y-12">
+                  {/* Right Column: Sticky Sidebar Info */}
+                  <div className="lg:col-span-4 space-y-12">
                     <div className="sticky top-40 space-y-8">
-                      <div className="glass-card p-10 bg-muted space-y-12 border-border shadow-2xl">
-                        <div className="space-y-6">
-                          <h4 className="text-foreground text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
-                            <Users size={18} className="text-primary" /> Professional Role
-                          </h4>
-                          <div className="text-primary font-black text-2xl uppercase tracking-tighter">{selectedProject.role}</div>
-                        </div>
+                      
+                      {/* Live Operation Button */}
+                      <a href={selectedProject.live} target="_blank" rel="noreferrer" className="block mb-12">
+                        <Button className="w-full h-16 rounded-2xl bg-foreground text-background font-medium text-base hover:scale-[1.02] active:scale-95 transition-all shadow-lg border border-border">
+                          View Live Project <ArrowUpRight size={20} className="ml-3" />
+                        </Button>
+                      </a>
 
-                        <div className="space-y-8">
-                          <h4 className="text-foreground text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
-                            <CheckCircle size={18} className="text-primary" /> Key Contributions & Optimization
-                          </h4>
-                          <div className="space-y-4">
-                            {selectedProject.contributions.map((imp, i) => (
-                              <div key={i} className="flex gap-4 p-5 rounded-2xl bg-card border border-border items-start">
-                                <CheckCircle size={16} className="text-primary mt-1 shrink-0" />
-                                <span className="text-sm text-muted-foreground leading-relaxed font-medium">{imp}</span>
+                      {/* Quick Facts */}
+                      <div className="space-y-6">
+                         <h4 className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.2em]">Project Facts</h4>
+                         <div className="space-y-4">
+                            {selectedProject.quickFacts.map((fact, i) => (
+                              <div key={i} className="py-3 border-b border-border text-foreground font-medium text-sm">
+                                {fact}
                               </div>
                             ))}
-                          </div>
-                        </div>
-
-                        <div className="pt-8 border-t border-border flex flex-col gap-4">
-                          <a href={selectedProject.live} target="_blank" rel="noreferrer" className="block">
-                            <Button className="w-full h-18 rounded-2xl bg-primary text-primary-foreground font-black uppercase tracking-widest group shadow-[0_0_40px_rgba(20,184,166,0.3)]">
-                              View Live Operation <ArrowUpRight size={20} className="ml-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                            </Button>
-                          </a>
-                        </div>
+                         </div>
                       </div>
+
+                      {/* Role & Contributions */}
+                      <div className="pt-10 space-y-6">
+                         <h4 className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.2em]">Engineering Role</h4>
+                         <div className="text-foreground font-black text-2xl tracking-tight leading-none mb-6">
+                           {selectedProject.role}
+                         </div>
+                         
+                         <div className="space-y-4 pt-4">
+                           {selectedProject.contributions.map((imp, i) => (
+                             <div key={i} className="flex gap-4 items-start">
+                               <CheckCircle size={16} className="text-foreground mt-1 shrink-0" />
+                               <span className="text-sm text-muted-foreground leading-relaxed">{imp}</span>
+                             </div>
+                           ))}
+                         </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>

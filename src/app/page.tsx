@@ -17,6 +17,7 @@ export default function Home() {
       <Navbar />
 
       <main className="relative z-10 w-full">
+        <MouseFollower />
         <Hero />
         <Journey />
         <Experience />

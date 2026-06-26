@@ -1,164 +1,158 @@
 'use client';
 
-import { motion } from "motion/react";
-import { Button } from "@/components/ui/button";
-import { Download, ArrowRight } from "lucide-react";
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowUpRight } from 'lucide-react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function Hero() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.3,
+  const containerRef = useRef<HTMLDivElement>(null);
+  const text1Ref = useRef<HTMLHeadingElement>(null);
+  const text2Ref = useRef<HTMLHeadingElement>(null);
+  const text3Ref = useRef<HTMLHeadingElement>(null); // no longer used, kept for clean diff
+  const subRef = useRef<HTMLParagraphElement>(null);
+  const btnRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const cursorFollowerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Entrance Animation
+    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+    tl.fromTo(overlayRef.current, 
+      { scaleY: 1 },
+      { scaleY: 0, transformOrigin: "top", duration: 1.5, ease: "power4.inOut" }
+    )
+    .fromTo([text1Ref.current, text2Ref.current],
+      { y: 100, opacity: 0, rotateX: -20 },
+      { y: 0, opacity: 1, rotateX: 0, duration: 1.2, stagger: 0.1 },
+      "-=0.8"
+    )
+    .fromTo(subRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1 },
+      "-=0.8"
+    )
+    .fromTo(btnRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1 },
+      "-=0.8"
+    );
+
+    // Scroll Parallax
+    gsap.to(containerRef.current, {
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
       },
-    },
-  };
+      y: 200,
+      opacity: 0.2,
+    });
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as any },
-    },
-  };
+    // Fluid Mouse Follower Logic
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!cursorFollowerRef.current) return;
+      
+      const { clientX, clientY } = e;
+      
+      // We use GSAP quickTo for highly performant mouse tracking
+      gsap.to(cursorFollowerRef.current, {
+        x: clientX - 300, // offset by half width
+        y: clientY - 300, // offset by half height
+        duration: 2,
+        ease: "power3.out",
+      });
+    };
 
-  const techStack = [
-    { name: "React", slug: "react" },
-    { name: "Next.js", slug: "nextdotjs" },
-    { name: "TypeScript", slug: "typescript" },
-    { name: "Node.js", slug: "nodedotjs" },
-    { name: "PostgreSQL", slug: "postgresql" },
-    { name: "Tailwind CSS", slug: "tailwindcss" },
-    { name: "Docker", slug: "docker" },
-    { name: "Prisma", slug: "prisma" },
-    { name: "Redux", slug: "redux" },
-    { name: "MongoDB", slug: "mongodb" }
-  ];
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+
+  }, []);
 
   return (
-    <div className="relative overflow-hidden">
-      <section className="relative min-h-screen flex items-center pt-32 md:pt-24 pb-16">
-        <div className="container max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left Side: Content */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="relative z-10 space-y-10"
-          >
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary backdrop-blur-sm shadow-[0_0_15px_rgba(20,184,166,0.1)]">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-              </span>
-              <span className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-[0.2em]">Available for hire</span>
-            </motion.div>
+    <section 
+      ref={containerRef}
+      className="relative min-h-[100svh] w-full flex flex-col items-center justify-center overflow-hidden bg-background pt-20"
+    >
+      {/* Black Entrance Overlay */}
+      <div 
+        ref={overlayRef}
+        className="absolute inset-0 z-50 bg-foreground pointer-events-none"
+      />
 
-            <div className="space-y-4">
-              <motion.h1 
-                variants={itemVariants}
-                className="text-5xl md:text-7xl xl:text-8xl font-display font-bold text-foreground leading-[0.9] tracking-tighter"
-              >
-                Mobarak<br />
-                <span className="text-primary leading-tight">Hossain Razu</span>
-              </motion.h1>
-              
-              <motion.p 
-                variants={itemVariants}
-                className="text-lg md:text-xl text-muted-foreground font-sans max-w-xl leading-relaxed"
-              >
-                Full Stack Developer crafting scalable SaaS platforms and immersive digital experiences. Engineering the bridge between complex systems and intuitive design.
-              </motion.p>
-            </div>
-
-            <motion.div variants={itemVariants} className="flex flex-wrap gap-5 pt-4">
-              <Button className="h-14 px-10 rounded-xl bg-primary text-primary-foreground font-bold text-base hover:scale-105 transition-all shadow-[0_0_25px_rgba(20,184,166,0.2)] active:scale-95 group">
-                View Projects <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              
-              <Button variant="outline" className="h-14 px-10 rounded-xl border-border bg-muted backdrop-blur-md text-foreground font-bold text-base hover:bg-muted/80 transition-all active:scale-95">
-                Contact Me
-              </Button>
-
-              <button className="flex items-center gap-2 text-primary font-mono text-sm font-bold hover:underline transition-all group pt-2 sm:pt-0">
-                <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" /> 
-                <span className="tracking-tight">Download Resume</span>
-              </button>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Side: Visual */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, x: 50 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] as any, delay: 0.2 }}
-            className="relative flex justify-center lg:justify-end"
-          >
-            <div className="relative group">
-              <div className="absolute -inset-10 bg-primary/20 blur-[100px] rounded-full opacity-30 group-hover:opacity-50 transition-opacity" />
-              
-              <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-3xl overflow-hidden glass-card p-2 border-primary/20 shadow-2xl">
-                <img 
-                  alt="Mobarak Hossain Razu Professional Profile" 
-                  className="w-full h-full object-cover rounded-2xl filter grayscale contrast-[1.1] brightness-[0.9] group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000 ease-out scale-105 group-hover:scale-100" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJCpg_SFwOpUUGthFh9V8ICzXll5sUJL31lRDEGanh7tYGi11O26R_3vVfRF3fcAYs3khGLFDfekeRuckUSLZeRBnlEPAedeC8wGZwnN69Zf_KNbFUmSEURyCLXd_WWxLnpbMFXvl-Zoubnb6C5LCqiYNwU_WIpsviH3KGqmDFl3suW8ykLxgO1MLiQDwfx975-L-hT9rOc1dxkyKJlEe7tDXg86NZzf7xbbjPaM77tVjp8F6FDNxX1tLI-Y92W-am9-eB6tpk7WE" 
-                />
-                
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
-
-                <div className="absolute bottom-6 left-6 right-6 p-5 bg-background/80 backdrop-blur-3xl border border-border rounded-2xl shadow-2xl">
-                  <div className="flex justify-between items-center">
-                    <div className="space-y-1">
-                      <span className="block text-[10px] font-mono font-bold text-foreground/50 uppercase tracking-widest leading-none">Role</span>
-                      <span className="block text-sm font-bold text-primary leading-tight">Frontend Dev @ Xgenious</span>
-                    </div>
-                    
-                    <div className="flex -space-x-2">
-                      {[
-                        { name: "TypeScript", slug: "typescript" },
-                        { name: "JavaScript", slug: "javascript" },
-                        { name: "Go", slug: "go" }
-                      ].map((tech) => (
-                        <div key={tech.slug} className="relative w-10 h-10 rounded-full bg-card border border-border shadow-lg hover:-translate-y-1 transition-transform cursor-help overflow-hidden">
-                          <img
-                            src={`https://cdn.simpleicons.org/${tech.slug}/14b8a6`}
-                            alt={tech.name}
-                            className="absolute inset-0 m-auto max-w-[60%] max-h-[60%]"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Tech Stack Marquee */}
-      <div className="py-12 bg-muted/30 border-y border-border overflow-hidden backdrop-blur-sm relative z-10">
-        <div className="marquee-track flex items-center">
-          {[...techStack, ...techStack].map((tech, idx) => (
-            <div 
-              key={idx} 
-              className="flex items-center gap-4 px-12 group/tech cursor-default"
-            >
-              <img 
-                src={`https://cdn.simpleicons.org/${tech.slug}/14b8a6`} 
-                alt={`${tech.name} logo`}
-                className="w-8 h-8 opacity-70 dark:opacity-40 group-hover/tech:opacity-100 transition-all duration-300"
-              />
-              <span className="text-xs md:text-sm font-mono font-bold tracking-[0.3em] text-primary/40 whitespace-nowrap group-hover/tech:text-primary transition-colors">
-                {tech.name.toUpperCase()}
-              </span>
-            </div>
-          ))}
-        </div>
+      {/* Interactive Mouse Fluid Follower */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-background">
+        
+        {/* Following Gradient Blur */}
+        <div 
+          ref={cursorFollowerRef}
+          className="absolute w-[600px] h-[600px] bg-foreground/15 rounded-full blur-[100px] mix-blend-screen"
+          style={{ transform: "translate(-50%, -50%)" }}
+        />
+        
+        {/* Fixed Ambient Glow for that "smoke/water" base */}
+        <div className="absolute top-1/2 left-1/4 w-[1000px] h-[400px] bg-foreground/10 rounded-full blur-[140px] -rotate-45 mix-blend-screen" />
+        <div className="absolute top-1/3 right-1/4 w-[800px] h-[500px] bg-foreground/10 rounded-full blur-[140px] rotate-12 mix-blend-screen" />
       </div>
-    </div>
+
+      <div className="container relative z-10 mx-auto px-6 flex flex-col items-center text-center">
+        
+        <div className="mb-6 flex items-center justify-center">
+          <div className="px-5 py-2 rounded-full border border-border bg-card flex items-center gap-3">
+             <div className="w-1.5 h-1.5 rounded-full bg-foreground" />
+             <span className="text-[11px] font-medium tracking-wide text-muted-foreground">Crafting High-Performance Web Apps</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-0 mb-8 perspective-[1000px]">
+          <h1 
+            ref={text1Ref} 
+            className="text-[12vw] md:text-[6rem] lg:text-[7rem] leading-none font-medium tracking-tight text-foreground"
+          >
+            Engineering that you
+          </h1>
+          <h1 
+            ref={text2Ref} 
+            className="text-[12vw] md:text-[6rem] lg:text-[7rem] leading-none font-medium tracking-tight text-foreground"
+          >
+            need Indeed
+          </h1>
+        </div>
+
+        <p 
+          ref={subRef}
+          className="max-w-2xl text-base md:text-lg text-muted-foreground font-normal leading-relaxed mb-12"
+        >
+          Elevate your product with custom web architecture and high-performance engineering. Showcase your story through robust code and strategic technical solutions.
+        </p>
+
+        <div ref={btnRef} className="flex items-center gap-4">
+          <button className="h-12 px-8 rounded-full border border-border bg-background text-foreground font-medium text-sm hover:bg-muted transition-colors duration-300">
+            Get Started Now
+          </button>
+          
+          <button className="h-12 px-8 rounded-full border border-border bg-background text-foreground font-medium text-sm hover:bg-muted transition-colors duration-300">
+            See Projects
+          </button>
+        </div>
+
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6 opacity-70 w-full max-w-2xl px-6">
+        <span className="text-xs text-muted-foreground whitespace-nowrap">Scroll down</span>
+        <div className="h-px bg-border flex-grow" />
+        <div className="w-5 h-8 border border-muted-foreground rounded-full flex justify-center p-1">
+          <div className="w-1 h-2 bg-muted-foreground rounded-full animate-bounce" />
+        </div>
+        <div className="h-px bg-border flex-grow" />
+        <span className="text-xs text-muted-foreground whitespace-nowrap">to see projects</span>
+      </div>
+
+    </section>
   );
 }

@@ -1,6 +1,8 @@
 'use client';
 
-import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Settings, Briefcase, School, Layers, Rocket } from "lucide-react";
 
 const journey = [
@@ -44,29 +46,65 @@ const journey = [
 ];
 
 export function Journey() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Pin the left column
+      ScrollTrigger.create({
+        trigger: leftColRef.current,
+        start: "top 160px",
+        end: () => `+=${containerRef.current?.offsetHeight ? containerRef.current.offsetHeight - window.innerHeight : 0}`,
+        pin: true,
+        pinSpacing: false,
+      });
+
+      // Animate cards on scroll
+      cardsRef.current.forEach((card) => {
+        if (!card) return;
+        
+        gsap.fromTo(card,
+          { opacity: 0, y: 100, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              end: "top 60%",
+              scrub: 0.5,
+            }
+          }
+        );
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
   return (
-    <section id="journey" className="py-40 px-6 relative bg-background border-y border-border">
+    <section ref={containerRef} id="journey" className="py-40 px-6 relative bg-background border-y border-border">
       {/* Background Decorative Element */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
         <div className="absolute top-1/4 left-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full" />
       </div>
 
       <div className="container max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start relative">
           
           {/* Left Column: Sticky Title & Progress */}
-          <div className="lg:col-span-4 lg:sticky lg:top-40 lg:h-fit">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="space-y-8"
-            >
+          <div ref={leftColRef} className="lg:col-span-4 lg:h-fit">
+            <div className="space-y-8">
               <div className="flex flex-col gap-4">
-                <span className="text-primary text-xs font-bold uppercase tracking-[0.4em]">Chronology</span>
-                <h2 className="text-5xl md:text-7xl font-bold text-foreground leading-none tracking-tighter">
-                  Engineering <br /> <span className="text-primary">Journey</span>
+                <span className="text-foreground/50 text-xs font-bold uppercase tracking-[0.4em]">Chronology</span>
+                <h2 className="text-5xl md:text-7xl font-black text-foreground leading-[0.9] tracking-tighter uppercase">
+                  Engineering <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground/80 to-foreground/30">Journey</span>
                 </h2>
               </div>
               
@@ -78,63 +116,59 @@ export function Journey() {
               <div className="hidden lg:block space-y-6 pt-10">
                 {journey.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-4 group cursor-pointer">
-                    <div className={`w-2 h-2 rounded-full transition-all duration-300 ${item.highlight ? "bg-primary scale-150 shadow-[0_0_10px_rgba(20,184,166,0.5)]" : "bg-muted-foreground group-hover:bg-muted-foreground/60"}`} />
-                    <span className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${item.highlight ? "text-primary" : "text-muted-foreground group-hover:text-muted-foreground/70"}`}>
+                    <div className={`w-2 h-2 rounded-full transition-all duration-300 ${item.highlight ? "bg-foreground scale-150 shadow-[0_0_10px_rgba(0,0,0,0.1)] dark:shadow-none" : "bg-muted-foreground group-hover:bg-muted-foreground/60"}`} />
+                    <span className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${item.highlight ? "text-foreground" : "text-muted-foreground group-hover:text-muted-foreground/70"}`}>
                       {item.year.split(" — ")[0]} – {item.phase}
                     </span>
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Right Column: Stacking Sticky Cards */}
-          <div className="lg:col-span-8 flex flex-col gap-[10vh] lg:gap-0">
+          <div className="lg:col-span-8 flex flex-col gap-[10vh] lg:gap-0 mt-10 lg:mt-0">
             {journey.map((item, idx) => (
               <div 
                 key={idx} 
-                className="lg:sticky lg:pb-32"
+                ref={el => { if (el) cardsRef.current[idx] = el; }}
+                className="lg:sticky lg:pb-32 lg:w-[92%] lg:ml-auto"
                 style={{ 
                   top: `${160 + (idx * 40)}px`,
                   zIndex: idx + 1 
                 }}
               >
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                  viewport={{ once: true }}
-                  className="group relative"
-                >
-                  <div className="text-[10rem] font-black text-foreground/[0.02] absolute -left-12 -top-12 leading-none select-none pointer-events-none">
-                    {item.year.split(" — ")[0]}
-                  </div>
+                <div className="group relative">
+                  <div className="glass-card relative overflow-hidden p-8 md:p-12 bg-card dark:!bg-[#181818] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_0_30px_rgba(255,255,255,0.03)] transition-all duration-500 border-border dark:!border-white/[0.12] group-hover:border-foreground/20">
+                    {/* Background Year Watermark */}
+                    <div className="text-[8rem] md:text-[14rem] font-black text-foreground/[0.03] absolute -bottom-8 -right-4 md:-bottom-12 md:-right-8 leading-none select-none pointer-events-none transition-all duration-700 group-hover:scale-105 group-hover:text-foreground/[0.05]">
+                      {item.year.split(" — ")[0]}
+                    </div>
 
-                  <div className="glass-card p-8 md:p-12 bg-muted hover:bg-muted/80 backdrop-blur-3xl shadow-2xl transition-all duration-500 border-border group-hover:border-primary/20">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                       <div className="flex items-center gap-4">
-                        <div className={`p-4 rounded-2xl bg-primary/10 border border-primary/20 transition-transform duration-500 group-hover:rotate-[360deg]`}>
+                        <div className={`p-4 rounded-2xl bg-foreground/5 border border-border transition-transform duration-500 group-hover:rotate-[360deg]`}>
                           {item.icon}
                         </div>
-                        <span className={`text-xs font-bold tracking-tighter transition-colors duration-500 ${item.highlight ? "text-primary" : "text-muted-foreground/40 group-hover:text-muted-foreground/70"}`}>
+                        <span className={`text-xs font-bold tracking-tighter transition-colors duration-500 ${item.highlight ? "text-foreground" : "text-muted-foreground/40 group-hover:text-muted-foreground/70"}`}>
                           {item.year}
                         </span>
                       </div>
                       
                       <div className="flex flex-wrap gap-2">
                         {item.tags?.map(tag => (
-                          <span key={tag} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest border border-primary/20">
+                          <span key={tag} className="px-3 py-1 rounded-full bg-foreground/5 text-foreground text-[10px] font-bold uppercase tracking-widest border border-border">
                             {tag}
                           </span>
                         ))}
                       </div>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="relative z-10 space-y-6">
                       <div className="lg:hidden text-[10px] text-muted-foreground font-bold">
                         {item.year}
                       </div>
-                      <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-primary transition-colors duration-500">
+                      <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter transition-colors duration-500">
                         {item.title}
                       </h3>
                       <p className="text-muted-foreground leading-relaxed text-lg">
@@ -143,7 +177,7 @@ export function Journey() {
                     </div>
 
                     {/* Technical Accent Decorative */}
-                    <div className="mt-12 pt-8 border-t border-border flex items-center justify-between">
+                    <div className="relative z-10 mt-12 pt-8 border-t border-border flex items-center justify-between">
                       <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">Engineering Milestone</span>
                       <div className="flex gap-1 items-end h-4 pointer-events-none opacity-20">
                         {[1, 2, 3].map(i => (
@@ -152,7 +186,7 @@ export function Journey() {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </div>
             ))}
           </div>
