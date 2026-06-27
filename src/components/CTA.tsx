@@ -5,6 +5,8 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { motion } from "motion/react";
 
+import { Magnetic } from "@/components/Magnetic";
+
 export function CTA() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -26,7 +28,7 @@ export function CTA() {
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="group relative overflow-hidden rounded-3xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50/50 dark:bg-zinc-950/40 px-8 py-20 text-center md:px-12 md:py-28 transition-all duration-500 shadow-2xl backdrop-blur-xl"
+            className="group relative overflow-hidden rounded-3xl border border-border bg-card px-8 py-20 text-center md:px-12 md:py-28 transition-all duration-500 shadow-2xl backdrop-blur-xl"
           >
             {/* Interactive Spotlight Follow Glow */}
             <div
@@ -62,15 +64,17 @@ export function CTA() {
               </p>
 
               {/* Next-level Interactive Button */}
-              <a
-                href="#contact"
-                className="group relative mt-10 inline-flex h-12 items-center gap-2.5 overflow-hidden rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-8 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(99,102,241,0.25)]"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Get in touch
-                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </span>
-              </a>
+              <Magnetic>
+                <a
+                  href="#contact"
+                  className="group relative mt-10 inline-flex h-12 items-center gap-2.5 overflow-hidden rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-8 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(99,102,241,0.25)]"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Get in touch
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
+                </a>
+              </Magnetic>
             </div>
           </div>
         </Reveal>

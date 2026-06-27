@@ -8,6 +8,8 @@ import { GithubLogo, LinkedinLogo, FacebookLogo, EnvelopeSimple } from '@phospho
 import { Terminal } from './Terminal';
 import { CodeCard } from './CodeCard';
 
+import { Magnetic } from '@/components/Magnetic';
+
 // WebGL never ships to the server bundle.
 const Scene = dynamic(() => import('./Scene').then((m) => m.Scene), {
   ssr: false,
@@ -190,14 +192,16 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
             </div>
 
             <div className="hero-reveal mt-10 flex items-center gap-6">
-              <a
-                ref={ctaRef}
-                href="#work"
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-7 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(99,102,241,0.25)]"
-              >
-                View work
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
+              <Magnetic>
+                <a
+                  ref={ctaRef}
+                  href="#work"
+                  className="group inline-flex h-12 items-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-7 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(99,102,241,0.25)]"
+                >
+                  View work
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              </Magnetic>
 
               <div className="flex items-center gap-4 text-muted-foreground">
                 {SOCIALS.map(({ Icon, href, label }) => (

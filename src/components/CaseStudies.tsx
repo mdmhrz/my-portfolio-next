@@ -6,6 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { projects, ProjectDetails } from "@/data/projects";
 import { ProjectDetailsModal } from "@/components/ProjectDetailsModal";
+import { motion } from "motion/react";
 
 export function CaseStudies() {
   const [selectedProject, setSelectedProject] = useState<ProjectDetails | null>(null);
@@ -14,15 +15,16 @@ export function CaseStudies() {
   const featured = projects.filter(p => p.id === "nexdrop" || p.id === "taskip");
 
   return (
-    <section id="work" className="container mx-auto max-w-7xl px-6 py-28 md:py-40">
-      <Reveal className="mb-14 flex flex-col gap-4">
-        <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground font-semibold">
-          Selected work
-        </span>
-        <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
-          Things I&apos;ve shipped.
-        </h2>
-      </Reveal>
+    <section id="work" className="relative border-t border-border bg-background px-6 py-28 md:py-40">
+      <div className="container mx-auto max-w-7xl">
+        <Reveal className="mb-14 flex flex-col gap-4">
+          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+            Selected work
+          </span>
+          <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
+            Things I&apos;ve shipped.
+          </h2>
+        </Reveal>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         {featured.map((p, i) => {
@@ -33,10 +35,11 @@ export function CaseStudies() {
             <Reveal key={p.title} y={40} delay={i * 0.08} className={cardSpan}>
               <div
                 onClick={() => setSelectedProject(p)}
-                className="group relative flex h-[480px] flex-col overflow-hidden rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 shadow-sm transition-all duration-500 hover:border-foreground/25 hover:shadow-md md:h-[580px] cursor-pointer"
+                data-cursor-text="VIEW"
+                className="group relative flex h-[480px] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-500 hover:border-foreground/25 hover:shadow-md md:h-[580px] cursor-pointer"
               >
                 {/* App window frame mockup */}
-                <div className="relative shrink-0 overflow-hidden border-b border-neutral-200 dark:border-zinc-700 bg-neutral-100/30 dark:bg-zinc-800/50">
+                <div className="relative shrink-0 overflow-hidden border-b border-border bg-neutral-100/30 dark:bg-zinc-950/40">
                   {/* Window chrome header */}
                   <div className="flex items-center gap-2 px-5 py-3">
                     <span className="h-2 w-2 rounded-full bg-foreground/10" />
@@ -48,13 +51,18 @@ export function CaseStudies() {
                   </div>
                   {/* Screenshot Container */}
                   <div className="relative h-[220px] w-full overflow-hidden md:h-[260px]">
-                    <Image
-                      src={p.image}
-                      alt={p.title}
-                      fill
-                      className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                    />
+                    <motion.div
+                      layoutId={`project-image-${p.id}`}
+                      className="absolute inset-0"
+                    >
+                      <Image
+                        src={p.image}
+                        alt={p.title}
+                        fill
+                        className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
+                    </motion.div>
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                   </div>
                 </div>
@@ -121,6 +129,7 @@ export function CaseStudies() {
         onClose={() => setSelectedProject(null)}
         onNavigate={setSelectedProject}
       />
+      </div>
     </section>
   );
 }

@@ -56,10 +56,10 @@ export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDet
       {project && (
         <motion.div
           ref={containerRef}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
+          initial={{ opacity: 0, y: 35, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 25, scale: 0.985 }}
+          transition={{ type: "spring", damping: 28, stiffness: 200 }}
           className="fixed inset-0 z-[100000] overflow-y-auto overscroll-contain bg-background"
           data-lenis-prevent="true"
         >
@@ -138,16 +138,21 @@ export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDet
                       </div>
                       <div className="w-10" />
                     </div>
-                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-card">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        priority
-                        className="object-cover object-top"
-                        sizes="(max-width: 1024px) 100vw, 60vw"
-                      />
-                    </div>
+                     <div className="relative aspect-[16/9] w-full overflow-hidden bg-card">
+                       <motion.div
+                         layoutId={`project-image-${project.id}`}
+                         className="absolute inset-0"
+                       >
+                         <Image
+                           src={project.image}
+                           alt={project.title}
+                           fill
+                           priority
+                           className="object-cover object-top"
+                           sizes="(max-width: 1024px) 100vw, 60vw"
+                         />
+                       </motion.div>
+                     </div>
                   </div>
 
                   {/* Project Overview */}
@@ -212,7 +217,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDet
                       {project.features.map((f, i) => (
                         <div
                           key={i}
-                          className="flex items-start gap-2.5 rounded-xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 px-4 py-3.5 text-xs text-muted-foreground hover:border-neutral-300 dark:hover:border-zinc-600 transition-colors"
+                          className="flex items-start gap-2.5 rounded-xl border border-border bg-card px-4 py-3.5 text-xs text-muted-foreground hover:border-neutral-300 dark:hover:border-zinc-600 transition-colors"
                         >
                           <span className="mt-0.5 text-indigo-600 dark:text-indigo-400 shrink-0 font-mono select-none">//</span>
                           <span>{f}</span>
@@ -223,7 +228,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDet
 
                   {/* Project Navigation Link */}
                   {onNavigate && nextProject && (
-                    <div className="border-t border-neutral-200 dark:border-zinc-700 pt-12 mt-16">
+                    <div className="border-t border-border pt-12 mt-16">
                       <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">
                         Explore Next Project
                       </span>
@@ -239,7 +244,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDet
                             {nextProject.subtitle}
                           </p>
                         </div>
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 dark:border-zinc-700 text-foreground transition-all duration-300 group-hover:scale-105 group-hover:border-indigo-600 dark:group-hover:border-indigo-500 group-hover:bg-indigo-600 dark:group-hover:bg-indigo-500 group-hover:text-white">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground transition-all duration-300 group-hover:scale-105 group-hover:border-indigo-600 dark:group-hover:border-indigo-500 group-hover:bg-indigo-600 dark:group-hover:bg-indigo-500 group-hover:text-white">
                           <ArrowUpRight className="h-5 w-5" />
                         </span>
                       </button>
@@ -250,8 +255,8 @@ export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDet
                 {/* Right Column: Sticky Basic Info Card */}
                 <div className="lg:col-span-4">
                   <div className="sticky top-28 space-y-6">
-                    <div className="rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 p-6 backdrop-blur-xl shadow-xl space-y-6">
-                      <h2 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold border-b border-neutral-200/40 dark:border-zinc-700/40 pb-3">
+                    <div className="rounded-2xl border border-border bg-card p-6 backdrop-blur-xl shadow-xl space-y-6">
+                      <h2 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold border-b border-border/40 pb-3">
                         // Quick Information
                       </h2>
 
@@ -261,12 +266,12 @@ export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDet
                           <span className="font-mono text-muted-foreground/60 uppercase">Role</span>
                           <span className="font-medium text-foreground">{project.role || "Developer"}</span>
                         </div>
-                        <div className="h-px bg-neutral-200 dark:bg-zinc-700" />
+                        <div className="h-px bg-border" />
                         <div className="flex justify-between items-center text-xs">
                           <span className="font-mono text-muted-foreground/60 uppercase">Company</span>
                           <span className="font-medium text-foreground">{project.company || "Personal"}</span>
                         </div>
-                        <div className="h-px bg-neutral-200 dark:bg-zinc-700" />
+                        <div className="h-px bg-border" />
                         <div className="flex justify-between items-center text-xs">
                           <span className="font-mono text-muted-foreground/60 uppercase">Timeline</span>
                           <span className="font-medium text-foreground">{project.timeline || "Ongoing"}</span>

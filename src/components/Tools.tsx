@@ -501,6 +501,7 @@ export function Tools() {
   const [activeSnippetKey, setActiveSnippetKey] = useState<string>("typescript");
   const [displaySnippetKey, setDisplaySnippetKey] = useState<string>("typescript");
   const [isFading, setIsFading] = useState<boolean>(false);
+  const [visibleLinesCount, setVisibleLinesCount] = useState<number>(0);
   
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -512,6 +513,22 @@ export function Tools() {
       if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
     };
   }, []);
+
+  const activeSnippet = snippets[displaySnippetKey] || snippets.typescript;
+
+  // Typing simulation effect on snippet change
+  useEffect(() => {
+    setVisibleLinesCount(0);
+    let current = 0;
+    const interval = setInterval(() => {
+      current += 1;
+      setVisibleLinesCount(current);
+      if (current >= activeSnippet.lines.length) {
+        clearInterval(interval);
+      }
+    }, 35); // 35ms per line typing simulation
+    return () => clearInterval(interval);
+  }, [displaySnippetKey, activeSnippet.lines.length]);
 
   const handleMouseEnter = (key: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -531,16 +548,33 @@ export function Tools() {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
   };
 
-  const activeSnippet = snippets[displaySnippetKey] || snippets.typescript;
+  const handleTabClick = (key: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsFading(true);
+    if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
+    transitionTimeoutRef.current = setTimeout(() => {
+      setActiveSnippetKey(key);
+      setDisplaySnippetKey(key);
+      setIsFading(false);
+    }, 120);
+  };
+
+  const tabFiles = [
+    { key: "typescript", filename: "types.ts" },
+    { key: "nextjs", filename: "page.tsx" },
+    { key: "golang", filename: "main.go" },
+    { key: "postgresql", filename: "schema.sql" },
+    { key: "docker", filename: "Dockerfile" },
+  ];
 
   return (
-    <section id="skills" className="relative border-y border-border bg-background px-6 py-28 md:py-40">
+    <section id="skills" className="relative border-t border-border bg-background px-6 py-28 md:py-40">
       {/* Dynamic Background Grid Lines */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(120,119,198,0.06),rgba(255,255,255,0))]" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
         <Reveal className="mb-16 flex flex-col gap-4">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
             Technical Stack
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -615,10 +649,10 @@ export function Tools() {
             <div className="sticky top-28 space-y-6">
               <Reveal y={30} delay={0.1}>
                 {/* Mock IDE Window */}
-                <div className="relative overflow-hidden rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/95 shadow-2xl backdrop-blur-xl transition-all duration-500 hover:border-foreground/15">
+                <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-2xl backdrop-blur-xl transition-all duration-500 hover:border-foreground/15">
                   
                   {/* macOS Chrome Header */}
-                  <div className="flex items-center justify-between border-b border-neutral-200 dark:border-zinc-700 bg-neutral-100/50 dark:bg-zinc-950/40 px-5 py-3.5">
+                  <div className="flex items-center justify-between border-b border-border bg-neutral-100/50 dark:bg-zinc-950/40 px-5 py-3.5">
                     {/* Window Controls */}
                     <div className="flex items-center gap-2">
                       <span className="h-3 w-3 rounded-full bg-[#ff5f56]/80" />
@@ -641,45 +675,62 @@ export function Tools() {
                   </div>
 
                   {/* Code Editor Tab Bar */}
-                  <div className="flex border-b border-neutral-200/50 dark:border-zinc-700/40 bg-neutral-100/30 dark:bg-zinc-950/20 px-4">
-                    <div className="flex items-center gap-2 border-r border-neutral-200/50 dark:border-zinc-700/40 border-t border-t-foreground/30 bg-white dark:bg-[#0c0c0e] px-4 py-2 font-mono text-[10px] text-foreground">
-                      <FileCode2 className="h-3 w-3 text-indigo-600 dark:text-indigo-400" />
-                      <span className={`transition-all duration-200 ${isFading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'}`}>
-                        {activeSnippet.filename}
-                      </span>
-                    </div>
+                  <div className="flex border-b border-border/40 bg-neutral-100/30 dark:bg-zinc-950/20 px-2 overflow-x-auto scrollbar-none">
+                    {tabFiles.map(({ key, filename }) => {
+                      const isActive = displaySnippetKey === key;
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => handleTabClick(key)}
+                          className={`flex items-center gap-1.5 border-r border-border/40 px-3.5 py-2 font-mono text-[10px] cursor-pointer transition-all ${
+                            isActive
+                              ? "border-t border-t-indigo-600 dark:border-t-indigo-500 bg-card text-foreground font-semibold"
+                              : "text-muted-foreground/80 hover:text-foreground hover:bg-neutral-100/20 dark:hover:bg-zinc-800/10"
+                          }`}
+                        >
+                          <FileCode2 className={`h-3 w-3 ${isActive ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground/50"}`} />
+                          <span>{filename}</span>
+                        </button>
+                      );
+                    })}
                   </div>
 
                   {/* Code Workspace Editor Area */}
-                  <div className="relative overflow-x-auto bg-white dark:bg-[#0c0c0e]/95 p-6 min-h-[280px]">
+                  <div className="relative overflow-x-auto bg-card p-6 min-h-[280px]">
                     <div className="absolute top-4 right-5 flex items-center gap-1.5 font-mono text-[9px] text-muted-foreground/35 select-none">
                       <TerminalSquare className="h-3 w-3" /> EDITOR ACTIVE
                     </div>
                     
                     <table className="border-spacing-0 font-mono text-xs leading-normal text-muted-foreground select-text w-full">
                       <tbody>
-                        {activeSnippet.lines.map((line, idx) => (
-                          <tr key={idx} className="group/line hover:bg-foreground/[0.02]">
-                            {/* Line Number */}
-                            <td className="w-8 select-none pr-4 text-right font-mono text-[10px] text-muted-foreground/30 group-hover/line:text-muted-foreground/65">
-                              {idx + 1}
-                            </td>
-                            {/* Code Text */}
-                            <td className="whitespace-pre">
-                              {line.length === 0 ? " " : line.map((token, tokenIdx) => (
-                                <span key={tokenIdx} className={token.color || ""}>
-                                  {token.text}
-                                </span>
-                              ))}
-                            </td>
-                          </tr>
-                        ))}
+                        {activeSnippet.lines.slice(0, visibleLinesCount).map((line, idx) => {
+                          const isLastLine = idx === Math.min(visibleLinesCount - 1, activeSnippet.lines.length - 1);
+                          return (
+                            <tr key={idx} className="group/line hover:bg-indigo-600/[0.03] dark:hover:bg-indigo-500/[0.03] transition-colors">
+                              {/* Line Number */}
+                              <td className="w-8 select-none pr-4 text-right font-mono text-[10px] text-muted-foreground/30 group-hover/line:text-indigo-600 dark:group-hover/line:text-indigo-400 font-semibold transition-colors">
+                                {idx + 1}
+                              </td>
+                              {/* Code Text */}
+                              <td className="whitespace-pre">
+                                {line.length === 0 ? " " : line.map((token, tokenIdx) => (
+                                  <span key={tokenIdx} className={token.color || ""}>
+                                    {token.text}
+                                  </span>
+                                ))}
+                                {isLastLine && (
+                                  <span className="inline-block w-1.5 h-3.5 bg-indigo-500 ml-1 align-middle animate-[pulse_0.8s_infinite]" />
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
 
                   {/* Integrated Mock Terminal */}
-                  <div className="border-t border-neutral-200 dark:border-zinc-700 bg-neutral-50/90 dark:bg-zinc-900/80 px-6 py-4 font-mono text-[11px] text-zinc-400 min-h-[90px]">
+                  <div className="border-t border-border bg-neutral-50/50 dark:bg-zinc-950/40 px-6 py-4 font-mono text-[11px] text-zinc-400 min-h-[90px]">
                     <div className="flex items-center gap-2 text-muted-foreground/60 mb-2">
                       <Terminal className="h-3.5 w-3.5" />
                       <span>INTEGRATED TERMINAL</span>

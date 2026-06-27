@@ -89,7 +89,7 @@ export function Contact() {
           {/* Left: info */}
           <div>
             <Reveal>
-              <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+              <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
                 Contact
               </span>
             </Reveal>
@@ -153,7 +153,7 @@ export function Contact() {
           <Reveal y={40} delay={0.1}>
             <form
               onSubmit={handleSubmit}
-              className="rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 p-7 shadow-sm md:p-9"
+              className="rounded-2xl border border-border bg-card p-7 shadow-sm md:p-9"
             >
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <Field label="Your name">

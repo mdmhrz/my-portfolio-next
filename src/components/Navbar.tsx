@@ -15,6 +15,8 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 
+import { Magnetic } from "@/components/Magnetic";
+
 const NavLinks = [
   { name: "Journey", href: "#journey" },
   { name: "Experience", href: "#experience" },
@@ -117,13 +119,15 @@ export function Navbar() {
 
         <div className="flex items-center gap-3">
           <ThemeToggle />
-          <a
-            href="#contact"
-            onClick={(e) => handleNavClick(e, "#contact")}
-            className="hidden h-9 items-center rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:scale-[1.03] active:scale-95 sm:inline-flex"
-          >
-            Get in touch
-          </a>
+          <Magnetic>
+            <a
+              href="#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
+              className="hidden h-9 items-center rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:scale-[1.03] active:scale-95 sm:inline-flex"
+            >
+              Get in touch
+            </a>
+          </Magnetic>
 
           {/* Mobile sidebar */}
           <div className="lg:hidden">

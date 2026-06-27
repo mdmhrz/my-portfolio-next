@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { IntroLoader } from "@/components/IntroLoader";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/hero/Hero";
+import { TechMarquee } from "@/components/TechMarquee";
 import { Journey } from "@/components/Journey";
 import { Experience } from "@/components/Experience";
 import { Tools } from "@/components/Tools";
+import { ArchitectureShowcase } from "@/components/ArchitectureShowcase";
 import { CaseStudies } from "@/components/CaseStudies";
 import { CTA } from "@/components/CTA";
 import { Contact } from "@/components/Contact";
@@ -29,9 +31,11 @@ export default function Home() {
       <main className="relative z-10 w-full">
         <MouseFollower />
         <Hero start={introDone} reduced={reduced} />
+        <TechMarquee />
         <Journey />
         <Experience />
         <Tools />
+        <ArchitectureShowcase />
         <CaseStudies />
         <CTA />
         <Contact />

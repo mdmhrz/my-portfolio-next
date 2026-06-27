@@ -1,7 +1,9 @@
 'use client';
 
+import { useRef, useState, useEffect } from "react";
 import { Settings, Code2, Rocket, Briefcase, Boxes } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
+import { useScroll, motion } from "motion/react";
 
 const journey = [
   {
@@ -51,15 +53,61 @@ const journey = [
 ];
 
 export function Journey() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start center", "end center"],
+  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const cardElements = journey.map((_, idx) => document.getElementById(`journey-card-${idx}`));
+      const viewportMiddle = window.innerHeight / 2;
+
+      let currentActive = 0;
+      let minDistance = Infinity;
+
+      cardElements.forEach((el, idx) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const distance = Math.abs(rect.top + rect.height / 2 - viewportMiddle);
+        if (distance < minDistance) {
+          minDistance = distance;
+          currentActive = idx;
+        }
+      });
+
+      setActiveIndex(currentActive);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToCard = (idx: number) => {
+    const el = document.getElementById(`journey-card-${idx}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   return (
-    <section id="journey" className="relative border-y border-neutral-200 dark:border-zinc-800/80 bg-background px-6 py-28 md:py-40">
+    <section
+      ref={sectionRef}
+      id="journey"
+      className="relative border-t border-border bg-background px-6 py-28 md:py-40"
+    >
       <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          
           {/* Left: title (sticky on desktop) */}
           <div className="lg:col-span-4">
             <div className="lg:sticky lg:top-32">
               <Reveal>
-                <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
                   Chronology
                 </span>
               </Reveal>
@@ -71,28 +119,68 @@ export function Journey() {
                 </h2>
               </Reveal>
               <Reveal delay={0.1}>
-                <p className="mt-6 max-w-xs leading-relaxed text-muted-foreground">
+                <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
                   From mechanical engineering to production web — a timeline of how the stack came together.
                 </p>
               </Reveal>
 
+              {/* Stepper Index Navigation */}
               <Reveal delay={0.15} className="mt-10 hidden flex-col gap-4 lg:flex">
-                {journey.map((item) => (
-                  <div key={item.year} className="flex items-center gap-3">
+                {journey.map((item, idx) => (
+                  <button
+                    key={item.year}
+                    onClick={() => scrollToCard(idx)}
+                    className="flex items-center gap-3 text-left group cursor-pointer w-fit select-none"
+                  >
                     <span
-                      className={`h-1.5 w-1.5 rounded-full ${item.highlight ? "bg-indigo-600 dark:bg-indigo-500" : "bg-muted-foreground/40"}`}
+                      className={`h-1.5 w-1.5 rounded-full transition-all duration-300 group-hover:scale-125 ${
+                        idx === activeIndex
+                          ? "bg-indigo-600 dark:bg-indigo-500 scale-125"
+                          : "bg-muted-foreground/40 group-hover:bg-muted-foreground"
+                      }`}
                     />
-                    <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                    <span className={`text-[10px] font-medium uppercase tracking-[0.2em] transition-colors duration-300 ${
+                      idx === activeIndex
+                        ? "text-foreground font-bold"
+                        : "text-muted-foreground group-hover:text-foreground"
+                    }`}>
                       {item.year}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </Reveal>
             </div>
           </div>
 
           {/* Right: stacking sticky cards */}
-          <div className="flex flex-col gap-6 lg:col-span-8 lg:gap-0">
+          <div className="relative flex flex-col gap-6 lg:col-span-8 lg:gap-0">
+            
+            {/* Vertical timeline line (desktop only) */}
+            <div className="absolute left-[3%] top-[40px] bottom-[80px] hidden w-[4px] lg:block overflow-visible">
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 2 100" preserveAspectRatio="none">
+                <line
+                  x1="1"
+                  y1="0"
+                  x2="1"
+                  y2="100"
+                  className="stroke-neutral-200 dark:stroke-zinc-800/60"
+                  strokeWidth="2"
+                />
+                <motion.line
+                  x1="1"
+                  y1="0"
+                  x2="1"
+                  y2="100"
+                  className="stroke-indigo-600 dark:stroke-indigo-500"
+                  strokeWidth="2"
+                  style={{ 
+                    pathLength: scrollYProgress,
+                    filter: "drop-shadow(0 0 4px rgba(99,102,241,0.5))"
+                  }}
+                />
+              </svg>
+            </div>
+
             {journey.map((item, idx) => {
               const Icon = item.icon;
               return (
@@ -102,17 +190,28 @@ export function Journey() {
                   className="lg:sticky lg:ml-auto lg:w-[94%] lg:pb-8"
                   style={{ top: `${128 + idx * 36}px` }}
                 >
-                  <div className="group relative overflow-hidden rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 p-7 shadow-sm transition-colors duration-500 hover:border-foreground/20 md:p-10">
+                  <div
+                    id={`journey-card-${idx}`}
+                    className="group relative overflow-hidden rounded-2xl border border-border bg-card p-7 shadow-sm transition-colors duration-500 hover:border-foreground/20 md:p-10"
+                  >
                     <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                       <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-neutral-200 dark:border-zinc-850 bg-neutral-100 dark:bg-zinc-950 text-indigo-600 dark:text-indigo-400 transition-transform duration-500 group-hover:scale-105">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 text-indigo-600 dark:text-indigo-400 transition-transform duration-500 group-hover:scale-105">
                           <Icon className="h-5 w-5" />
                         </div>
                         <div>
-                          <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
-                            {item.phase}
-                          </span>
-                          <h3 className="mt-1 text-xl font-medium tracking-tight text-foreground md:text-2xl">
+                          <div className="flex items-center gap-3.5">
+                            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground/80">
+                              {item.phase}
+                            </span>
+                            {item.highlight && (
+                              <span className="flex items-center gap-1.5 rounded-full bg-indigo-500/10 dark:bg-indigo-500/15 px-2.5 py-0.5 text-[9px] font-mono font-bold text-indigo-600 dark:text-indigo-400 select-none uppercase tracking-wider">
+                                <span className="h-1 w-1 rounded-full bg-indigo-600 dark:bg-indigo-400 animate-pulse" />
+                                Milestone
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="mt-1.5 text-xl font-medium tracking-tight text-foreground md:text-2xl">
                             {item.title}
                           </h3>
                         </div>
@@ -122,7 +221,7 @@ export function Journey() {
                       </span>
                     </div>
 
-                    <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">
+                    <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground">
                       {item.description}
                     </p>
 
@@ -131,7 +230,7 @@ export function Journey() {
                         {item.tags.map((t) => (
                           <span
                             key={t}
-                            className="rounded-full border border-indigo-600/10 dark:border-indigo-400/15 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] px-3 py-1 text-[10px] font-mono tracking-wider text-indigo-600 dark:text-indigo-400"
+                            className="rounded-full border border-indigo-600/10 dark:border-indigo-400/15 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] px-3 py-1 text-[10px] font-mono tracking-wider text-indigo-600 dark:text-indigo-400 font-semibold"
                           >
                             {t}
                           </span>

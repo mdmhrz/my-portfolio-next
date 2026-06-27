@@ -15,10 +15,10 @@ export function Experience() {
   const openProject = projects.find((p) => p.id === openId) || null;
 
   return (
-    <section id="experience" className="relative overflow-hidden border-y border-neutral-200 dark:border-zinc-800/80 bg-background px-6 py-28 md:py-40">
+    <section id="experience" className="relative overflow-hidden border-t border-border bg-background px-6 py-28 md:py-40">
       <div className="container mx-auto max-w-7xl">
         <Reveal className="mb-16 flex flex-col gap-4">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
             Career record
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -28,7 +28,7 @@ export function Experience() {
 
         {/* Company card */}
         <Reveal y={40}>
-          <div className="mb-14 overflow-hidden rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 p-7 shadow-sm md:p-10">
+          <div className="mb-14 overflow-hidden rounded-2xl border border-border bg-card p-7 shadow-sm md:p-10">
             <div className="flex flex-col gap-8">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="flex items-center gap-4">
@@ -66,7 +66,7 @@ export function Experience() {
             <Reveal key={p.id} y={40} delay={idx * 0.08}>
               <button
                 onClick={() => setOpenId(p.id)}
-                className="group relative block h-[380px] w-full overflow-hidden rounded-2xl border border-neutral-200 dark:border-zinc-700 bg-neutral-50 dark:bg-zinc-900 text-left shadow-sm transition-all duration-500 hover:border-foreground/20 cursor-pointer"
+                className="group relative block h-[380px] w-full overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-all duration-500 hover:border-foreground/20 cursor-pointer"
               >
                 <div className="absolute inset-x-0 top-0 h-[58%] overflow-hidden">
                   <Image
