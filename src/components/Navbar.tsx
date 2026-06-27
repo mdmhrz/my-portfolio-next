@@ -121,11 +121,12 @@ export function Navbar() {
           <ThemeToggle />
           <Magnetic>
             <a
-              href="#contact"
-              onClick={(e) => handleNavClick(e, "#contact")}
+              href="https://drive.google.com/file/d/1c6qzTSxSI84Tx2DBd5QByb_B1Kc6lxaU/view?usp=drive_link"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden h-9 items-center rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:scale-[1.03] active:scale-95 sm:inline-flex"
             >
-              Get in touch
+              Resume
             </a>
           </Magnetic>
 
@@ -173,6 +174,17 @@ export function Navbar() {
                     );
                   })}
                 </nav>
+
+                <div className="p-6 pt-0">
+                  <a
+                    href="https://drive.google.com/file/d/1c6qzTSxSI84Tx2DBd5QByb_B1Kc6lxaU/view?usp=drive_link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-10 items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-colors duration-300"
+                  >
+                    Resume
+                  </a>
+                </div>
 
                 <div className="space-y-4 p-6">
                   <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
