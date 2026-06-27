@@ -16,14 +16,18 @@ const Scene = dynamic(() => import('./Scene').then((m) => m.Scene), {
   loading: () => null,
 });
 
-const CHIPS = ['Frontend Dev @ Xgenious', 'SaaS · CRM · Shopify Apps', 'Docker · AWS · CI/CD'];
+interface BannerProp {
+  name: string;
+  title: string;
+  description: string;
+  chips: string[];
+  github?: string | null;
+  linkedin?: string | null;
+  facebook?: string | null;
+  email?: string | null;
+}
 
-const SOCIALS = [
-  { Icon: GithubLogo, href: 'https://github.com/mdmhrz', label: 'GitHub' },
-  { Icon: LinkedinLogo, href: 'https://www.linkedin.com/in/mdmhrz', label: 'LinkedIn' },
-  { Icon: FacebookLogo, href: 'https://www.facebook.com/mdmhrz', label: 'Facebook' },
-  { Icon: EnvelopeSimple, href: 'mailto:mdmobarakhossainrazu@gmail.com', label: 'Email' },
-];
+const CHIPS = ['Frontend Dev @ Xgenious', 'SaaS · CRM · Shopify Apps', 'Docker · AWS · CI/CD'];
 
 const splitText = (text: string) => {
   return text.split('').map((char, index) => (
@@ -67,10 +71,26 @@ function TechPill({ label, icon }: { label: string; icon: React.ReactNode }) {
   );
 }
 
-export function Hero({ start, reduced = false }: { start: boolean; reduced?: boolean }) {
+export function Hero({ start, reduced = false, banner }: { start: boolean; reduced?: boolean; banner?: BannerProp | null }) {
   const sectionRef = useRef<HTMLElement>(null);
   const cardWrapRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
+
+  const name = banner?.name || "Mobarak Hossain Razu";
+  const title = banner?.title || "Full-Stack Developer";
+  const description = banner?.description || "I build production SaaS, CRM, and full-stack web apps — from Next.js interfaces to Node.js & Go APIs, PostgreSQL, and Docker-on-AWS deployments.";
+  
+  // Split title into first word and remaining words for stylized underline decoration
+  const titleParts = title.split(" ");
+  const titleFirstWord = titleParts[0] || "";
+  const titleRemainingWords = titleParts.slice(1).join(" ") || "";
+
+  const socialsList = [
+    banner?.github && { Icon: GithubLogo, href: banner.github, label: 'GitHub' },
+    banner?.linkedin && { Icon: LinkedinLogo, href: banner.linkedin, label: 'LinkedIn' },
+    banner?.facebook && { Icon: FacebookLogo, href: banner.facebook, label: 'Facebook' },
+    banner?.email && { Icon: EnvelopeSimple, href: `mailto:${banner.email}`, label: 'Email' },
+  ].filter(Boolean) as { Icon: any; href: string; label: string }[];
 
   // Entrance — only plays once the loader has signalled `start`.
   useEffect(() => {
@@ -98,43 +118,29 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
       const path = sectionRef.current?.querySelector('.hero-underline-path') as SVGPathElement | null;
       if (path) {
         try {
-          const length = path.getTotalLength() || 100;
-          gsap.fromTo(
-            path,
-            {
-              strokeDasharray: length,
-              strokeDashoffset: length,
-            },
-            {
-              strokeDashoffset: 0,
-              duration: 1.2,
-              ease: 'power2.out',
-              delay: 1.1,
-              clearProps: 'strokeDasharray,strokeDashoffset',
-            }
-          );
+          const length = path.getTotalLength();
+          path.style.strokeDasharray = `${length}`;
+          path.style.strokeDashoffset = `${length}`;
+          gsap.to(path, {
+            strokeDashoffset: 0,
+            duration: 1.2,
+            ease: 'power2.out',
+            delay: 1.0,
+          });
         } catch (e) {
-          console.warn('SVG path getTotalLength failed:', e);
-          gsap.set(path, { strokeDasharray: 'none', strokeDashoffset: 0 });
+          console.error(e);
         }
       }
 
-      // Animate characters (premium coming-from-far and joining-together effect)
+      // Staggered letters reveal
       gsap.fromTo(
         '.hero-char',
         {
-          x: (index, target) => {
-            const word = (target as HTMLElement).closest('.word-wrapper');
-            if (!word) return 0;
-            const chars = Array.from(word.querySelectorAll('.hero-char'));
-            const idx = chars.indexOf(target as HTMLElement);
-            const mid = (chars.length - 1) / 2;
-            return (idx - mid) * 24; // Start spread out horizontally
-          },
-          y: 0,
-          scale: 2.5,
+          y: 35,
+          x: 0,
+          scale: 0.8,
           opacity: 0,
-          filter: 'blur(8px)',
+          filter: 'blur(3px)',
         },
         {
           x: 0,
@@ -145,7 +151,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
           duration: 1.4,
           stagger: {
             each: 0.035,
-            from: 'center',
+            from: 'start',
           },
           ease: 'power4.out',
           delay: 0.2,
@@ -333,15 +339,15 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
             </div>
 
             <p className="hero-reveal mb-3 font-mono text-base uppercase tracking-[0.25em] text-muted-foreground font-semibold">
-              Mobarak Hossain Razu
+              {name}
             </p>
 
             <h1 className="hero-reveal hero-reveal-heading text-5xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
               <span className="word-wrapper inline-block">
-                {splitText("Full-Stack")}
+                {splitText(titleFirstWord)}
               </span>{' '}
               <span className="word-wrapper relative inline-block">
-                {splitText("Developer")}
+                {splitText(titleRemainingWords)}
                 <svg
                   className="absolute -bottom-3.5 left-0 h-[10px] w-full pointer-events-none"
                   viewBox="0 0 100 10"
@@ -359,39 +365,33 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
             </h1>
 
             <p className="hero-reveal mt-6 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
-              I build production SaaS, CRM, and full-stack web apps — from Next.js interfaces to
-              Node.js &amp; Go APIs, PostgreSQL, and Docker-on-AWS deployments.
+              {description}
             </p>
 
             <div className="hero-reveal mt-8 flex flex-wrap gap-2.5">
-              <TechPill 
-                label="Frontend Dev @ Xgenious" 
-                icon={
-                  <Atom className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 animate-[spin_8s_linear_infinite] group-hover/pill:animate-[spin_1.5s_linear_infinite] transition-all duration-300" />
+              {(banner?.chips || CHIPS).map((chip, idx) => {
+                let icon = <Atom className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 animate-[spin_8s_linear_infinite] group-hover/pill:animate-[spin_1.5s_linear_infinite] transition-all duration-300" />;
+                if (idx === 1) {
+                  icon = (
+                    <div className="flex items-end gap-[2px] h-3 w-3 mb-[1px]">
+                      <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-2 group-hover/pill:h-3" />
+                      <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-3 group-hover/pill:h-1" />
+                      <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-1.5 group-hover/pill:h-2.5" />
+                    </div>
+                  );
+                } else if (idx >= 2) {
+                  icon = (
+                    <div className="relative flex items-center justify-center">
+                      <Database className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 transition-transform duration-300 group-hover/pill:scale-110" />
+                      <span className="absolute -top-0.5 -right-0.5 flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-500 opacity-75" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                      </span>
+                    </div>
+                  );
                 }
-              />
-              <TechPill 
-                label="SaaS · CRM · Shopify Apps" 
-                icon={
-                  <div className="flex items-end gap-[2px] h-3 w-3 mb-[1px]">
-                    <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-2 group-hover/pill:h-3" />
-                    <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-3 group-hover/pill:h-1" />
-                    <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-1.5 group-hover/pill:h-2.5" />
-                  </div>
-                }
-              />
-              <TechPill 
-                label="Docker · AWS · CI/CD" 
-                icon={
-                  <div className="relative flex items-center justify-center">
-                    <Database className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 transition-transform duration-300 group-hover/pill:scale-110" />
-                    <span className="absolute -top-0.5 -right-0.5 flex h-1.5 w-1.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-500 opacity-75" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-500" />
-                    </span>
-                  </div>
-                }
-              />
+                return <TechPill key={chip} label={chip} icon={icon} />;
+              })}
             </div>
 
             <div className="hero-reveal mt-10 flex items-center gap-6">
@@ -407,7 +407,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
               </Magnetic>
 
               <div className="flex items-center gap-4 text-muted-foreground">
-                {SOCIALS.map(({ Icon, href, label }) => (
+                {socialsList.map(({ Icon, href, label }) => (
                   <a
                     key={label}
                     href={href}

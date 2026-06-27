@@ -1,0 +1,89 @@
+'use client';
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { NAV_ITEMS, type TabValue } from "./nav-items";
+
+interface SidebarNavLinksProps {
+  activeTab: TabValue;
+  onTabChange: (tab: TabValue) => void;
+  unreadCount: number;
+  /** When true, renders icon-only buttons with Tooltip labels */
+  collapsed?: boolean;
+}
+
+/**
+ * Renders the navigation link list shared by both the desktop sidebar
+ * and the mobile Sheet drawer. Uses NAV_ITEMS as the single source of truth.
+ */
+export function SidebarNavLinks({
+  activeTab,
+  onTabChange,
+  unreadCount,
+  collapsed = false,
+}: SidebarNavLinksProps) {
+  return (
+    <TooltipProvider delayDuration={50}>
+      <nav className="space-y-1.5">
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.value;
+          const hasBadge = item.showBadge && unreadCount > 0;
+
+          if (collapsed) {
+            return (
+              <Tooltip key={item.value}>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => onTabChange(item.value)}
+                    className={`relative flex h-11 w-12 items-center justify-center rounded-lg transition-colors cursor-pointer mx-auto ${
+                      isActive
+                        ? "bg-muted text-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    {hasBadge && (
+                      <span className="absolute top-1.5 right-1.5 h-3.5 w-3.5 rounded-full bg-foreground text-[8px] font-bold text-background flex items-center justify-center border border-card">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="flex items-center gap-1.5">
+                  {item.label}
+                  {hasBadge && (
+                    <span className="h-4 px-1 rounded bg-muted text-[9px] font-bold text-foreground">
+                      {unreadCount}
+                    </span>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            );
+          }
+
+          return (
+            <button
+              key={item.value}
+              onClick={() => onTabChange(item.value)}
+              className={`flex w-full items-center justify-between rounded-lg px-3.5 py-2.5 text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer ${
+                isActive
+                  ? "bg-muted text-foreground font-semibold"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              }`}
+            >
+              <span className="flex items-center gap-3">
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </span>
+              {hasBadge && (
+                <span className="h-4 min-w-4 rounded-full bg-foreground px-1.5 py-0.5 text-[9px] font-bold text-background flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </nav>
+    </TooltipProvider>
+  );
+}

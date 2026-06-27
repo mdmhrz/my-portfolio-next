@@ -11,9 +11,10 @@ interface ProjectDetailsModalProps {
   project: ProjectDetails | null;
   onClose: () => void;
   onNavigate?: (project: ProjectDetails) => void;
+  allProjects?: ProjectDetails[];
 }
 
-export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDetailsModalProps) {
+export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects }: ProjectDetailsModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Prevent background scroll when modal is open
@@ -46,10 +47,11 @@ export function ProjectDetailsModal({ project, onClose, onNavigate }: ProjectDet
 
   if (typeof window === "undefined") return null;
 
-  // Find the next/prev project in the central list to cycle through
-  const currentIdx = project ? projects.findIndex((p) => p.id === project.id) : -1;
-  const nextProject = currentIdx !== -1 ? projects[(currentIdx + 1) % projects.length] : null;
-  const prevProject = currentIdx !== -1 ? projects[(currentIdx - 1 + projects.length) % projects.length] : null;
+  // Find the next/prev project in the list to cycle through
+  const projectsList = allProjects || projects;
+  const currentIdx = project ? projectsList.findIndex((p) => p.id === project.id) : -1;
+  const nextProject = currentIdx !== -1 ? projectsList[(currentIdx + 1) % projectsList.length] : null;
+  const prevProject = currentIdx !== -1 ? projectsList[(currentIdx - 1 + projectsList.length) % projectsList.length] : null;
 
   return createPortal(
     <AnimatePresence>

@@ -63,8 +63,9 @@ export function Contact() {
   const [email, setEmail] = useState("");
   const [type, setType] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (!name.trim() || !email.trim() || !type || !message.trim()) {
@@ -72,15 +73,34 @@ export function Contact() {
       return;
     }
 
-    // Success alert
-    toast.success("Message sent! I will reach out to you soon.");
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, type, message }),
+      });
 
-    // Clear form states
-    setName("");
-    setEmail("");
-    setType("");
-    setMessage("");
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send message.");
+      }
+
+      toast.success("Message sent! I will reach out to you soon.");
+      
+      // Clear form states
+      setName("");
+      setEmail("");
+      setType("");
+      setMessage("");
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
 
   return (
     <section id="contact" className="relative overflow-hidden border-t border-border bg-background px-6 py-28 md:py-40">
@@ -212,10 +232,11 @@ export function Contact() {
 
               <button
                 type="submit"
-                className="group mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white text-sm font-medium transition-all hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] cursor-pointer"
+                disabled={isSubmitting}
+                className="group mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white text-sm font-medium transition-all hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
-                Send message
-                <PaperPlaneTilt className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                {isSubmitting ? "Sending..." : "Send message"}
+                {!isSubmitting && <PaperPlaneTilt className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />}
               </button>
             </form>
           </Reveal>

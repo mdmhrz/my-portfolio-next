@@ -1,0 +1,156 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --- Better-Auth Models ---
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean
+  image         String?
+  role          String?   @default("user") // We can set default to "user", and the admin account will have "admin"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(uuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
+// --- CMS Portfolio Models ---
+model Banner {
+  id          String   @id @default("singleton")
+  name        String
+  title       String
+  description String
+  chips       String[] // e.g., ["Frontend Dev @ Xgenious", "Docker · AWS"]
+  github      String?
+  linkedin    String?
+  facebook    String?
+  email       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("banner")
+}
+
+model Experience {
+  id          String    @id @default(uuid())
+  company     String
+  role        String
+  location    String
+  timeline    String    // e.g., "Jul 2025 — Present"
+  description String
+  order       Int       @default(0)
+  projects    Project[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("experience")
+}
+
+model Project {
+  id                String      @id @default(uuid())
+  slug              String      @unique
+  title             String
+  subtitle          String
+  category          String
+  role              String?
+  company           String?
+  timeline          String?
+  desc              String
+  fullDesc          String
+  tech              String[]
+  features          String[]
+  contributions     String[]
+  live              String?
+  image             String
+  span              String?     // For UI grid layout e.g. "lg:col-span-7"
+  architectureTitle String?
+  architectureDesc  String?
+  architectureTree  String?
+  metrics           Json?       // List of metrics e.g. [{"label":"Deployment","value":"AWS EC2"}]
+  order             Int         @default(0)
+  experienceId      String?
+  experience        Experience? @relation(fields: [experienceId], references: [id], onDelete: SetNull)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@map("project")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  type      String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("message")
+}
+
+model Blog {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  content     String   // Markdown string
+  excerpt     String
+  coverImage  String
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blog")
+}
