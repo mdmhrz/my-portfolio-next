@@ -39,3 +39,23 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Ai codes
+.commandcode
+.antigravity/
+.gemini
+.claude
+.claudecode
+.puku
+.cursor/
+.cursorcode/
+.opencode
+.opencodecode
+.openrouter
+.openroutercode
+.warpcode
+.warpcodecode
+.playwright-mcp
+.playwright-mcpcode
+
