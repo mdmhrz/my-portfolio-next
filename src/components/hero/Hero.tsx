@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Atom, Database } from 'lucide-react';
 import { GithubLogo, LinkedinLogo, FacebookLogo, EnvelopeSimple } from '@phosphor-icons/react';
 import { Terminal } from './Terminal';
 import { CodeCard } from './CodeCard';
@@ -36,6 +36,36 @@ const splitText = (text: string) => {
     </span>
   ));
 };
+
+function TechPill({ label, icon }: { label: string; icon: React.ReactNode }) {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
+    e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
+  };
+
+  return (
+    <div
+      onMouseMove={handleMouseMove}
+      className="relative flex items-center gap-2 rounded-full border border-foreground/10 bg-card/65 dark:bg-card/45 px-3.5 py-1.5 text-[11px] font-mono font-medium text-muted-foreground transition-all duration-300 hover:border-indigo-500/50 hover:text-foreground hover:shadow-[0_0_15px_rgba(99,102,241,0.06)] backdrop-blur overflow-hidden group/pill cursor-default"
+    >
+      {/* Spotlight glow border overlay */}
+      <div 
+        className="pointer-events-none absolute -inset-px rounded-full opacity-0 group-hover/pill:opacity-100 transition-opacity duration-300"
+        style={{
+          background: 'radial-gradient(75px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99, 102, 241, 0.15), transparent 80%)',
+          border: '1px solid rgba(99, 102, 241, 0.4)'
+        }}
+      />
+      <div className="relative z-10 flex items-center justify-center">
+        {icon}
+      </div>
+      <span className="relative z-10">{label}</span>
+    </div>
+  );
+}
 
 export function Hero({ start, reduced = false }: { start: boolean; reduced?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -275,13 +305,35 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
               Node.js &amp; Go APIs, PostgreSQL, and Docker-on-AWS deployments.
             </p>
 
-            <div className="hero-reveal mt-8 flex flex-col gap-2">
-              {CHIPS.map((c) => (
-                <div key={c} className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-                  <span className="h-1 w-1 rounded-full bg-indigo-600 dark:bg-indigo-500" />
-                  {c}
-                </div>
-              ))}
+            <div className="hero-reveal mt-8 flex flex-wrap gap-2.5">
+              <TechPill 
+                label="Frontend Dev @ Xgenious" 
+                icon={
+                  <Atom className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 animate-[spin_8s_linear_infinite] group-hover/pill:animate-[spin_1.5s_linear_infinite] transition-all duration-300" />
+                }
+              />
+              <TechPill 
+                label="SaaS · CRM · Shopify Apps" 
+                icon={
+                  <div className="flex items-end gap-[2px] h-3 w-3 mb-[1px]">
+                    <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-2 group-hover/pill:h-3" />
+                    <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-3 group-hover/pill:h-1" />
+                    <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-1.5 group-hover/pill:h-2.5" />
+                  </div>
+                }
+              />
+              <TechPill 
+                label="Docker · AWS · CI/CD" 
+                icon={
+                  <div className="relative flex items-center justify-center">
+                    <Database className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 transition-transform duration-300 group-hover/pill:scale-110" />
+                    <span className="absolute -top-0.5 -right-0.5 flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-500 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                    </span>
+                  </div>
+                }
+              />
             </div>
 
             <div className="hero-reveal mt-10 flex items-center gap-6">
