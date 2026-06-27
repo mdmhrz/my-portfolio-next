@@ -77,54 +77,81 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
     if (!start || reduced) return;
     const ctx = gsap.context(() => {
       // General hero-reveal elements (excluding the heading characters)
-      gsap.from('.hero-reveal:not(.hero-reveal-heading)', {
-        y: 42,
-        autoAlpha: 0,
-        duration: 0.8,
-        stagger: 0.09,
-        ease: 'power3.out',
-        delay: 0.1,
-      });
+      gsap.fromTo(
+        '.hero-reveal:not(.hero-reveal-heading)',
+        {
+          y: 42,
+          autoAlpha: 0,
+        },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          stagger: 0.09,
+          ease: 'power3.out',
+          delay: 0.1,
+          clearProps: 'transform,opacity,visibility',
+        }
+      );
 
-      // Set initial states for underline path
-      const path = document.querySelector('.hero-underline-path') as SVGPathElement;
+      // Set initial states for underline path and animate it draw-in
+      const path = sectionRef.current?.querySelector('.hero-underline-path') as SVGPathElement | null;
       if (path) {
-        const length = path.getTotalLength();
-        gsap.set(path, {
-          strokeDasharray: length,
-          strokeDashoffset: length,
-        });
+        try {
+          const length = path.getTotalLength() || 100;
+          gsap.fromTo(
+            path,
+            {
+              strokeDasharray: length,
+              strokeDashoffset: length,
+            },
+            {
+              strokeDashoffset: 0,
+              duration: 1.2,
+              ease: 'power2.out',
+              delay: 1.1,
+              clearProps: 'strokeDasharray,strokeDashoffset',
+            }
+          );
+        } catch (e) {
+          console.warn('SVG path getTotalLength failed:', e);
+          gsap.set(path, { strokeDasharray: 'none', strokeDashoffset: 0 });
+        }
       }
 
       // Animate characters (premium coming-from-far and joining-together effect)
-      gsap.from('.hero-char', {
-        x: (index, target) => {
-          const word = (target as HTMLElement).closest('.word-wrapper');
-          if (!word) return 0;
-          const chars = Array.from(word.querySelectorAll('.hero-char'));
-          const idx = chars.indexOf(target as HTMLElement);
-          const mid = (chars.length - 1) / 2;
-          return (idx - mid) * 24; // Start spread out horizontally
+      gsap.fromTo(
+        '.hero-char',
+        {
+          x: (index, target) => {
+            const word = (target as HTMLElement).closest('.word-wrapper');
+            if (!word) return 0;
+            const chars = Array.from(word.querySelectorAll('.hero-char'));
+            const idx = chars.indexOf(target as HTMLElement);
+            const mid = (chars.length - 1) / 2;
+            return (idx - mid) * 24; // Start spread out horizontally
+          },
+          y: 0,
+          scale: 2.5,
+          opacity: 0,
+          filter: 'blur(8px)',
         },
-        scale: 2.5,
-        opacity: 0,
-        filter: 'blur(8px)',
-        duration: 1.4,
-        stagger: {
-          each: 0.035,
-          from: 'center',
-        },
-        ease: 'power4.out',
-        delay: 0.2,
-      });
-
-      // Animate underline path draw-in
-      gsap.to('.hero-underline-path', {
-        strokeDashoffset: 0,
-        duration: 1.2,
-        ease: 'power2.out',
-        delay: 1.1,
-      });
+        {
+          x: 0,
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.4,
+          stagger: {
+            each: 0.035,
+            from: 'center',
+          },
+          ease: 'power4.out',
+          delay: 0.2,
+          clearProps: 'transform,opacity,filter',
+        }
+      );
     }, sectionRef);
     return () => ctx.revert();
   }, [start, reduced]);
@@ -170,26 +197,53 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
     return () => section.removeEventListener('mousemove', onMove);
   }, [reduced]);
 
-  // Magnetic letters effect
+  // Magnetic letters effect with optimized cached centers to prevent layout thrashing
   useEffect(() => {
     if (!start || reduced) return;
     const section = sectionRef.current;
     if (!section) return;
 
     const chars = section.querySelectorAll('.hero-char');
-    const isDark = document.documentElement.classList.contains('dark');
-    const activeColor = isDark ? '#6366f1' : '#4f46e5';
+
+    interface CharCache {
+      element: HTMLElement;
+      cx: number; // clean rest center X
+      cy: number; // clean rest center Y
+    }
+
+    let cachedChars: CharCache[] = [];
+
+    const updateCache = () => {
+      cachedChars = Array.from(chars).map((char) => {
+        const el = char as HTMLElement;
+        const rect = el.getBoundingClientRect();
+        // Subtract any current GSAP offsets to get the clean rest center
+        const xOffset = (gsap.getProperty(el, 'x') as number) || 0;
+        const yOffset = (gsap.getProperty(el, 'y') as number) || 0;
+        return {
+          element: el,
+          cx: rect.left + rect.width / 2 - xOffset,
+          cy: rect.top + rect.height / 2 - yOffset,
+        };
+      });
+    };
+
+    // Initialize cache
+    updateCache();
+
+    const onMouseEnter = () => {
+      // Refresh cache when cursor enters to ensure positions are correct
+      updateCache();
+    };
 
     const onMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
+      const isDark = document.documentElement.classList.contains('dark');
+      const activeColor = isDark ? '#6366f1' : '#4f46e5';
 
-      chars.forEach((char) => {
-        const rect = char.getBoundingClientRect();
-        const charCenterX = rect.left + rect.width / 2;
-        const charCenterY = rect.top + rect.height / 2;
-
-        const dx = clientX - charCenterX;
-        const dy = clientY - charCenterY;
+      cachedChars.forEach(({ element, cx, cy }) => {
+        const dx = clientX - cx;
+        const dy = clientY - cy;
         const dist = Math.hypot(dx, dy);
 
         // Magnetic activation radius (95px)
@@ -201,7 +255,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
           const x = dx * pull * 0.35;
           const y = dy * pull * 0.35 - pull * 10.0;
 
-          gsap.to(char, {
+          gsap.to(element, {
             x,
             y,
             scale: 1.18,
@@ -211,7 +265,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
             overwrite: 'auto',
           });
         } else {
-          gsap.to(char, {
+          gsap.to(element, {
             x: 0,
             y: 0,
             scale: 1,
@@ -225,8 +279,8 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
     };
 
     const onMouseLeave = () => {
-      chars.forEach((char) => {
-        gsap.to(char, {
+      cachedChars.forEach(({ element }) => {
+        gsap.to(element, {
           x: 0,
           y: 0,
           scale: 1,
@@ -238,12 +292,16 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
       });
     };
 
+    section.addEventListener('mouseenter', onMouseEnter);
     section.addEventListener('mousemove', onMouseMove);
     section.addEventListener('mouseleave', onMouseLeave);
+    window.addEventListener('resize', updateCache);
 
     return () => {
+      section.removeEventListener('mouseenter', onMouseEnter);
       section.removeEventListener('mousemove', onMouseMove);
       section.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener('resize', updateCache);
     };
   }, [start, reduced]);
 
@@ -266,7 +324,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
         }}
       />
 
-      <div className="container relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center px-6 pt-24">
+      <div className="container relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center px-6 pt-24 pb-16 md:pb-0">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           {/* Left: identity */}
           <div className="max-w-xl">

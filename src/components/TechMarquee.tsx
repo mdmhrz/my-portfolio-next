@@ -89,7 +89,6 @@ const TECH_STACK = [
   { name: "Redis", icon: RedisIcon },
   { name: "TailwindCSS", icon: TailwindIcon },
   { name: "Node.js", icon: NodeIcon },
-  { name: "Python", icon: PythonIcon },
   { name: "Git & CI/CD", icon: GitIcon },
 ];
 
@@ -97,7 +96,7 @@ export function TechMarquee() {
   const items = [...TECH_STACK, ...TECH_STACK];
 
   return (
-    <div className="relative w-full overflow-hidden border-t border-border bg-neutral-50/30 dark:bg-[#07070a]/40 py-8 md:py-10">
+    <div className="relative w-full overflow-hidden border-t border-border bg-neutral-50/30 dark:bg-[#07070a]/40 py-8 md:py-10 mt-12 md:mt-0">
       {/* Linear gradients masking left/right boundaries */}
       <div className="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-32 bg-gradient-to-r from-background to-transparent z-10" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-32 bg-gradient-to-l from-background to-transparent z-10" />
@@ -116,13 +115,13 @@ export function TechMarquee() {
             const Icon = tech.icon;
             return (
               <div key={idx} className="flex items-center gap-4 group">
-                <Icon className="h-5.5 w-5.5 text-muted-foreground/35 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300 shrink-0" />
+                <Icon className="h-5.5 w-5.5 text-muted-foreground/70 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300 shrink-0" />
                 <span
-                  className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground/35 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:scale-105 transition-all duration-300 select-none cursor-pointer whitespace-nowrap"
+                  className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground/70 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:scale-105 transition-all duration-300 select-none cursor-pointer whitespace-nowrap"
                 >
                   {tech.name}
                 </span>
-                <span className="h-1 w-1 rounded-full bg-muted-foreground/20 ml-16 shrink-0" />
+                <span className="h-1 w-1 rounded-full bg-muted-foreground/30 ml-16 shrink-0" />
               </div>
             );
           })}
