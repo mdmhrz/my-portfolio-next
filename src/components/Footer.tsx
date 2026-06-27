@@ -197,10 +197,10 @@ export function Footer() {
           className="relative group/watermark select-none overflow-hidden pt-6 pb-2 text-center"
         >
           <span 
-            className={`block text-[clamp(2rem,11.5vw,7.5rem)] font-extrabold uppercase leading-none tracking-tighter text-transparent select-none pointer-events-none transition-all duration-700 ${
+            className={`block text-[clamp(2rem,11.5vw,7.5rem)] font-extrabold uppercase leading-none tracking-tighter select-none pointer-events-none transition-all duration-700 ${
               isWatermarkHovered 
-                ? "text-muted-foreground/90 dark:text-zinc-400" 
-                : "text-muted-foreground/50 dark:text-zinc-700/60"
+                ? "text-indigo-600/70 dark:text-indigo-400/80" 
+                : "text-muted-foreground/20 dark:text-zinc-700/40"
             }`}
             style={{ 
               WebkitTextFillColor: "transparent",

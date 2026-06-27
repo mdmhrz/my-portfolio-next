@@ -140,7 +140,7 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
     <section
       id="home"
       ref={sectionRef}
-      className="relative min-h-[100svh] w-full overflow-hidden bg-background"
+      className="relative min-h-[100svh] w-full overflow-hidden bg-background select-none"
     >
       {/* WebGL: black & white interactive 3D environment */}
       <Scene reduced={reduced} />

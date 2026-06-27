@@ -35,7 +35,7 @@ export default function Home() {
         <Journey />
         <Experience />
         <Tools />
-        <ArchitectureShowcase />
+        {/* <ArchitectureShowcase /> */}
         <CaseStudies />
         <CTA />
         <Contact />
