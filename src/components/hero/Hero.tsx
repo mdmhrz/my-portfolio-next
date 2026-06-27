@@ -56,11 +56,15 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
         delay: 0.1,
       });
 
-      // Set initial states for underline
-      gsap.set('.hero-underline', {
-        scaleX: 0,
-        transformOrigin: 'left center',
-      });
+      // Set initial states for underline path
+      const path = document.querySelector('.hero-underline-path') as SVGPathElement;
+      if (path) {
+        const length = path.getTotalLength();
+        gsap.set(path, {
+          strokeDasharray: length,
+          strokeDashoffset: length,
+        });
+      }
 
       // Animate characters (premium coming-from-far and joining-together effect)
       gsap.from('.hero-char', {
@@ -84,12 +88,12 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
         delay: 0.2,
       });
 
-      // Animate underline
-      gsap.to('.hero-underline', {
-        scaleX: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        delay: 1.2,
+      // Animate underline path draw-in
+      gsap.to('.hero-underline-path', {
+        strokeDashoffset: 0,
+        duration: 1.2,
+        ease: 'power2.out',
+        delay: 1.1,
       });
     }, sectionRef);
     return () => ctx.revert();
@@ -136,6 +140,83 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
     return () => section.removeEventListener('mousemove', onMove);
   }, [reduced]);
 
+  // Magnetic letters effect
+  useEffect(() => {
+    if (!start || reduced) return;
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const chars = section.querySelectorAll('.hero-char');
+    const isDark = document.documentElement.classList.contains('dark');
+    const activeColor = isDark ? '#6366f1' : '#4f46e5';
+
+    const onMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+
+      chars.forEach((char) => {
+        const rect = char.getBoundingClientRect();
+        const charCenterX = rect.left + rect.width / 2;
+        const charCenterY = rect.top + rect.height / 2;
+
+        const dx = clientX - charCenterX;
+        const dy = clientY - charCenterY;
+        const dist = Math.hypot(dx, dy);
+
+        // Magnetic activation radius (95px)
+        const maxDist = 95;
+
+        if (dist < maxDist) {
+          const pull = (maxDist - dist) / maxDist; // 0 (far) to 1 (near)
+          // Lift letter up and pull toward the cursor slightly
+          const x = dx * pull * 0.35;
+          const y = dy * pull * 0.35 - pull * 10.0;
+
+          gsap.to(char, {
+            x,
+            y,
+            scale: 1.18,
+            color: activeColor,
+            duration: 0.35,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
+        } else {
+          gsap.to(char, {
+            x: 0,
+            y: 0,
+            scale: 1,
+            color: '',
+            duration: 0.65,
+            ease: 'elastic.out(1.1, 0.4)',
+            overwrite: 'auto',
+          });
+        }
+      });
+    };
+
+    const onMouseLeave = () => {
+      chars.forEach((char) => {
+        gsap.to(char, {
+          x: 0,
+          y: 0,
+          scale: 1,
+          color: '',
+          duration: 0.8,
+          ease: 'elastic.out(1.1, 0.3)',
+          overwrite: 'auto',
+        });
+      });
+    };
+
+    section.addEventListener('mousemove', onMouseMove);
+    section.addEventListener('mouseleave', onMouseLeave);
+
+    return () => {
+      section.removeEventListener('mousemove', onMouseMove);
+      section.removeEventListener('mouseleave', onMouseLeave);
+    };
+  }, [start, reduced]);
+
   return (
     <section
       id="home"
@@ -173,7 +254,19 @@ export function Hero({ start, reduced = false }: { start: boolean; reduced?: boo
               </span>{' '}
               <span className="word-wrapper relative inline-block">
                 {splitText("Developer")}
-                <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-indigo-600 dark:bg-indigo-500 hero-underline" />
+                <svg
+                  className="absolute -bottom-3.5 left-0 h-[10px] w-full pointer-events-none"
+                  viewBox="0 0 100 10"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    className="hero-underline-path stroke-indigo-600 dark:stroke-indigo-500"
+                    d="M 2,6 C 20,3 40,3 60,5 C 75,6.5 90,4.5 98,3.5"
+                    fill="none"
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </span>
             </h1>
 
