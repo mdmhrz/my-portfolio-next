@@ -88,9 +88,9 @@ export function SkillsPageContents() {
   const handleDelete = async (id: string) => {
     try {
       await deleteSkill(id);
-      toast.success(“Skill deleted!”);
+      toast.success("Skill deleted!");
     } catch (err) {
-      toast.error(“Failed to delete.”);
+      toast.error("Failed to delete.");
     }
   };
 
@@ -101,55 +101,55 @@ export function SkillsPageContents() {
   }, {});
 
   return (
-    <div className=”space-y-6”>
-      <div className=”flex justify-between items-center”>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className=”text-2xl font-medium tracking-tight”>Skills</h1>
-          <p className=”text-sm text-muted-foreground”>Manage the tools and technologies showcased in your stack.</p>
+          <h1 className="text-2xl font-medium tracking-tight">Skills</h1>
+          <p className="text-sm text-muted-foreground">Manage the tools and technologies showcased in your stack.</p>
         </div>
         <Button onClick={openAddModal}>
-          <Plus className=”h-4 w-4” /> Add Skill
+          <Plus className="h-4 w-4" /> Add Skill
         </Button>
       </div>
 
       {skills.length === 0 ? (
-        <div className=”rounded-2xl border border-dashed border-border bg-card p-12 text-center text-sm text-muted-foreground”>
-          No skills yet. Click “Add Skill” to build your stack.
+        <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center text-sm text-muted-foreground">
+          No skills yet. Click "Add Skill" to build your stack.
         </div>
       ) : (
-        <div className=”space-y-6”>
+        <div className="space-y-6">
           {Object.entries(grouped).map(([category, items]) => (
-            <div key={category} className=”rounded-2xl border border-border bg-card overflow-hidden”>
-              <div className=”bg-muted/50 font-mono text-[10px] uppercase tracking-wider text-muted-foreground border-b border-border px-6 py-3”>
+            <div key={category} className="rounded-2xl border border-border bg-card overflow-hidden">
+              <div className="bg-muted/50 font-mono text-[10px] uppercase tracking-wider text-muted-foreground border-b border-border px-6 py-3">
                 {category}
               </div>
               <Table>
                 <TableBody>
                   {items.map((skill) => (
                     <TableRow key={skill.id}>
-                      <TableCell className=”font-semibold text-foreground”>{skill.name}</TableCell>
-                      <TableCell className=”text-muted-foreground font-mono text-xs”>{skill.icon || “—“}</TableCell>
-                      <TableCell className=”text-muted-foreground font-mono text-xs”>Order {skill.order}</TableCell>
-                      <TableCell className=”text-right space-x-2”>
-                        <Button onClick={() => openEditModal(skill)} variant=”ghost” size=”sm”>
-                          <Edit2 className=”h-3.5 w-3.5” />
+                      <TableCell className="font-semibold text-foreground">{skill.name}</TableCell>
+                      <TableCell className="text-muted-foreground font-mono text-xs">{skill.icon || "—"}</TableCell>
+                      <TableCell className="text-muted-foreground font-mono text-xs">Order {skill.order}</TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button onClick={() => openEditModal(skill)} variant="ghost" size="sm">
+                          <Edit2 className="h-3.5 w-3.5" />
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant=”destructive” size=”sm”>
-                              <Trash2 className=”h-3.5 w-3.5” />
+                            <Button variant="destructive" size="sm">
+                              <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
                               <AlertDialogTitle>Delete Skill</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure you want to delete “{skill.name}”? This action cannot be undone.
+                                Are you sure you want to delete "{skill.name}"? This action cannot be undone.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDelete(skill.id)} className=”bg-red-600 hover:bg-red-700”>
+                              <AlertDialogAction onClick={() => handleDelete(skill.id)} className="bg-red-600 hover:bg-red-700">
                                 Delete
                               </AlertDialogAction>
                             </AlertDialogFooter>

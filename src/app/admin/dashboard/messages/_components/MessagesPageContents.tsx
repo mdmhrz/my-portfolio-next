@@ -158,17 +158,14 @@ export function MessagesPageContents() {
                     {selectedMsg.message}
                   </div>
                 </div>
-              </div>
-
-              </div>
-              <div className="pt-6 border-t border-border/60 flex justify-end">
+              </CardContent>
+              <div className="pt-6 border-t border-border/60 flex justify-end px-6 pb-6 md:px-8 md:pb-8">
                 <Button asChild>
                   <a href={`mailto:${selectedMsg.email}?subject=RE: ${selectedMsg.subject || 'Portfolio Inquiry'}`}>
                     <Mail className="h-4 w-4" /> Reply via Email
                   </a>
                 </Button>
               </div>
-            </CardContent>
             </Card>
           ) : (
             <Card className="flex flex-col items-center justify-center min-h-[450px]">
