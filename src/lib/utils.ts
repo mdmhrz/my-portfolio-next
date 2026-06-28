@@ -6,6 +6,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+/**
+ * Convert arbitrary text into a URL-safe slug (kebab-case).
+ * e.g. "Deploying Next.js!" -> "deploying-next-js"
+ */
+export function slugify(value: string): string {
+  return value
+    .toString()
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "") // strip accents
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "") // remove non-alphanumeric (keep spaces & hyphens)
+    .replace(/[\s_]+/g, "-")       // spaces/underscores -> hyphen
+    .replace(/-+/g, "-")           // collapse repeated hyphens
+    .replace(/^-+|-+$/g, "");      // trim leading/trailing hyphens
+}
+
 export function mapDbProjectToProjectDetails(p: any): ProjectDetails {
   return {
     id: p.slug, // Map database slug to id for frontend compatibility
@@ -19,6 +36,7 @@ export function mapDbProjectToProjectDetails(p: any): ProjectDetails {
     contributions: p.contributions || [],
     live: p.live || "",
     image: p.image,
+    imageAlt: p.imageAlt || undefined,
     span: p.span || undefined,
     role: p.role || undefined,
     company: p.company || undefined,

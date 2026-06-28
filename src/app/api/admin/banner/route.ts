@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
 
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
       },
     });
 
+    revalidatePath("/");
     return NextResponse.json({ success: true, data: banner });
   } catch (error) {
     console.error("POST banner error:", error);

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
 
@@ -14,6 +15,8 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
+
+    console.log("Updating project with data:", { id, imageAlt: body.imageAlt });
 
     const project = await prisma.project.update({
       where: { id },
@@ -32,6 +35,8 @@ export async function PUT(
         contributions: body.contributions || [],
         live: body.live,
         image: body.image,
+        imageAlt: body.imageAlt || null,
+        featured: Boolean(body.featured),
         span: body.span,
         architectureTitle: body.architectureTitle,
         architectureDesc: body.architectureDesc,
@@ -42,10 +47,15 @@ export async function PUT(
       },
     });
 
+    revalidatePath("/");
     return NextResponse.json({ success: true, data: project });
   } catch (error) {
-    console.error("PUT project error:", error);
-    return NextResponse.json({ success: false, error: "Failed to update project" }, { status: 500 });
+    console.error("PUT project error:", error instanceof Error ? error.message : String(error));
+    console.error("Full error:", error);
+    return NextResponse.json({
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to update project"
+    }, { status: 500 });
   }
 }
 
@@ -64,6 +74,7 @@ export async function DELETE(
       where: { id },
     });
 
+    revalidatePath("/");
     return NextResponse.json({ success: true, message: "Project deleted successfully" });
   } catch (error) {
     console.error("DELETE project error:", error);

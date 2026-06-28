@@ -7,6 +7,8 @@ export interface BannerData {
   title: string;
   description: string;
   chips: string[];
+  backgroundImg?: string | null;
+  backgroundAlt?: string | null;
   github?: string | null;
   linkedin?: string | null;
   facebook?: string | null;
@@ -20,6 +22,8 @@ export interface ExperienceData {
   location: string;
   timeline: string;
   description: string;
+  logo?: string | null;
+  logoAlt?: string | null;
   order: number;
   projects?: ProjectData[];
 }
@@ -40,6 +44,8 @@ export interface ProjectData {
   contributions: string[];
   live?: string | null;
   image: string;
+  imageAlt?: string | null;
+  featured: boolean;
   span?: string | null;
   architectureTitle?: string | null;
   architectureDesc?: string | null;
@@ -47,6 +53,34 @@ export interface ProjectData {
   metrics?: any;
   order: number;
   experienceId?: string | null;
+}
+
+export interface AboutData {
+  id?: string;
+  bio: string;
+  longBio?: string | null;
+  resumeUrl?: string | null;
+  avatarUrl?: string | null;
+  avatarAlt?: string | null;
+  location?: string | null;
+  availability?: string | null;
+}
+
+export interface SiteSettingsData {
+  id?: string;
+  ctaHeadline?: string | null;
+  ctaSubtext?: string | null;
+  footerText?: string | null;
+}
+
+export interface SkillData {
+  id: string;
+  name: string;
+  category: string;
+  icon?: string | null;
+  iconAlt?: string | null;
+  order: number;
+  createdAt: string;
 }
 
 export interface MessageData {
@@ -66,6 +100,8 @@ export interface BlogData {
   content: string;
   excerpt: string;
   coverImage: string;
+  coverImageAlt?: string | null;
+  category?: string | null;
   published: boolean;
   createdAt: string;
   updatedAt: string;
@@ -77,6 +113,9 @@ interface PortfolioStore {
   projects: ProjectData[];
   messages: MessageData[];
   blogs: BlogData[];
+  about: AboutData | null;
+  settings: SiteSettingsData | null;
+  skills: SkillData[];
   loading: Record<string, boolean>;
 
   fetchBanner: () => Promise<void>;
@@ -101,11 +140,25 @@ interface PortfolioStore {
   updateBlog: (id: string, data: Partial<BlogData>) => Promise<void>;
   deleteBlog: (id: string) => Promise<void>;
 
+  fetchAbout: () => Promise<void>;
+  updateAbout: (data: AboutData) => Promise<void>;
+
+  fetchSettings: () => Promise<void>;
+  updateSettings: (data: SiteSettingsData) => Promise<void>;
+
+  fetchSkills: () => Promise<void>;
+  createSkill: (data: Omit<SkillData, "id" | "createdAt">) => Promise<void>;
+  updateSkill: (id: string, data: Partial<SkillData>) => Promise<void>;
+  deleteSkill: (id: string) => Promise<void>;
+
   setBanner: (banner: BannerData | null) => void;
   setExperiences: (experiences: ExperienceData[]) => void;
   setProjects: (projects: ProjectData[]) => void;
   setMessages: (messages: MessageData[]) => void;
   setBlogs: (blogs: BlogData[]) => void;
+  setAbout: (about: AboutData | null) => void;
+  setSettings: (settings: SiteSettingsData | null) => void;
+  setSkills: (skills: SkillData[]) => void;
 }
 
 export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
@@ -114,6 +167,9 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   projects: [],
   messages: [],
   blogs: [],
+  about: null,
+  settings: null,
+  skills: [],
   loading: {},
 
   setBanner: (banner) => set({ banner }),
@@ -121,6 +177,9 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   setProjects: (projects) => set({ projects }),
   setMessages: (messages) => set({ messages }),
   setBlogs: (blogs) => set({ blogs }),
+  setAbout: (about) => set({ about }),
+  setSettings: (settings) => set({ settings }),
+  setSkills: (skills) => set({ skills }),
 
   setLoading: (key: string, val: boolean) => {
     set((state) => ({ loading: { ...state.loading, [key]: val } }));
@@ -288,6 +347,83 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
       set((state) => ({ blogs: state.blogs.filter((b) => b.id !== id) }));
     } catch (err) {
       console.error("Error deleting blog:", err);
+      throw err;
+    }
+  },
+
+  // About Actions
+  fetchAbout: async () => {
+    try {
+      const res = await api.get("/admin/about");
+      set({ about: res.data.data });
+    } catch (err) {
+      console.error("Error fetching about:", err);
+    }
+  },
+  updateAbout: async (data) => {
+    try {
+      const res = await api.post("/admin/about", data);
+      set({ about: res.data.data });
+    } catch (err) {
+      console.error("Error updating about:", err);
+      throw err;
+    }
+  },
+
+  // SiteSettings Actions
+  fetchSettings: async () => {
+    try {
+      const res = await api.get("/admin/settings");
+      set({ settings: res.data.data });
+    } catch (err) {
+      console.error("Error fetching settings:", err);
+    }
+  },
+  updateSettings: async (data) => {
+    try {
+      const res = await api.post("/admin/settings", data);
+      set({ settings: res.data.data });
+    } catch (err) {
+      console.error("Error updating settings:", err);
+      throw err;
+    }
+  },
+
+  // Skills Actions
+  fetchSkills: async () => {
+    try {
+      const res = await api.get("/admin/skills");
+      set({ skills: res.data.data });
+    } catch (err) {
+      console.error("Error fetching skills:", err);
+    }
+  },
+  createSkill: async (data) => {
+    try {
+      const res = await api.post("/admin/skills", data);
+      set((state) => ({ skills: [...state.skills, res.data.data].sort((a, b) => a.order - b.order) }));
+    } catch (err) {
+      console.error("Error creating skill:", err);
+      throw err;
+    }
+  },
+  updateSkill: async (id, data) => {
+    try {
+      const res = await api.put(`/admin/skills/${id}`, data);
+      set((state) => ({
+        skills: state.skills.map((s) => (s.id === id ? res.data.data : s)).sort((a, b) => a.order - b.order),
+      }));
+    } catch (err) {
+      console.error("Error updating skill:", err);
+      throw err;
+    }
+  },
+  deleteSkill: async (id) => {
+    try {
+      await api.delete(`/admin/skills/${id}`);
+      set((state) => ({ skills: state.skills.filter((s) => s.id !== id) }));
+    } catch (err) {
+      console.error("Error deleting skill:", err);
       throw err;
     }
   },

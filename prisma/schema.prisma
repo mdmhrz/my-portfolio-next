@@ -69,17 +69,19 @@ model Verification {
 
 // --- CMS Portfolio Models ---
 model Banner {
-  id          String   @id @default("singleton")
-  name        String
-  title       String
-  description String
-  chips       String[] // e.g., ["Frontend Dev @ Xgenious", "Docker · AWS"]
-  github      String?
-  linkedin    String?
-  facebook    String?
-  email       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default("singleton")
+  name          String
+  title         String
+  description   String
+  backgroundImg String?  // Hero section background image
+  backgroundAlt String?  // Alt text for background image
+  chips         String[] // e.g., ["Frontend Dev @ Xgenious", "Docker · AWS"]
+  github        String?
+  linkedin      String?
+  facebook      String?
+  email         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("banner")
 }
@@ -91,6 +93,8 @@ model Experience {
   location    String
   timeline    String    // e.g., "Jul 2025 — Present"
   description String
+  logo        String?   // Company logo URL
+  logoAlt     String?   // Alt text for company logo
   order       Int       @default(0)
   projects    Project[]
   createdAt   DateTime  @default(now())
@@ -115,6 +119,8 @@ model Project {
   contributions     String[]
   live              String?
   image             String
+  imageAlt          String?     // Alt text for image
+  featured          Boolean     @default(false) // Show in CaseStudies hero section
   span              String?     // For UI grid layout e.g. "lg:col-span-7"
   architectureTitle String?
   architectureDesc  String?
@@ -133,6 +139,7 @@ model Message {
   id        String   @id @default(uuid())
   name      String
   email     String
+  subject   String?
   type      String
   message   String
   read      Boolean  @default(false)
@@ -142,15 +149,54 @@ model Message {
 }
 
 model Blog {
-  id          String   @id @default(uuid())
-  title       String
-  slug        String   @unique
-  content     String   // Markdown string
-  excerpt     String
-  coverImage  String
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(uuid())
+  title          String
+  slug           String   @unique
+  content        String   // Markdown string
+  excerpt        String
+  coverImage     String
+  coverImageAlt  String?  // Alt text for cover image
+  category       String?  // e.g. "Next.js", "DevOps" — used for listing filters
+  published      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("blog")
+}
+
+// --- About / Singleton Models ---
+model About {
+  id           String   @id @default("singleton")
+  bio          String   // Short bio for Journey/Hero section
+  longBio      String?  // Extended bio paragraph
+  resumeUrl    String?  // Public PDF link
+  avatarUrl    String?  // Profile photo (Cloudinary URL)
+  avatarAlt    String?  // Alt text for avatar
+  location     String?
+  availability String?  // e.g. "Open to work"
+  updatedAt    DateTime @updatedAt
+
+  @@map("about")
+}
+
+model SiteSettings {
+  id          String   @id @default("singleton")
+  ctaHeadline String?
+  ctaSubtext  String?
+  footerText  String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model Skill {
+  id       String   @id @default(uuid())
+  name     String
+  category String   // "frontend" | "backend" | "devops" | "tools"
+  icon     String?  // icon identifier or SVG string / image URL
+  iconAlt  String?  // Alt text for skill icon
+  order    Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("skill")
 }

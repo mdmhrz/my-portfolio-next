@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { slugify } from "@/lib/utils";
 
 export async function GET() {
   try {
@@ -25,14 +27,20 @@ export async function POST(request: Request) {
     const blog = await prisma.blog.create({
       data: {
         title: body.title,
-        slug: body.slug,
+        // Always store a URL-safe slug (never spaces or special chars).
+        slug: slugify(body.slug || body.title),
         content: body.content,
         excerpt: body.excerpt,
         coverImage: body.coverImage,
+        coverImageAlt: body.coverImageAlt || null,
+        category: body.category || null,
         published: body.published ?? false,
       },
     });
 
+    revalidatePath("/blogs");
+    revalidatePath("/");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json({ success: true, data: blog });
   } catch (error) {
     console.error("POST blog error:", error);

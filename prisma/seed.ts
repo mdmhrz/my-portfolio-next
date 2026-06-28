@@ -6,21 +6,32 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Starting database seed...");
 
-  // 1. Create Default Admin User
-  const adminEmail = "mdmobarakhossainrazu@gmail.com";
-  let adminUser = await prisma.user.findUnique({
-    where: { email: adminEmail },
-  });
+  // 1. Create Default Admin User (credentials come from .env — never hardcoded)
+  const adminEmail = process.env.SEED_ADMIN_EMAIL;
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+  const adminName = process.env.SEED_ADMIN_NAME;
 
-  if (!adminUser) {
+  // Skip creation entirely if any admin already exists (env vars not required on re-runs)
+  const existingAdmin = await prisma.user.findFirst({ where: { role: "admin" } });
+
+  if (existingAdmin) {
+    console.log("✅ Admin user already exists");
+  } else {
+    if (!adminEmail || !adminPassword || !adminName) {
+      throw new Error(
+        "No admin user found, and SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD / SEED_ADMIN_NAME " +
+          "are not set in .env. Set these before running the seed."
+      );
+    }
+
     console.log("👤 Creating default admin user via Better-Auth API...");
-    
+
     // Call the Better-Auth programmatic API to create the user and account records
     await auth.api.signUpEmail({
       body: {
         email: adminEmail,
-        password: "admin123",
-        name: "Mobarak Hossain Razu",
+        password: adminPassword,
+        name: adminName,
       },
     });
 
@@ -33,9 +44,7 @@ async function main() {
       },
     });
 
-    console.log("✅ Admin user created (Email: mdmobarakhossainrazu@gmail.com, Password: admin123)");
-  } else {
-    console.log("✅ Admin user already exists");
+    console.log(`✅ Admin user created (${adminEmail})`);
   }
 
   // 2. Create Singleton Banner Info
@@ -130,6 +139,7 @@ async function main() {
       live: "https://nexdrop.mhrazu.com",
       image: "/nex-drop.png",
       span: "lg:col-span-7",
+      featured: true,
       architectureTitle: "Monorepo System Design",
       architectureDesc: "A clean monorepo architecture featuring an Express API backend, a Next.js client application, and a containerized nginx reverse proxy with SSL termination.",
       architectureTree: `nex-drop/
@@ -185,6 +195,7 @@ async function main() {
       live: "https://taskip.app",
       image: "/projects/taskip.png",
       span: "lg:col-span-5",
+      featured: true,
       architectureTitle: "Modular App Router Architecture",
       architectureDesc: "Structured under Next.js App Router with separated main panels, public auth contexts, and dynamic workspaces for high-security isolation.",
       architectureTree: `taskip-client/
@@ -297,6 +308,7 @@ async function main() {
           contributions: proj.contributions,
           live: proj.live,
           image: proj.image,
+          featured: proj.featured ?? false,
           span: proj.span,
           architectureTitle: proj.architectureTitle,
           architectureDesc: proj.architectureDesc,
@@ -310,6 +322,74 @@ async function main() {
     } else {
       console.log(`✅ Project "${proj.title}" already exists`);
     }
+  }
+
+  // 5. Ensure homepage case-study projects are flagged featured.
+  // Idempotent: nexdrop & taskip drive the "Selected work" section (CaseStudies).
+  // Matters after the `add_featured_subject_about_settings_skills` migration, which
+  // defaults every existing project to featured = false.
+  const featuredResult = await prisma.project.updateMany({
+    where: { slug: { in: ["nexdrop", "taskip"] } },
+    data: { featured: true },
+  });
+  console.log(`★ Flagged ${featuredResult.count} project(s) as featured (nexdrop, taskip)`);
+
+  // 6. About singleton — create with defaults only if missing (never overwrites).
+  const about = await prisma.about.findUnique({ where: { id: "singleton" } });
+  if (!about) {
+    await prisma.about.create({
+      data: {
+        id: "singleton",
+        bio: "Full-stack developer building production SaaS, CRM, and web apps.",
+        location: "Dhaka, Bangladesh",
+        availability: "Available for projects & roles",
+      },
+    });
+    console.log("✅ Default About singleton seeded");
+  } else {
+    console.log("✅ About already exists — skipped");
+  }
+
+  // 7. SiteSettings singleton — create with defaults only if missing (never overwrites).
+  const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+  if (!settings) {
+    await prisma.siteSettings.create({
+      data: {
+        id: "singleton",
+        ctaHeadline: "Let's build something solid.",
+        ctaSubtext:
+          "Frontend & full-stack engineering — from Next.js interfaces to Node & Go services. Open to freelance work, consulting, and full-time roles.",
+        footerText: "© Mobarak Hossain Razu",
+      },
+    });
+    console.log("✅ Default SiteSettings singleton seeded");
+  } else {
+    console.log("✅ SiteSettings already exists — skipped");
+  }
+
+  // 8. Starter skills — seed only if the table is empty (never duplicates).
+  const skillCount = await prisma.skill.count();
+  if (skillCount === 0) {
+    const starterSkills = [
+      { name: "TypeScript", category: "frontend", order: 0 },
+      { name: "React", category: "frontend", order: 1 },
+      { name: "Next.js", category: "frontend", order: 2 },
+      { name: "Tailwind CSS", category: "frontend", order: 3 },
+      { name: "Node.js", category: "backend", order: 10 },
+      { name: "Express.js", category: "backend", order: 11 },
+      { name: "Go", category: "backend", order: 12 },
+      { name: "PostgreSQL", category: "database", order: 20 },
+      { name: "Prisma", category: "database", order: 21 },
+      { name: "MongoDB", category: "database", order: 22 },
+      { name: "Docker", category: "devops", order: 30 },
+      { name: "AWS", category: "devops", order: 31 },
+      { name: "Git", category: "tools", order: 40 },
+      { name: "GitHub Actions", category: "tools", order: 41 },
+    ];
+    await prisma.skill.createMany({ data: starterSkills });
+    console.log(`✅ ${starterSkills.length} starter skills seeded`);
+  } else {
+    console.log(`✅ Skills already present (${skillCount}) — skipped`);
   }
 
   console.log("🌱 Database seeding complete!");

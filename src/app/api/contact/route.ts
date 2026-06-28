@@ -5,6 +5,7 @@ import * as z from "zod";
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
+  subject: z.string().optional(),
   type: z.enum(["Freelance project", "Full-time role", "Collaboration", "Other"]),
   message: z.string().min(1, "Message is required"),
 });
@@ -18,6 +19,7 @@ export async function POST(request: Request) {
       data: {
         name: validated.name,
         email: validated.email,
+        subject: validated.subject,
         type: validated.type,
         message: validated.message,
       },

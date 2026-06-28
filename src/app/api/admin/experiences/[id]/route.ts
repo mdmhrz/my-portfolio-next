@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
 
@@ -27,6 +28,7 @@ export async function PUT(
       },
     });
 
+    revalidatePath("/");
     return NextResponse.json({ success: true, data: experience });
   } catch (error) {
     console.error("PUT experience error:", error);
@@ -49,6 +51,7 @@ export async function DELETE(
       where: { id },
     });
 
+    revalidatePath("/");
     return NextResponse.json({ success: true, message: "Experience deleted successfully" });
   } catch (error) {
     console.error("DELETE experience error:", error);

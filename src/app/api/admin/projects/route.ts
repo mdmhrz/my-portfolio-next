@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
 
@@ -38,6 +39,8 @@ export async function POST(request: Request) {
         contributions: body.contributions || [],
         live: body.live,
         image: body.image,
+        imageAlt: body.imageAlt || null,
+        featured: Boolean(body.featured),
         span: body.span,
         architectureTitle: body.architectureTitle,
         architectureDesc: body.architectureDesc,
@@ -48,6 +51,7 @@ export async function POST(request: Request) {
       },
     });
 
+    revalidatePath("/");
     return NextResponse.json({ success: true, data: project });
   } catch (error) {
     console.error("POST project error:", error);

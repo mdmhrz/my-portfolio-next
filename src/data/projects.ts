@@ -10,6 +10,7 @@ export interface ProjectDetails {
   contributions: string[];
   live: string;
   image: string;
+  imageAlt?: string;
   span?: string; // For layout grid spanning in CaseStudies
 
   // Premium fields for details page/modal

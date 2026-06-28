@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { slugify } from "@/lib/utils";
 
 export async function PUT(
   request: Request,
@@ -19,18 +21,28 @@ export async function PUT(
       where: { id },
       data: {
         title: body.title,
-        slug: body.slug,
+        slug: slugify(body.slug || body.title),
         content: body.content,
         excerpt: body.excerpt,
         coverImage: body.coverImage,
+        coverImageAlt: body.coverImageAlt || null,
+        category: body.category || null,
         published: body.published,
       },
     });
 
+    revalidatePath(`/blogs/${blog.slug}`);
+    revalidatePath("/blogs");
+    revalidatePath("/");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json({ success: true, data: blog });
   } catch (error) {
-    console.error("PUT blog error:", error);
-    return NextResponse.json({ success: false, error: "Failed to update blog" }, { status: 500 });
+    console.error("PUT blog error:", error instanceof Error ? error.message : String(error));
+    console.error("Full error:", error);
+    return NextResponse.json({
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to update blog"
+    }, { status: 500 });
   }
 }
 
@@ -49,6 +61,9 @@ export async function DELETE(
       where: { id },
     });
 
+    revalidatePath("/blogs");
+    revalidatePath("/");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json({ success: true, message: "Blog deleted successfully" });
   } catch (error) {
     console.error("DELETE blog error:", error);
