@@ -13,13 +13,8 @@ export default function OgImage() {
   const logoSrc = `data:image/svg+xml;base64,${Buffer.from(svgWhite).toString("base64")}`;
 
   let fontData: ArrayBuffer | undefined;
-  try {
-    fontData = readFileSync(
-      join(process.cwd(), "public/fonts/Satoshi-Bold.woff2")
-    ).buffer as ArrayBuffer;
-  } catch {
-    // falls back to default sans-serif
-  }
+  // Font loading is disabled due to build issues with woff2 parsing
+  // Falls back to sans-serif which renders correctly
 
   return new ImageResponse(
     (
