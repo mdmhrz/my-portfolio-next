@@ -24,17 +24,24 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+    const content: string = body.content || "";
+    const readingTime = Math.max(1, Math.ceil(content.split(/\s+/).filter(Boolean).length / 200));
+
     const blog = await prisma.blog.create({
       data: {
         title: body.title,
-        // Always store a URL-safe slug (never spaces or special chars).
         slug: slugify(body.slug || body.title),
-        content: body.content,
-        excerpt: body.excerpt,
-        coverImage: body.coverImage,
+        content,
+        excerpt: body.excerpt || "",
+        coverImage: body.coverImage || null,
         coverImageAlt: body.coverImageAlt || null,
         category: body.category || null,
+        tags: Array.isArray(body.tags) ? body.tags : [],
+        featured: body.featured ?? false,
         published: body.published ?? false,
+        readingTime,
+        metaTitle: body.metaTitle || null,
+        metaDescription: body.metaDescription || null,
       },
     });
 

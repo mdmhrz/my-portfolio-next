@@ -25,6 +25,16 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       lerp: 0.08,
       smoothWheel: true,
       wheelMultiplier: 1,
+      // Yield to native scrolling for any element that is itself scrollable
+      // (dialogs, sidebars, overflow panels) — no need for data-lenis-prevent anywhere.
+      prevent: (node: Element) => {
+        const style = window.getComputedStyle(node);
+        const overflowY = style.overflowY;
+        return (
+          (overflowY === 'auto' || overflowY === 'scroll') &&
+          node.scrollHeight > node.clientHeight
+        );
+      },
     });
     lenisRef.current = lenis;
 

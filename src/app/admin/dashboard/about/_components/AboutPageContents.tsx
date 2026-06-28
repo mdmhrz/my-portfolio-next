@@ -10,9 +10,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePortfolioStore, type AboutData } from "@/store/usePortfolioStore";
 import { ImageUpload } from "../../_components/ImageUpload";
+import { PageHeader } from "@/components/admin/PageHeader";
+import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 
 export function AboutPageContents() {
   const { about, fetchAbout, updateAbout } = usePortfolioStore();
+  const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     bio: "",
@@ -25,7 +28,7 @@ export function AboutPageContents() {
   });
 
   useEffect(() => {
-    fetchAbout();
+    fetchAbout().finally(() => setIsLoading(false));
   }, [fetchAbout]);
 
   useEffect(() => {
@@ -43,11 +46,11 @@ export function AboutPageContents() {
   }, [about]);
 
   const handleAvatarUrlChange = useCallback((url: string) => {
-    setFormData(prev => ({ ...prev, avatarUrl: url }));
+    setFormData((prev) => ({ ...prev, avatarUrl: url }));
   }, []);
 
   const handleAvatarAltChange = useCallback((altText: string) => {
-    setFormData(prev => ({ ...prev, avatarAlt: altText }));
+    setFormData((prev) => ({ ...prev, avatarAlt: altText }));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,25 +67,29 @@ export function AboutPageContents() {
         availability: formData.availability || null,
       } as AboutData);
       toast.success("About section saved!");
-    } catch (err) {
+    } catch {
       toast.error("Failed to save about section.");
     } finally {
       setLoading(false);
     }
   };
 
+  if (isLoading) {
+    return <FormPageSkeleton fields={4} hasGridRow />;
+  }
+
   return (
     <div className="max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-medium tracking-tight">About</h1>
-        <p className="text-sm text-muted-foreground">Your bio, resume link, avatar, and availability shown across the site.</p>
-      </div>
+      <PageHeader
+        title="About"
+        description="Your bio, resume link, avatar, and availability shown across the site."
+      />
 
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="bio" className="font-mono text-[10px] uppercase tracking-wider font-semibold">Short Bio *</Label>
+              <Label htmlFor="bio" className="text-xs font-semibold">Short Bio *</Label>
               <Textarea
                 id="bio"
                 required
@@ -93,7 +100,7 @@ export function AboutPageContents() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="longBio" className="font-mono text-[10px] uppercase tracking-wider font-semibold">Long Bio</Label>
+              <Label htmlFor="longBio" className="text-xs font-semibold">Long Bio</Label>
               <Textarea
                 id="longBio"
                 rows={5}
@@ -104,7 +111,7 @@ export function AboutPageContents() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="resumeUrl" className="font-mono text-[10px] uppercase tracking-wider">Resume URL (PDF)</Label>
+                <Label htmlFor="resumeUrl" className="text-xs font-semibold">Resume URL (PDF)</Label>
                 <Input
                   id="resumeUrl"
                   type="url"
@@ -113,7 +120,7 @@ export function AboutPageContents() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="location" className="font-mono text-[10px] uppercase tracking-wider">Location</Label>
+                <Label htmlFor="location" className="text-xs font-semibold">Location</Label>
                 <Input
                   id="location"
                   type="text"
@@ -125,7 +132,7 @@ export function AboutPageContents() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="availability" className="font-mono text-[10px] uppercase tracking-wider">Availability</Label>
+              <Label htmlFor="availability" className="text-xs font-semibold">Availability</Label>
               <Input
                 id="availability"
                 type="text"
@@ -147,10 +154,7 @@ export function AboutPageContents() {
             </div>
 
             <div className="flex justify-end">
-              <Button
-                type="submit"
-                disabled={loading}
-              >
+              <Button type="submit" disabled={loading}>
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                 Save Changes
               </Button>

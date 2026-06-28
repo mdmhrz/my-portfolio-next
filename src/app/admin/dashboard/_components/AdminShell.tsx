@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { toast } from "sonner";
@@ -59,35 +59,53 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       createdAt: m.createdAt,
     }));
 
+  // Full-screen mode for blog editor — hides admin chrome so the editor owns the viewport
+  const pathname = usePathname();
+  const isEditorRoute =
+    pathname === '/admin/dashboard/blogs/new' ||
+    /^\/admin\/dashboard\/blogs\/[^/]+\/edit$/.test(pathname);
+
   return (
     <div className="flex flex-col md:flex-row h-dvh overflow-hidden bg-background text-foreground">
-      {/* Desktop collapsible sidebar (hidden on mobile) */}
-      <DesktopSidebar
-        unreadCount={unreadCount}
-        isCollapsed={isCollapsed}
-        onToggleCollapse={handleToggleCollapse}
-      />
-
-      {/* Main column: topbar + scrollable content */}
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        <AdminTopbar
+      {/* Desktop collapsible sidebar — hidden in editor mode */}
+      {!isEditorRoute && (
+        <DesktopSidebar
           unreadCount={unreadCount}
-          recentMessages={recentMessages}
-          onLogout={handleLogout}
-          onOpenMobileNav={() => setMobileNavOpen(true)}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={handleToggleCollapse}
         />
+      )}
 
-        <main className="flex-1 overflow-y-auto p-6 md:p-10">
+      {/* Main column: topbar + content */}
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+        {/* Admin topbar — hidden in editor mode (editor has its own topbar) */}
+        {!isEditorRoute && (
+          <AdminTopbar
+            unreadCount={unreadCount}
+            recentMessages={recentMessages}
+            onLogout={handleLogout}
+            onOpenMobileNav={() => setMobileNavOpen(true)}
+          />
+        )}
+
+        {/* Regular pages: padded scrollable container. Editor: raw flex column. */}
+        <main className={
+          isEditorRoute
+            ? "flex-1 flex flex-col min-h-0 overflow-hidden"
+            : "flex-1 overflow-y-auto p-6 md:p-10"
+        }>
           {children}
         </main>
       </div>
 
-      {/* Mobile drawer (controlled by topbar hamburger) */}
-      <MobileSidebar
-        unreadCount={unreadCount}
-        open={mobileNavOpen}
-        onOpenChange={setMobileNavOpen}
-      />
+      {/* Mobile drawer — hidden in editor mode */}
+      {!isEditorRoute && (
+        <MobileSidebar
+          unreadCount={unreadCount}
+          open={mobileNavOpen}
+          onOpenChange={setMobileNavOpen}
+        />
+      )}
     </div>
   );
 }

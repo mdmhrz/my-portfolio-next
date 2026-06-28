@@ -149,17 +149,23 @@ model Message {
 }
 
 model Blog {
-  id             String   @id @default(uuid())
-  title          String
-  slug           String   @unique
-  content        String   // Markdown string
-  excerpt        String
-  coverImage     String
-  coverImageAlt  String?  // Alt text for cover image
-  category       String?  // e.g. "Next.js", "DevOps" — used for listing filters
-  published      Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  content         String   // Markdown string
+  excerpt         String
+  coverImage      String?
+  coverImageAlt   String?
+  category        String?
+  tags            String[]
+  featured        Boolean  @default(false)
+  published       Boolean  @default(false)
+  readingTime     Int      @default(0)
+  views           Int      @default(0)
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("blog")
 }

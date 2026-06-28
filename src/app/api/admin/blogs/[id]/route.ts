@@ -16,18 +16,25 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
+    const content: string = body.content || "";
+    const readingTime = Math.max(1, Math.ceil(content.split(/\s+/).filter(Boolean).length / 200));
 
     const blog = await prisma.blog.update({
       where: { id },
       data: {
         title: body.title,
         slug: slugify(body.slug || body.title),
-        content: body.content,
-        excerpt: body.excerpt,
-        coverImage: body.coverImage,
+        content,
+        excerpt: body.excerpt || "",
+        coverImage: body.coverImage || null,
         coverImageAlt: body.coverImageAlt || null,
         category: body.category || null,
-        published: body.published,
+        tags: Array.isArray(body.tags) ? body.tags : [],
+        featured: body.featured ?? false,
+        published: body.published ?? false,
+        readingTime,
+        metaTitle: body.metaTitle || null,
+        metaDescription: body.metaDescription || null,
       },
     });
 
@@ -38,7 +45,6 @@ export async function PUT(
     return NextResponse.json({ success: true, data: blog });
   } catch (error) {
     console.error("PUT blog error:", error instanceof Error ? error.message : String(error));
-    console.error("Full error:", error);
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : "Failed to update blog"
@@ -57,9 +63,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await prisma.blog.delete({
-      where: { id },
-    });
+    await prisma.blog.delete({ where: { id } });
 
     revalidatePath("/blogs");
     revalidatePath("/");

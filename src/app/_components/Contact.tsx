@@ -111,7 +111,7 @@ export function Contact() {
           {/* Left: info */}
           <div>
             <Reveal>
-              <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+              <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
                 Contact
               </span>
             </Reveal>
@@ -133,7 +133,7 @@ export function Contact() {
                     <div className="flex h-full items-start gap-4 rounded-2xl border border-border bg-card p-5 transition-colors duration-300 hover:border-foreground/20">
                       <Icon className="mt-0.5 h-5 w-5 shrink-0 text-foreground" />
                       <div>
-                        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+                        <div className="text-xs font-semibold text-muted-foreground">
                           {label}
                         </div>
                         <div className="mt-1 break-words text-sm font-medium text-foreground">

@@ -8,13 +8,8 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function OgImage() {
-  const svgRaw = readFileSync(join(process.cwd(), "public/razu-logo.svg"), "utf-8");
-  const svgWhite = svgRaw.replace(/currentColor/g, "#ffffff");
-  const logoSrc = `data:image/svg+xml;base64,${Buffer.from(svgWhite).toString("base64")}`;
-
-  let fontData: ArrayBuffer | undefined;
-  // Font loading is disabled due to build issues with woff2 parsing
-  // Falls back to sans-serif which renders correctly
+  const photoData = readFileSync(join(process.cwd(), "public/mobarak-hossain.png"));
+  const photoSrc = `data:image/png;base64,${photoData.toString("base64")}`;
 
   return new ImageResponse(
     (
@@ -23,104 +18,147 @@ export default function OgImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
           background: "#09090b",
-          fontFamily: fontData ? "Satoshi" : "sans-serif",
+          fontFamily: "sans-serif",
+          overflow: "hidden",
         }}
       >
-        {/* Indigo radial glow */}
+        {/* ── Left: Photo panel ── */}
         <div
           style={{
-            position: "absolute",
-            top: 80,
-            left: 250,
-            width: 700,
-            height: 350,
-            background:
-              "radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 72%)",
+            width: 440,
+            height: 630,
+            flexShrink: 0,
             display: "flex",
-          }}
-        />
-
-        {/* Logo mark */}
-        <img
-          src={logoSrc}
-          width={110}
-          height={88}
-          alt=""
-          style={{ marginBottom: 32 }}
-        />
-
-        {/* Full name */}
-        <div
-          style={{
-            fontSize: 54,
-            fontWeight: 700,
-            color: "#fafafa",
-            letterSpacing: "-1.5px",
-            display: "flex",
-            marginBottom: 12,
+            position: "relative",
+            backgroundImage: `url(${photoSrc})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center top",
           }}
         >
-          Mobarak Hossain Razu
+          {/* Gradient: right edge fades into background */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: 160,
+              height: "100%",
+              background: "linear-gradient(to right, transparent, #09090b)",
+              display: "flex",
+            }}
+          />
+          {/* Gradient: bottom edge */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              height: 100,
+              background: "linear-gradient(to bottom, transparent, #09090b)",
+              display: "flex",
+            }}
+          />
         </div>
 
-        {/* Role line */}
+        {/* ── Right: Text content ── */}
         <div
           style={{
-            fontSize: 20,
-            color: "#71717a",
-            letterSpacing: "3px",
-            textTransform: "uppercase",
+            flex: 1,
             display: "flex",
-            marginBottom: 40,
+            flexDirection: "column",
+            justifyContent: "center",
+            paddingLeft: 48,
+            paddingRight: 72,
+            position: "relative",
           }}
         >
-          Full-Stack Developer
-        </div>
+          {/* Indigo radial glow */}
+          <div
+            style={{
+              position: "absolute",
+              top: 60,
+              right: 40,
+              width: 480,
+              height: 300,
+              background:
+                "radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 70%)",
+              display: "flex",
+            }}
+          />
 
-        {/* Tech badges */}
-        <div style={{ display: "flex", gap: 10 }}>
-          {["Next.js", "Go", "PostgreSQL", "Docker", "AWS"].map((tech) => (
-            <div
-              key={tech}
-              style={{
-                fontSize: 14,
-                color: "#818cf8",
-                background: "rgba(99,102,241,0.10)",
-                border: "1px solid rgba(99,102,241,0.28)",
-                borderRadius: 8,
-                padding: "5px 16px",
-                display: "flex",
-              }}
-            >
-              {tech}
-            </div>
-          ))}
-        </div>
+          {/* Name */}
+          <div
+            style={{
+              fontSize: 50,
+              fontWeight: 700,
+              color: "#fafafa",
+              letterSpacing: "-1.5px",
+              lineHeight: 1.1,
+              display: "flex",
+              marginBottom: 20,
+            }}
+          >
+            Mobarak Hossain Razu
+          </div>
 
-        {/* Domain watermark */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 36,
-            right: 52,
-            fontSize: 15,
-            color: "#3f3f46",
-            display: "flex",
-          }}
-        >
-          mhrazu.com
+          {/* Role badges */}
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              marginBottom: 28,
+            }}
+          >
+            {["Frontend Developer", "Full-Stack Engineer"].map((role) => (
+              <div
+                key={role}
+                style={{
+                  fontSize: 15,
+                  color: "#818cf8",
+                  background: "rgba(99,102,241,0.10)",
+                  border: "1px solid rgba(99,102,241,0.30)",
+                  borderRadius: 6,
+                  padding: "5px 16px",
+                  display: "flex",
+                  letterSpacing: "0.3px",
+                }}
+              >
+                {role}
+              </div>
+            ))}
+          </div>
+
+          {/* Description */}
+          <div
+            style={{
+              fontSize: 22,
+              color: "#71717a",
+              lineHeight: 1.55,
+              display: "flex",
+              flexWrap: "wrap",
+              maxWidth: 520,
+              marginBottom: 44,
+            }}
+          >
+            Building fast, scalable web applications with React, Next.js, Go & PostgreSQL.
+          </div>
+
+          {/* Domain */}
+          <div
+            style={{
+              fontSize: 15,
+              color: "#3f3f46",
+              letterSpacing: "1px",
+              display: "flex",
+            }}
+          >
+            mhrazu.com
+          </div>
         </div>
       </div>
     ),
-    {
-      ...size,
-      ...(fontData
-        ? { fonts: [{ name: "Satoshi", data: fontData, style: "normal", weight: 700 }] }
-        : {}),
-    }
+    { ...size }
   );
 }

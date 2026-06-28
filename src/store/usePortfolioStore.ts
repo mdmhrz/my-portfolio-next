@@ -99,10 +99,16 @@ export interface BlogData {
   slug: string;
   content: string;
   excerpt: string;
-  coverImage: string;
+  coverImage?: string | null;
   coverImageAlt?: string | null;
   category?: string | null;
+  tags: string[];
+  featured: boolean;
   published: boolean;
+  readingTime: number;
+  views: number;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 }

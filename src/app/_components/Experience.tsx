@@ -24,7 +24,7 @@ export function Experience({ experiences: dbExperiences }: { experiences?: any[]
     <section id="experience" className="relative overflow-hidden border-t border-border bg-background px-6 py-28 md:py-40">
       <div className="container mx-auto max-w-7xl">
         <Reveal className="mb-16 flex flex-col gap-4">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
             Career record
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -48,12 +48,12 @@ export function Experience({ experiences: dbExperiences }: { experiences?: any[]
                           </div>
                           <div>
                             <h3 className="text-2xl font-medium tracking-tight text-foreground">{exp.company}</h3>
-                            <div className="mt-1 flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+                            <div className="mt-1 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
                               <Lightning className="h-3.5 w-3.5 text-indigo-500" /> {exp.role}
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+                        <div className="flex items-center gap-4 text-xs font-semibold text-muted-foreground">
                           <span className="flex items-center gap-1.5 font-sans normal-case">
                             <MapPin className="h-3.5 w-3.5" /> {exp.location}
                           </span>
@@ -89,14 +89,14 @@ export function Experience({ experiences: dbExperiences }: { experiences?: any[]
                             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-neutral-50 dark:to-zinc-900" />
                           </div>
                           <div className="absolute inset-x-0 bottom-0 p-6">
-                            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+                            <span className="text-xs font-semibold text-muted-foreground">
                               {p.category}
                             </span>
                             <h4 className="mt-1 text-2xl font-medium tracking-tight text-foreground">{p.title}</h4>
                             <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
                               {p.desc}
                             </p>
-                            <div className="mt-4 flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-[0.15em] text-indigo-600 dark:text-indigo-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100 font-semibold">
+                            <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                               View case <ArrowUpRight className="h-3.5 w-3.5" />
                             </div>
                           </div>

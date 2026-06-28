@@ -53,7 +53,7 @@ function TechPill({ label, icon }: { label: string; icon: React.ReactNode }) {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="relative flex items-center gap-2 rounded-full border border-foreground/10 bg-card/65 dark:bg-card/45 px-3.5 py-1.5 text-[11px] font-mono font-medium text-muted-foreground transition-all duration-300 hover:border-indigo-500/50 hover:text-foreground hover:shadow-[0_0_15px_rgba(99,102,241,0.06)] backdrop-blur overflow-hidden group/pill cursor-default"
+      className="relative flex items-center gap-2 rounded-full border border-foreground/10 bg-card/65 dark:bg-card/45 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-all duration-300 hover:border-indigo-500/50 hover:text-foreground hover:shadow-[0_0_15px_rgba(99,102,241,0.06)] backdrop-blur overflow-hidden group/pill cursor-default"
     >
       {/* Spotlight glow border overlay */}
       <div 

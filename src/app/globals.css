@@ -209,6 +209,20 @@
   @apply bg-foreground/10 rounded-full transition-all hover:bg-foreground/20;
 }
 
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+.scrollbar-hidden::-webkit-scrollbar-thumb,
+.scrollbar-hidden::-webkit-scrollbar-track {
+  display: none !important;
+}
+
 /* Lenis smooth-scroll */
 html.lenis,
 html.lenis body {

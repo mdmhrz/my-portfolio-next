@@ -116,7 +116,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                 <div className="space-y-12 lg:col-span-8">
                   {/* Header Title Block */}
                   <div>
-                    <span className="inline-block rounded-full border border-indigo-600/10 dark:border-indigo-400/15 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                    <span className="inline-block rounded-full border border-indigo-600/10 dark:border-indigo-400/15 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] px-3 py-1 text-xs text-indigo-600 dark:text-indigo-400">
                       {project.category}
                     </span>
                     <h1 className="mt-4 text-4xl font-medium tracking-tight text-foreground md:text-5xl lg:text-6xl leading-[1.15]">
@@ -135,7 +135,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                         <span className="h-2.5 w-2.5 rounded-full bg-foreground/10" />
                         <span className="h-2.5 w-2.5 rounded-full bg-foreground/10" />
                       </div>
-                      <div className="font-mono text-[9px] text-muted-foreground/60 truncate max-w-xs md:max-w-md">
+                      <div className="font-mono text-xs text-muted-foreground/60 truncate max-w-xs md:max-w-md">
                         {project.live ? project.live.replace(/^https?:\/\//, "") : `${project.id}.app`}
                       </div>
                       <div className="w-10" />

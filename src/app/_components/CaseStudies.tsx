@@ -24,7 +24,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
     <section id="work" className="relative border-t border-border bg-background px-6 py-28 md:py-40">
       <div className="container mx-auto max-w-7xl">
         <Reveal className="mb-14 flex flex-col gap-4">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
             Selected work
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -50,7 +50,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                       <span className="h-2 w-2 rounded-full bg-foreground/10" />
                       <span className="h-2 w-2 rounded-full bg-foreground/10" />
                       <span className="h-2 w-2 rounded-full bg-foreground/10" />
-                      <span className="ml-3 truncate font-mono text-[9px] text-muted-foreground/60">
+                      <span className="ml-3 truncate font-mono text-xs text-muted-foreground/60">
                         {p.live.replace(/^https?:\/\//, "")}
                       </span>
                     </div>
@@ -81,7 +81,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                           {p.category.split("·").map((t) => (
                             <span
                               key={t}
-                              className="rounded-full border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 px-2.5 py-0.5 text-[9px] font-mono uppercase tracking-wider text-muted-foreground"
+                              className="rounded-full border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 px-2.5 py-0.5 text-xs text-muted-foreground"
                             >
                               {t.trim()}
                             </span>
@@ -106,7 +106,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 border-t border-border/80 pt-4">
                         {p.tech.slice(0, 6).map((t, idx) => (
                           <span key={t} className="flex items-center gap-2">
-                            <span className="font-mono text-[10px] text-muted-foreground/80">
+                            <span className="font-mono text-xs text-muted-foreground/80">
                               {t}
                             </span>
                             {idx < Math.min(p.tech.length, 6) - 1 && (
@@ -115,7 +115,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                           </span>
                         ))}
                         {p.tech.length > 6 && (
-                          <span className="font-mono text-[9px] text-muted-foreground/40">
+                          <span className="font-mono text-xs text-muted-foreground/40">
                             +{p.tech.length - 6} more
                           </span>
                         )}

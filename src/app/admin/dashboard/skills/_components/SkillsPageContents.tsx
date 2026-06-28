@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -16,31 +17,52 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { usePortfolioStore, type SkillData } from "@/store/usePortfolioStore";
+import { PageHeader } from "@/components/admin/PageHeader";
+import { RowActionsMenu } from "@/components/admin/RowActionsMenu";
+import { DeleteDialog } from "@/components/admin/DeleteDialog";
 
 const CATEGORIES = ["frontend", "backend", "devops", "tools", "database", "other"];
+
+function SkillsGroupSkeleton() {
+  return (
+    <div className="space-y-6">
+      {[3, 2, 4].map((count, gi) => (
+        <div key={gi} className="rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="bg-muted/50 border-b border-border px-6 py-3">
+            <Skeleton className="h-3 w-20" />
+          </div>
+          <Table>
+            <TableBody>
+              {Array.from({ length: count }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell><Skeleton className="h-4 w-28" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                  <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function SkillsPageContents() {
   const { skills, fetchSkills, createSkill, updateSkill, deleteSkill } = usePortfolioStore();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [editingSkill, setEditingSkill] = useState<SkillData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<SkillData | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", category: "frontend", icon: "", order: 0 });
 
   useEffect(() => {
-    fetchSkills();
+    fetchSkills().finally(() => setIsLoading(false));
   }, [fetchSkills]);
 
   const openAddModal = () => {
@@ -78,23 +100,27 @@ export function SkillsPageContents() {
         toast.success("Skill created!");
       }
       setIsModalOpen(false);
-    } catch (err) {
+    } catch {
       toast.error("Operation failed.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleteLoading(true);
     try {
-      await deleteSkill(id);
+      await deleteSkill(deleteTarget.id);
       toast.success("Skill deleted!");
-    } catch (err) {
+      setDeleteTarget(null);
+    } catch {
       toast.error("Failed to delete.");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
-  // Group skills by category for display
   const grouped = skills.reduce<Record<string, SkillData[]>>((acc, s) => {
     (acc[s.category] = acc[s.category] || []).push(s);
     return acc;
@@ -102,25 +128,27 @@ export function SkillsPageContents() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-medium tracking-tight">Skills</h1>
-          <p className="text-sm text-muted-foreground">Manage the tools and technologies showcased in your stack.</p>
-        </div>
-        <Button onClick={openAddModal}>
-          <Plus className="h-4 w-4" /> Add Skill
-        </Button>
-      </div>
+      <PageHeader
+        title="Skills"
+        description="Manage the tools and technologies showcased in your stack."
+        action={
+          <Button onClick={openAddModal}>
+            <Plus className="h-4 w-4" /> Add Skill
+          </Button>
+        }
+      />
 
-      {skills.length === 0 ? (
+      {isLoading ? (
+        <SkillsGroupSkeleton />
+      ) : skills.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center text-sm text-muted-foreground">
-          No skills yet. Click "Add Skill" to build your stack.
+          No skills yet. Click &quot;Add Skill&quot; to build your stack.
         </div>
       ) : (
         <div className="space-y-6">
           {Object.entries(grouped).map(([category, items]) => (
             <div key={category} className="rounded-2xl border border-border bg-card overflow-hidden">
-              <div className="bg-muted/50 font-mono text-[10px] uppercase tracking-wider text-muted-foreground border-b border-border px-6 py-3">
+              <div className="bg-muted/50 text-xs font-semibold text-muted-foreground border-b border-border px-6 py-3 capitalize">
                 {category}
               </div>
               <Table>
@@ -130,31 +158,22 @@ export function SkillsPageContents() {
                       <TableCell className="font-semibold text-foreground">{skill.name}</TableCell>
                       <TableCell className="text-muted-foreground font-mono text-xs">{skill.icon || "—"}</TableCell>
                       <TableCell className="text-muted-foreground font-mono text-xs">Order {skill.order}</TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button onClick={() => openEditModal(skill)} variant="ghost" size="sm">
-                          <Edit2 className="h-3.5 w-3.5" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Skill</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to delete "{skill.name}"? This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDelete(skill.id)} className="bg-red-600 hover:bg-red-700">
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                      <TableCell className="text-right">
+                        <RowActionsMenu
+                          actions={[
+                            {
+                              label: "Edit",
+                              icon: <Edit2 className="h-3.5 w-3.5" />,
+                              onClick: () => openEditModal(skill),
+                            },
+                            {
+                              label: "Delete",
+                              icon: <Trash2 className="h-3.5 w-3.5" />,
+                              onClick: () => setDeleteTarget(skill),
+                              variant: "destructive",
+                            },
+                          ]}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -165,7 +184,15 @@ export function SkillsPageContents() {
         </div>
       )}
 
-      {/* Add/Edit Modal */}
+      <DeleteDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Delete Skill"
+        description={`Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
+        onConfirm={handleDelete}
+        loading={deleteLoading}
+      />
+
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
@@ -177,7 +204,7 @@ export function SkillsPageContents() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="skill-name" className="font-mono text-[9px] uppercase">Name *</Label>
+              <Label htmlFor="skill-name" className="text-xs font-semibold">Name *</Label>
               <Input
                 id="skill-name"
                 type="text"
@@ -190,20 +217,20 @@ export function SkillsPageContents() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="skill-category" className="font-mono text-[9px] uppercase">Category</Label>
+                <Label htmlFor="skill-category" className="text-xs font-semibold">Category</Label>
                 <Select value={form.category} onValueChange={(val) => setForm({ ...form, category: val })}>
                   <SelectTrigger id="skill-category">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {CATEGORIES.map((c) => (
-                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                      <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="skill-order" className="font-mono text-[9px] uppercase">Order</Label>
+                <Label htmlFor="skill-order" className="text-xs font-semibold">Order</Label>
                 <Input
                   id="skill-order"
                   type="number"
@@ -214,11 +241,11 @@ export function SkillsPageContents() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="skill-icon" className="font-mono text-[9px] uppercase">Icon identifier (optional)</Label>
+              <Label htmlFor="skill-icon" className="text-xs font-semibold">Icon identifier (optional)</Label>
               <Input
                 id="skill-icon"
                 type="text"
-                placeholder="e.g. si-nextdotjs or simple-icons name"
+                placeholder="e.g. si-nextdotjs"
                 value={form.icon}
                 onChange={(e) => setForm({ ...form, icon: e.target.value })}
               />
@@ -226,12 +253,10 @@ export function SkillsPageContents() {
           </form>
 
           <DialogFooter className="gap-3">
-            <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
+            <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
             <Button type="submit" disabled={loading} onClick={handleSubmit}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                  Save
+              Save
             </Button>
           </DialogFooter>
         </DialogContent>

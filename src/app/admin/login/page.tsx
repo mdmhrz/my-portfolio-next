@@ -3,13 +3,25 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { KeyRound, Mail, AlertCircle, Loader2 } from "lucide-react";
+import { Mail, Eye, EyeOff, Loader2, ShieldCheck, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,122 +31,152 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      const response = await authClient.signIn.email({
-        email,
-        password,
-      }, {
-        onRequest: () => {
-          setLoading(true);
-        },
-        onSuccess: () => {
-          router.push("/admin/dashboard");
-          router.refresh();
-        },
-        onError: (ctx) => {
-          setError(ctx.error.message || "Invalid email or password.");
-          setLoading(false);
+      await authClient.signIn.email(
+        { email, password },
+        {
+          onRequest: () => setLoading(true),
+          onSuccess: () => {
+            router.push("/admin/dashboard");
+            router.refresh();
+          },
+          onError: (ctx) => {
+            setError(ctx.error.message || "Invalid email or password.");
+            setLoading(false);
+          },
         }
-      });
-    } catch (err: any) {
-      console.error("Login error:", err);
+      );
+    } catch {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);
     }
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-background px-4 py-12 selection:bg-primary selection:text-black">
-      {/* Decorative Gradients */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(120,119,198,0.06),rgba(255,255,255,0))]" />
-      
-      <div className="relative z-10 w-full max-w-md">
-        {/* Logo/Identity */}
-        <div className="mb-8 text-center">
+    <div className="relative flex min-h-screen items-center justify-center bg-background px-4 py-12 selection:bg-primary selection:text-primary-foreground">
+      {/* Background gradients */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(120,119,198,0.08),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_40%_30%_at_80%_80%,rgba(120,119,198,0.04),transparent)]" />
+
+      <div className="relative z-10 w-full max-w-sm">
+        {/* Back link */}
+        <div className="mb-6">
           <Link
             href="/"
-            className="font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
           >
-            ← Back to Portfolio
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to Portfolio
           </Link>
-          <h1 className="mt-4 text-3xl font-medium tracking-tight text-foreground">
-            Admin Portal
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to manage your resume, projects, and blogs.
-          </p>
         </div>
 
-        {/* Card */}
-        <div className="rounded-2xl border border-border bg-card p-8 shadow-xl backdrop-blur-xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/[0.03] p-4 text-sm text-destructive">
-                <AlertCircle className="h-5 w-5 shrink-0" />
-                <p>{error}</p>
-              </div>
-            )}
-
-            {/* Email Input */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block font-mono text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground/60">
-                  <Mail className="h-4 w-4" />
-                </div>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  placeholder="admin@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                  className="block w-full rounded-xl border border-border bg-muted/40 py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all disabled:opacity-50"
-                />
+        <Card className="shadow-2xl ring-1 ring-border/60 backdrop-blur-sm">
+          <CardHeader className="pb-2 pt-6 px-6 space-y-4">
+            {/* Shield icon badge */}
+            <div className="flex items-center justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-foreground/5 ring-1 ring-foreground/10">
+                <ShieldCheck className="h-6 w-6 text-foreground/70" />
               </div>
             </div>
 
-            {/* Password Input */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="block font-mono text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
-                Password
-              </label>
-              <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground/60">
-                  <KeyRound className="h-4 w-4" />
-                </div>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                  className="block w-full rounded-xl border border-border bg-muted/40 py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all disabled:opacity-50"
-                />
-              </div>
+            <div className="text-center space-y-1">
+              <CardTitle className="text-xl font-semibold tracking-tight text-foreground">
+                Admin Portal
+              </CardTitle>
+              <CardDescription className="text-sm text-muted-foreground">
+                Sign in to manage your content
+              </CardDescription>
             </div>
+          </CardHeader>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-foreground hover:bg-foreground/90 py-3 text-sm font-bold text-background transition-all duration-300 hover:scale-[1.01] active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Signing in...</span>
-                </>
-              ) : (
-                <span>Sign In</span>
+          <CardContent className="px-6 pb-6 pt-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Error */}
+              {error && (
+                <div className="flex items-start gap-2.5 rounded-lg border border-destructive/20 bg-destructive/5 px-3.5 py-3 text-sm text-destructive">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <p className="leading-snug">{error}</p>
+                </div>
               )}
-            </button>
-          </form>
-        </div>
+
+              {/* Email */}
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs font-medium text-muted-foreground">
+                  Email Address
+                </Label>
+                <div className="relative">
+                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
+                  <Input
+                    id="email"
+                    type="email"
+                    required
+                    placeholder="admin@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
+                    className="h-10 pl-9 text-sm"
+                    autoComplete="email"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-xs font-medium text-muted-foreground">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                    className="h-10 pr-10 text-sm"
+                    autoComplete="current-password"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowPassword((v) => !v)}
+                    disabled={loading}
+                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Submit */}
+              <Button
+                type="submit"
+                disabled={loading}
+                className="mt-2 h-10 w-full gap-2 text-sm font-semibold"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Signing in…
+                  </>
+                ) : (
+                  "Sign In"
+                )}
+              </Button>
+            </form>
+
+            {/* Footer notice */}
+            <p className="mt-5 text-center text-[11px] text-muted-foreground/60">
+              Authorized personnel only
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

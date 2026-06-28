@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { BlogListClient } from "@/app/blogs/_components/BlogListClient";
 
-export const revalidate = 3600; // Revalidate hourly; admin mutations call revalidatePath("/blogs")
+export const revalidate = 3600;
 
 const SITE_URL = "https://mhrazu.com";
 
@@ -38,24 +38,26 @@ export default async function BlogListPage() {
       coverImage: true,
       coverImageAlt: true,
       category: true,
-      content: true,
+      tags: true,
+      featured: true,
+      readingTime: true,
+      views: true,
       createdAt: true,
     },
   });
 
-  // Distinct, sorted category list for the filter chips.
-  const categories = Array.from(
-    new Set(blogs.map((b) => b.category).filter((c): c is string => Boolean(c)))
+  // Collect all unique tags across all posts
+  const allTags = Array.from(
+    new Set(blogs.flatMap((b) => b.tags).filter(Boolean))
   ).sort();
 
-  // Serialize dates to strings before passing across the RSC boundary.
   const serialized = blogs.map((b) => ({ ...b, createdAt: b.createdAt.toISOString() }));
 
   return (
     <div className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(120,119,198,0.06),rgba(255,255,255,0))]" />
       <div className="relative z-10">
-        <BlogListClient blogs={serialized} categories={categories} />
+        <BlogListClient blogs={serialized} allTags={allTags} />
       </div>
     </div>
   );

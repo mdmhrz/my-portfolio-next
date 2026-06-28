@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableCell, TableRow } from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -16,18 +16,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
+import { PageHeader } from "@/components/admin/PageHeader";
+import { DataTable } from "@/components/admin/DataTable";
+import { RowActionsMenu } from "@/components/admin/RowActionsMenu";
+import { DeleteDialog } from "@/components/admin/DeleteDialog";
+
+const COLUMNS = ["Company", "Role", "Timeline", "Order", "Actions"];
 
 export function ExperiencePageContents() {
   const {
@@ -38,8 +33,11 @@ export function ExperiencePageContents() {
     deleteExperience,
   } = usePortfolioStore();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [editingExp, setEditingExp] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -52,7 +50,7 @@ export function ExperiencePageContents() {
   });
 
   useEffect(() => {
-    fetchExperiences();
+    fetchExperiences().finally(() => setIsLoading(false));
   }, [fetchExperiences]);
 
   const openAddModal = () => {
@@ -86,88 +84,83 @@ export function ExperiencePageContents() {
         toast.success("Experience created!");
       }
       setIsModalOpen(false);
-    } catch (err) {
+    } catch {
       toast.error("Operation failed.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleteLoading(true);
     try {
-      await deleteExperience(id);
+      await deleteExperience(deleteTarget.id);
       toast.success("Experience deleted!");
-    } catch (err) {
+      setDeleteTarget(null);
+    } catch {
       toast.error("Failed to delete.");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-medium tracking-tight">Experiences</h1>
-          <p className="text-sm text-muted-foreground">Add, edit, or delete professional work records.</p>
-        </div>
-        <Button onClick={openAddModal}>
-          <Plus className="h-4 w-4" /> Add Experience
-        </Button>
-      </div>
+      <PageHeader
+        title="Experiences"
+        description="Add, edit, or delete professional work records."
+        action={
+          <Button onClick={openAddModal}>
+            <Plus className="h-4 w-4" /> Add Experience
+          </Button>
+        }
+      />
 
-      {/* Experience Table */}
-      <div className="rounded-2xl border border-border bg-card overflow-hidden">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead className="font-mono text-[10px] uppercase">Company</TableHead>
-              <TableHead className="font-mono text-[10px] uppercase">Role</TableHead>
-              <TableHead className="font-mono text-[10px] uppercase">Timeline</TableHead>
-              <TableHead className="font-mono text-[10px] uppercase">Order</TableHead>
-              <TableHead className="font-mono text-[10px] uppercase text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {experiences.map((exp) => (
-              <TableRow key={exp.id}>
-                <TableCell className="font-semibold text-foreground">{exp.company}</TableCell>
-                <TableCell className="text-muted-foreground">{exp.role}</TableCell>
-                <TableCell className="text-muted-foreground">{exp.timeline}</TableCell>
-                <TableCell className="text-muted-foreground font-mono">{exp.order}</TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Button onClick={() => openEditModal(exp)} variant="ghost" size="sm">
-                    <Edit2 className="h-3.5 w-3.5" />
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Experience</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to delete this experience? This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(exp.id)} className="bg-red-600 hover:bg-red-700">
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      <DataTable
+        columns={COLUMNS}
+        isEmpty={!isLoading && experiences.length === 0}
+        emptyMessage='No experiences yet. Click "Add Experience" to get started.'
+        isLoading={isLoading}
+      >
+        {experiences.map((exp) => (
+          <TableRow key={exp.id}>
+            <TableCell className="font-semibold text-foreground">{exp.company}</TableCell>
+            <TableCell className="text-muted-foreground">{exp.role}</TableCell>
+            <TableCell className="text-muted-foreground">{exp.timeline}</TableCell>
+            <TableCell className="text-muted-foreground font-mono">{exp.order}</TableCell>
+            <TableCell className="text-right">
+              <RowActionsMenu
+                actions={[
+                  {
+                    label: "Edit",
+                    icon: <Edit2 className="h-3.5 w-3.5" />,
+                    onClick: () => openEditModal(exp),
+                  },
+                  {
+                    label: "Delete",
+                    icon: <Trash2 className="h-3.5 w-3.5" />,
+                    onClick: () => setDeleteTarget({ id: exp.id, label: `${exp.company} — ${exp.role}` }),
+                    variant: "destructive",
+                  },
+                ]}
+              />
+            </TableCell>
+          </TableRow>
+        ))}
+      </DataTable>
 
-      {/* Edit/Create Modal */}
+      <DeleteDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Delete Experience"
+        description={`Are you sure you want to delete "${deleteTarget?.label}"? This action cannot be undone.`}
+        onConfirm={handleDelete}
+        loading={deleteLoading}
+      />
+
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>{editingExp ? "Edit Experience" : "Add Experience"}</DialogTitle>
             <DialogDescription>
@@ -178,41 +171,39 @@ export function ExperiencePageContents() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="exp-company" className="font-mono text-[9px] uppercase">Company</Label>
+                <Label htmlFor="exp-company" className="text-xs font-semibold">Company</Label>
                 <Input id="exp-company" type="text" required value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="exp-role" className="font-mono text-[9px] uppercase">Role</Label>
+                <Label htmlFor="exp-role" className="text-xs font-semibold">Role</Label>
                 <Input id="exp-role" type="text" required value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div className="col-span-2 space-y-2">
-                <Label htmlFor="exp-location" className="font-mono text-[9px] uppercase">Location</Label>
+                <Label htmlFor="exp-location" className="text-xs font-semibold">Location</Label>
                 <Input id="exp-location" type="text" required value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="exp-order" className="font-mono text-[9px] uppercase">Order</Label>
+                <Label htmlFor="exp-order" className="text-xs font-semibold">Order</Label>
                 <Input id="exp-order" type="number" required value={form.order} onChange={(e) => setForm({ ...form, order: Number(e.target.value) })} />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="exp-timeline" className="font-mono text-[9px] uppercase">Timeline</Label>
+              <Label htmlFor="exp-timeline" className="text-xs font-semibold">Timeline</Label>
               <Input id="exp-timeline" type="text" required placeholder="Jul 2025 — Present" value={form.timeline} onChange={(e) => setForm({ ...form, timeline: e.target.value })} />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="exp-desc" className="font-mono text-[9px] uppercase">Description</Label>
+              <Label htmlFor="exp-desc" className="text-xs font-semibold">Description</Label>
               <Textarea id="exp-desc" required rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             </div>
           </form>
 
           <DialogFooter className="gap-3">
-            <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
+            <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
             <Button type="submit" disabled={loading} onClick={handleSubmit}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Save Experience

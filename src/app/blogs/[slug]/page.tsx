@@ -7,12 +7,17 @@ import { prisma } from "@/lib/prisma";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import "highlight.js/styles/github-dark.css";
-import { ArrowLeft, Calendar, Clock, ArrowRight } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, ArrowRight, Eye, Tag } from "lucide-react";
 import { BlogShareButtons } from "@/app/blogs/_components/BlogShareButtons";
+import { BlogProgressBar } from "@/app/blogs/_components/BlogProgressBar";
+import { BlogTOC } from "@/app/blogs/_components/BlogTOC";
+import { BlogViewCounter } from "@/app/blogs/_components/BlogViewCounter";
+import { BlogCodeBlock } from "@/app/blogs/_components/BlogCodeBlock";
 
-export const revalidate = 3600; // Admin mutations call revalidatePath("/blogs/[slug]")
+export const revalidate = 3600;
 
 const SITE_URL = "https://mhrazu.com";
 const AUTHOR_NAME = "Mobarak Hossain Razu";
@@ -35,10 +40,13 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
     where: { slug, published: true },
     select: {
       title: true,
+      metaTitle: true,
+      metaDescription: true,
       excerpt: true,
       coverImage: true,
       coverImageAlt: true,
       category: true,
+      tags: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -46,29 +54,42 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
   if (!post) return {};
 
   const canonicalUrl = `${SITE_URL}/blogs/${slug}`;
+  const seoTitle = post.metaTitle || post.title;
+  const seoDescription = post.metaDescription || post.excerpt || undefined;
   const ogImages = post.coverImage
     ? [{ url: post.coverImage, width: 1200, height: 630, alt: post.coverImageAlt || post.title }]
-    : undefined; // no cover → root opengraph-image.tsx cascades as fallback
+    : undefined;
+
+  const allKeywords = [
+    ...(post.tags || []),
+    ...(post.category ? [post.category] : []),
+    "full-stack development",
+    "Mobarak Hossain Razu",
+  ].filter(Boolean);
 
   return {
-    title: post.title,
-    description: post.excerpt || undefined,
+    title: seoTitle,
+    description: seoDescription,
+    keywords: allKeywords,
     alternates: { canonical: canonicalUrl },
     openGraph: {
       type: "article",
       url: canonicalUrl,
-      title: post.title,
-      description: post.excerpt || undefined,
+      title: seoTitle,
+      description: seoDescription,
       images: ogImages,
       publishedTime: post.createdAt.toISOString(),
       modifiedTime: post.updatedAt.toISOString(),
       authors: [AUTHOR_NAME],
-      tags: post.category ? [post.category] : undefined,
+      tags: [
+        ...(post.tags || []),
+        ...(post.category ? [post.category] : []),
+      ],
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt || undefined,
+      title: seoTitle,
+      description: seoDescription,
       images: ogImages?.map((img) => img.url),
     },
   };
@@ -117,7 +138,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     });
   }
 
-  // Build the Table of Contents from H2/H3 headings (IDs must match rehype-slug).
+  // Build the Table of Contents from H2/H3 headings.
   const slugger = new GithubSlugger();
   const headings = [...post.content.matchAll(/^(#{2,3})\s+(.+)$/gm)].map((m) => {
     const level = m[1].length;
@@ -130,11 +151,12 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     month: "long",
     day: "numeric",
   });
-  const readingTime = Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200));
+
+  // Use pre-computed reading time from DB; fall back to live-computed if somehow 0
+  const readingTime = post.readingTime || Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200));
 
   const canonicalUrl = `${SITE_URL}/blogs/${post.slug}`;
 
-  // Custom Markdown components for elegant typography matching the main site
   const markdownComponents = {
     h2: ({ children, ...props }: any) => (
       <h2 className="scroll-mt-24 text-2xl font-medium tracking-tight text-foreground mt-10 mb-4" {...props}>
@@ -167,26 +189,43 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       </li>
     ),
     blockquote: ({ children, ...props }: any) => (
-      <blockquote className="border-l-2 border-indigo-600 dark:border-indigo-500 pl-5 italic my-6 text-muted-foreground bg-indigo-600/[0.02] dark:bg-indigo-500/[0.02] py-3 pr-4 rounded-r-xl" {...props}>
+      <blockquote
+        className="border-l-2 border-indigo-600 dark:border-indigo-500 pl-5 italic my-6 text-muted-foreground bg-indigo-600/[0.02] dark:bg-indigo-500/[0.02] py-3 pr-4 rounded-r-xl"
+        {...props}
+      >
         {children}
       </blockquote>
     ),
-    pre: ({ children, ...props }: any) => (
-      <pre className="overflow-x-auto rounded-xl border border-border bg-neutral-950 p-5 font-mono text-xs text-indigo-400 dark:text-indigo-300 my-6 leading-normal" {...props}>
-        {children}
-      </pre>
-    ),
+    // Pre wraps code blocks — extract child's language className and pass to BlogCodeBlock
+    pre: ({ children }: any) => {
+      const child = Array.isArray(children) ? children[0] : children;
+      const langClass = (child as any)?.props?.className ?? '';
+      return <BlogCodeBlock className={langClass}>{children}</BlogCodeBlock>;
+    },
     code: ({ className, children, ...props }: any) => {
       const isBlock = /language-|hljs/.test(className || "");
       if (!isBlock) {
         return (
-          <code className="rounded border border-border bg-neutral-100 dark:bg-zinc-900 px-1.5 py-0.5 font-mono text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold" {...props}>
+          <code
+            className="rounded border border-border bg-neutral-100 dark:bg-zinc-900 px-1.5 py-0.5 font-mono text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold"
+            {...props}
+          >
             {children}
           </code>
         );
       }
       return <code className={className} {...props}>{children}</code>;
     },
+    img: ({ src, alt, ...props }: any) => (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt || ""}
+        className="my-6 w-full rounded-xl border border-border object-cover shadow-sm"
+        loading="lazy"
+        {...props}
+      />
+    ),
     a: ({ href, children, ...props }: any) => (
       <a
         href={href}
@@ -203,8 +242,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const blogPostingJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: post.title,
-    description: post.excerpt || undefined,
+    headline: post.metaTitle || post.title,
+    description: post.metaDescription || post.excerpt || undefined,
     image: post.coverImage || undefined,
     datePublished: post.createdAt.toISOString(),
     dateModified: post.updatedAt.toISOString(),
@@ -220,15 +259,25 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       url: SITE_URL,
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
-    ...(post.category ? { keywords: post.category } : {}),
+    keywords: [
+      ...(post.tags || []),
+      ...(post.category ? [post.category] : []),
+    ].join(", ") || undefined,
   };
 
   return (
-    <div className="relative overflow-hidden pb-24 selection:bg-primary selection:text-black">
+    <div className="relative overflow-hidden pb-24 selection:bg-primary selection:text-primary-foreground">
+      {/* Reading progress bar */}
+      <BlogProgressBar />
+
+      {/* View counter (fires once on mount) */}
+      <BlogViewCounter slug={post.slug} />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingJsonLd) }}
       />
+
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(120,119,198,0.05),rgba(255,255,255,0))]" />
 
       <div className="relative z-10 mx-auto max-w-6xl px-6 py-16">
@@ -264,6 +313,15 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                   <Clock className="h-3.5 w-3.5" />
                   {readingTime} Min Read
                 </span>
+                {post.views > 0 && (
+                  <>
+                    <span className="h-3 w-px bg-border" />
+                    <span className="flex items-center gap-1.5">
+                      <Eye className="h-3.5 w-3.5" />
+                      {post.views.toLocaleString()} Views
+                    </span>
+                  </>
+                )}
               </div>
 
               <h1 className="mb-6 text-4xl font-medium leading-[1.12] tracking-tight text-foreground md:text-5xl lg:text-6xl">
@@ -274,6 +332,22 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                 <p className="border-l border-indigo-600/30 py-1 pl-4 text-lg leading-relaxed text-muted-foreground">
                   {post.excerpt}
                 </p>
+              )}
+
+              {/* Tags */}
+              {post.tags && post.tags.length > 0 && (
+                <div className="mt-5 flex flex-wrap items-center gap-2">
+                  <Tag className="h-3.5 w-3.5 text-muted-foreground" />
+                  {post.tags.map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/blogs?tag=${encodeURIComponent(tag)}`}
+                      className="rounded-full bg-indigo-600/8 px-3 py-1 text-[11px] font-mono text-indigo-600 transition-colors hover:bg-indigo-600/15 dark:text-indigo-400"
+                    >
+                      #{tag}
+                    </Link>
+                  ))}
+                </div>
               )}
 
               <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
@@ -293,7 +367,14 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             {/* Cover Image */}
             {post.coverImage && (
               <div className="relative mb-10 aspect-[21/10] w-full overflow-hidden rounded-2xl border border-border bg-card shadow-md">
-                <Image src={post.coverImage} alt={post.coverImageAlt || post.title} fill priority className="object-cover" sizes="(max-width: 1024px) 100vw, 60vw" />
+                <Image
+                  src={post.coverImage}
+                  alt={post.coverImageAlt || post.title}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                />
               </div>
             )}
 
@@ -301,7 +382,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             <div className="prose prose-neutral max-w-none dark:prose-invert">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeHighlight, rehypeSlug]}
+                rehypePlugins={[rehypeRaw, rehypeHighlight, rehypeSlug]}
                 components={markdownComponents as any}
               >
                 {post.content}
@@ -343,31 +424,12 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             )}
           </article>
 
-          {/* Sidebar: TOC + Share */}
-          {headings.length > 0 && (
-            <aside className="hidden lg:col-span-4 lg:block">
-              <div className="sticky top-24 space-y-8">
-                <div>
-                  <p className="mb-4 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-semibold">
-                    On this page
-                  </p>
-                  <nav className="space-y-2 border-l border-border">
-                    {headings.map((h) => (
-                      <a
-                        key={h.id}
-                        href={`#${h.id}`}
-                        className={`-ml-px block border-l border-transparent text-sm text-muted-foreground transition-colors hover:text-foreground hover:border-indigo-500 ${
-                          h.level === 3 ? "pl-6" : "pl-4"
-                        }`}
-                      >
-                        {h.text}
-                      </a>
-                    ))}
-                  </nav>
-                </div>
-              </div>
-            </aside>
-          )}
+          {/* Sidebar: TOC (with scroll-spy) + Share */}
+          <aside className="hidden lg:col-span-4 lg:block">
+            <div className="sticky top-24 space-y-8">
+              <BlogTOC headings={headings} />
+            </div>
+          </aside>
         </div>
 
         {/* Related Articles */}

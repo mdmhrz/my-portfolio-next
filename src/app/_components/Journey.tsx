@@ -107,7 +107,7 @@ export function Journey({ about }: { about?: any }) {
           <div className="lg:col-span-4">
             <div className="lg:sticky lg:top-32">
               <Reveal>
-                <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
                   Chronology
                 </span>
               </Reveal>
@@ -139,7 +139,7 @@ export function Journey({ about }: { about?: any }) {
                           : "bg-muted-foreground/40 group-hover:bg-muted-foreground"
                       }`}
                     />
-                    <span className={`text-[10px] font-medium uppercase tracking-[0.2em] transition-colors duration-300 ${
+                    <span className={`text-xs font-medium transition-colors duration-300 ${
                       idx === activeIndex
                         ? "text-foreground font-bold"
                         : "text-muted-foreground group-hover:text-foreground"

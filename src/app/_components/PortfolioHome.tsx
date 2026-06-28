@@ -32,7 +32,7 @@ export function PortfolioHome({ banner, experiences, projects, about, settings, 
   }, []);
 
   return (
-    <div className="relative min-h-screen selection:bg-primary selection:text-black bg-background">
+    <div className="relative min-h-screen selection:bg-primary selection:text-primary-foreground bg-background">
       <IntroLoader onDone={() => setIntroDone(true)} />
       <Navbar />
 
