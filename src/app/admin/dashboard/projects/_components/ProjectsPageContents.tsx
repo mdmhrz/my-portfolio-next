@@ -29,6 +29,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { ImageUpload } from "../../_components/ImageUpload";
 
@@ -53,7 +54,7 @@ export function ProjectsPageContents() {
     company: "", timeline: "", desc: "", fullDesc: "", tech: "",
     features: "", contributions: "", live: "", image: "", imageAlt: "",
     span: "md:col-span-1", architectureTitle: "", architectureDesc: "",
-    architectureTree: "", order: 0, experienceId: "", featured: false,
+    architectureTree: "", order: 0, experienceId: "none", featured: false,
   });
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export function ProjectsPageContents() {
       fullDesc: "", tech: "", features: "", contributions: "",
       live: "", image: "/images/mock-proj.jpg", imageAlt: "", span: "md:col-span-1",
       architectureTitle: "", architectureDesc: "", architectureTree: "",
-      order: projects.length, experienceId: "", featured: false,
+      order: projects.length, experienceId: "none", featured: false,
     });
     setIsModalOpen(true);
   };
@@ -92,7 +93,7 @@ export function ProjectsPageContents() {
       architectureTitle: proj.architectureTitle || "",
       architectureDesc: proj.architectureDesc || "",
       architectureTree: proj.architectureTree || "",
-      order: proj.order || 0, experienceId: proj.experienceId || "",
+      order: proj.order || 0, experienceId: proj.experienceId || "none",
       featured: Boolean(proj.featured),
     });
     setIsModalOpen(true);
@@ -123,7 +124,7 @@ export function ProjectsPageContents() {
       features: form.features.split("\n").map(f => f.trim()).filter(Boolean),
       contributions: form.contributions.split("\n").map(c => c.trim()).filter(Boolean),
       metrics: metrics.filter(m => m.value && m.label),
-      experienceId: form.experienceId || null,
+      experienceId: form.experienceId === "none" ? null : form.experienceId,
     };
     try {
       if (editingProj) {
@@ -212,16 +213,17 @@ export function ProjectsPageContents() {
 
       {/* Project Form Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="!w-[90vw] !max-w-6xl max-h-[90vh] !flex !flex-col !p-0 !gap-0 !grid-cols-1">
+          <DialogHeader className="px-6 pt-6 pb-0">
             <DialogTitle>{editingProj ? "Edit Project" : "Add Project"}</DialogTitle>
             <DialogDescription>
               {editingProj ? "Update project details and publish" : "Create a new project case study"}
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ScrollArea className="flex-1 px-6 w-full">
+            <form onSubmit={handleSubmit} className="space-y-6 pr-4 w-full">
+                <div className="grid grid-cols-2 gap-4 w-full">
                   <div className="space-y-2">
                     <Label htmlFor="proj-title" className="font-mono text-[9px] uppercase tracking-wider">Title</Label>
                     <Input id="proj-title" type="text" required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
@@ -232,7 +234,7 @@ export function ProjectsPageContents() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-4 w-full">
                   <div className="space-y-2">
                     <Label htmlFor="proj-slug" className="font-mono text-[9px] uppercase tracking-wider">Slug (URL identifier)</Label>
                     <Input id="proj-slug" type="text" required placeholder="nexdrop" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
@@ -241,14 +243,14 @@ export function ProjectsPageContents() {
                     <Label htmlFor="proj-category" className="font-mono text-[9px] uppercase tracking-wider">Category</Label>
                     <Input id="proj-category" type="text" required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 w-full">
                     <Label htmlFor="proj-exp" className="font-mono text-[9px] uppercase tracking-wider">Experience Association</Label>
                     <Select value={form.experienceId} onValueChange={(val) => setForm({ ...form, experienceId: val })}>
                       <SelectTrigger id="proj-exp">
                         <SelectValue placeholder="Select experience..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Personal Project (No Experience)</SelectItem>
+                        <SelectItem value="none">Personal Project (No Experience)</SelectItem>
                         {experiences.map((exp) => (
                           <SelectItem key={exp.id} value={exp.id}>{exp.company} - {exp.role}</SelectItem>
                         ))}
@@ -257,7 +259,7 @@ export function ProjectsPageContents() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 gap-4 w-full">
                   <div className="space-y-2">
                     <Label htmlFor="proj-role" className="font-mono text-[9px] uppercase tracking-wider">Role</Label>
                     <Input id="proj-role" type="text" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
@@ -307,7 +309,7 @@ export function ProjectsPageContents() {
                   <Input id="proj-tech" type="text" required placeholder="React, Next.js, Go, PostgreSQL" value={form.tech} onChange={(e) => setForm({ ...form, tech: e.target.value })} />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-4 w-full">
                   <div className="space-y-2">
                     <Label htmlFor="proj-desc" className="font-mono text-[9px] uppercase tracking-wider">Short Description</Label>
                     <Textarea id="proj-desc" required rows={3} value={form.desc} onChange={(e) => setForm({ ...form, desc: e.target.value })} />
@@ -330,7 +332,7 @@ export function ProjectsPageContents() {
                 {/* System Architecture */}
                 <div className="border-t border-border pt-4 space-y-4">
                   <h3 className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">// System Architecture</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4 w-full">
                     <div className="space-y-2">
                       <Label htmlFor="proj-archTitle" className="font-mono text-[9px] text-muted-foreground">Architecture Diagram Title</Label>
                       <Input id="proj-archTitle" type="text" placeholder="Next.js edge network routing map" value={form.architectureTitle} onChange={(e) => setForm({ ...form, architectureTitle: e.target.value })} />
@@ -378,16 +380,17 @@ export function ProjectsPageContents() {
                   />
                 </div>
             </form>
+          </ScrollArea>
 
-            <DialogFooter className="gap-3">
-              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading} onClick={handleSubmit}>
-                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Save Project
-              </Button>
-            </DialogFooter>
+          <DialogFooter className="gap-3 px-6 py-6 border-t">
+            <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading} onClick={handleSubmit}>
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              Save Project
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
