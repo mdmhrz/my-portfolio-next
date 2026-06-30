@@ -153,7 +153,7 @@ export function FontsTab() {
         <Button
           onClick={handleSaveFont}
           disabled={loading || isSaving}
-          className="w-full sm:flex-1 rounded-xl h-10.5 font-semibold text-xs tracking-tight shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.01] bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/95 hover:to-indigo-500 hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_25%,transparent)] text-primary-foreground cursor-pointer"
+          className="w-full sm:flex-1 rounded-xl h-10.5 font-semibold text-xs tracking-tight shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01] bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
           size="sm"
         >
           {isSaving ? (
