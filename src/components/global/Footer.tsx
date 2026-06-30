@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   GithubLogo,
   LinkedinLogo,
@@ -20,18 +21,19 @@ const socials = [
 ];
 
 const nav = [
-  { label: "Home", href: "#home" },
-  { label: "Journey", href: "#journey" },
-  { label: "Experience", href: "#experience" },
-  { label: "Skills", href: "#skills" },
-  { label: "Work", href: "#work" },
+  { label: "Journey", href: "/#journey" },
+  { label: "Experience", href: "/#experience" },
+  { label: "Skills", href: "/#skills" },
+  { label: "Work", href: "/#work" },
   { label: "Blog", href: "/blogs" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "/contact" },
+  { label: "About", href: "/about" },
 ];
 
 const NAV_OFFSET = 96;
 
 export function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const [mounted, setMounted] = useState(false);
   const [timeString, setTimeString] = useState("");
@@ -68,14 +70,18 @@ export function Footer() {
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Route links (e.g. /blog) navigate normally.
-    if (!href.startsWith("#")) return;
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (!target) return;
-
-    const top = (target as HTMLElement).getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-    window.scrollTo({ top, behavior: "smooth" });
+    const isAnchor = href.startsWith("#") || href.includes("#");
+    if (isAnchor) {
+      const anchorId = href.includes("#") ? href.split("#")[1] : href.slice(1);
+      if (pathname === "/") {
+        e.preventDefault();
+        const target = document.getElementById(anchorId);
+        if (target) {
+          const top = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+      }
+    }
   };
 
   return (
@@ -91,7 +97,7 @@ export function Footer() {
           
           {/* Brand Column */}
           <div className="space-y-5 md:col-span-5">
-            <a href="#home" aria-label="Home" className="inline-block">
+            <a href="/" onClick={(e) => handleNavClick(e, "/#home")} aria-label="Home" className="inline-block">
               <Logo className="h-8 w-auto" />
             </a>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -172,7 +178,7 @@ export function Footer() {
                 </div>
               </div>
 
-              <a href="#contact" onClick={(e) => handleNavClick(e, "#contact")} className="block pt-1">
+              <a href="/contact" className="block pt-1">
                 <Button
                   variant="outline"
                   size="sm"
@@ -218,8 +224,8 @@ export function Footer() {
           </div>
           
           <a
-            href="#home"
-            onClick={(e) => handleNavClick(e, "#home")}
+            href="/"
+            onClick={(e) => handleNavClick(e, "/#home")}
             className="group flex items-center gap-2 text-[10px] font-mono font-medium uppercase tracking-[0.3em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
           >
             Back to top

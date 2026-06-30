@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { List, GithubLogo, LinkedinLogo, FacebookLogo } from "@phosphor-icons/react";
 import { ThemeToggle } from "@/components/global/ThemeToggle";
@@ -18,12 +19,13 @@ import {
 import { Magnetic } from "@/components/global/Magnetic";
 
 const NavLinks = [
-  { name: "Journey", href: "#journey" },
-  { name: "Experience", href: "#experience" },
-  { name: "Skills", href: "#skills" },
-  { name: "Work", href: "#work" },
+  { name: "Journey", href: "/#journey" },
+  { name: "Experience", href: "/#experience" },
+  { name: "Skills", href: "/#skills" },
+  { name: "Work", href: "/#work" },
   { name: "Blog", href: "/blogs" },
-  { name: "Contact", href: "#contact" },
+  { name: "Contact", href: "/contact" },
+  { name: "About", href: "/about" },
 ];
 
 const SocialLinks = [
@@ -38,23 +40,29 @@ const RESUME_URL =
 const NAV_OFFSET = 96;
 
 export function Navbar() {
+  const pathname = usePathname();
   const [activeId, setActiveId] = useState<string>("");
 
-  // Smooth scroll on anchor click — native scroll, offset for the fixed navbar.
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Route links (e.g. /blog) navigate normally.
-    if (!href.startsWith("#")) return;
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (!target) return;
-
-    const top = (target as HTMLElement).getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-    window.scrollTo({ top, behavior: "smooth" });
+    const isAnchor = href.startsWith("#") || href.includes("#");
+    if (isAnchor) {
+      const anchorId = href.includes("#") ? href.split("#")[1] : href.slice(1);
+      if (pathname === "/") {
+        e.preventDefault();
+        const target = document.getElementById(anchorId);
+        if (target) {
+          const top = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+      }
+    }
   };
 
-  // Scroll-spy: highlight the nav link of the section currently in view.
+  // Scroll-spy: highlight the nav link of the section currently in view (only on homepage).
   useEffect(() => {
-    const ids = ["home", ...NavLinks.map((l) => l.href.slice(1))];
+    if (pathname !== "/") return;
+
+    const ids = ["home", ...NavLinks.map((l) => l.href.includes("#") ? l.href.split("#")[1] : "").filter(Boolean)];
     const sections = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
@@ -63,7 +71,6 @@ export function Navbar() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Pick the entry closest to the top that is intersecting.
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
@@ -72,7 +79,6 @@ export function Navbar() {
         }
       },
       {
-        // Trigger when a section's top crosses the navbar zone.
         rootMargin: `-${NAV_OFFSET}px 0px -55% 0px`,
         threshold: 0,
       },
@@ -80,7 +86,7 @@ export function Navbar() {
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   return (
     <motion.header
@@ -91,8 +97,8 @@ export function Navbar() {
     >
       <motion.nav className="pointer-events-auto mx-auto flex w-full max-w-7xl items-center justify-between rounded-full border border-border bg-background/70 px-5 py-3 backdrop-blur-xl transition-colors duration-300 md:px-7">
         <a
-          href="#home"
-          onClick={(e) => handleNavClick(e, "#home")}
+          href="/"
+          onClick={(e) => handleNavClick(e, "/#home")}
           aria-label="Home"
         >
           <Logo />
@@ -101,14 +107,15 @@ export function Navbar() {
         {/* Desktop links */}
         <div className="hidden items-center gap-8 lg:flex">
           {NavLinks.map((link) => {
-            const isActive = activeId === link.href.slice(1);
+            const linkAnchor = link.href.includes("#") ? link.href.split("#")[1] : "";
+            const isActive = link.href === pathname || (pathname === "/" && linkAnchor && activeId === linkAnchor);
             return (
               <a
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className={`text-[11px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ${
-                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  isActive ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {link.name}
@@ -144,7 +151,7 @@ export function Navbar() {
               >
                 <SheetHeader className="flex flex-row items-center justify-between border-b border-border p-6">
                   <SheetTitle asChild>
-                    <a href="#home" aria-label="Home">
+                    <a href="/" aria-label="Home">
                       <Logo />
                     </a>
                   </SheetTitle>
@@ -153,7 +160,8 @@ export function Navbar() {
 
                 <nav className="flex flex-col gap-2 p-6">
                   {NavLinks.map((link) => {
-                    const isActive = activeId === link.href.slice(1);
+                    const linkAnchor = link.href.includes("#") ? link.href.split("#")[1] : "";
+                    const isActive = link.href === pathname || (pathname === "/" && linkAnchor && activeId === linkAnchor);
                     return (
                       <SheetClose asChild key={link.name}>
                         <a

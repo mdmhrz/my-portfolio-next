@@ -25,6 +25,7 @@ export function BannerPageContents() {
     linkedin: "",
     facebook: "",
     email: "",
+    whatsapp: "",
   });
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export function BannerPageContents() {
         linkedin: banner.linkedin || "",
         facebook: banner.facebook || "",
         email: banner.email || "",
+        whatsapp: banner.whatsapp || "",
       });
     }
   }, [banner]);
@@ -143,6 +145,10 @@ export function BannerPageContents() {
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-xs font-semibold">Public Contact Email</Label>
                   <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="whatsapp" className="text-xs font-semibold">WhatsApp (Number or Link)</Label>
+                  <Input id="whatsapp" type="text" placeholder="+880 1824975616" value={formData.whatsapp} onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })} />
                 </div>
               </div>
             </div>

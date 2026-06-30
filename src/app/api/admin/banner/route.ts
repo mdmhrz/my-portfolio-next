@@ -32,6 +32,7 @@ export async function POST(request: Request) {
         linkedin: body.linkedin,
         facebook: body.facebook,
         email: body.email,
+        whatsapp: body.whatsapp,
       },
       create: {
         id: "singleton",
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
         linkedin: body.linkedin,
         facebook: body.facebook,
         email: body.email,
+        whatsapp: body.whatsapp,
       },
     });
 

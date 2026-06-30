@@ -13,6 +13,7 @@ export interface BannerData {
   linkedin?: string | null;
   facebook?: string | null;
   email?: string | null;
+  whatsapp?: string | null;
 }
 
 export interface ExperienceData {

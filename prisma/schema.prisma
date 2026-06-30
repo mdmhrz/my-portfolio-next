@@ -80,6 +80,7 @@ model Banner {
   linkedin      String?
   facebook      String?
   email         String?
+  whatsapp      String?  // Public contact whatsapp number/link
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
