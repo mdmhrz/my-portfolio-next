@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PortfolioHome } from "./_components/PortfolioHome";
+import { AppearanceColorScope } from "@/components/global/AppearanceColorScope";
 
 export const revalidate = 3600; // Revalidate every hour; admin mutations call revalidatePath("/")
 
@@ -57,13 +58,15 @@ export default async function Home() {
   ]);
 
   return (
-    <PortfolioHome
-      banner={banner}
-      experiences={experiences}
-      projects={projects}
-      about={about}
-      settings={settings}
-      skills={skills}
-    />
+    <AppearanceColorScope scope="public">
+      <PortfolioHome
+        banner={banner}
+        experiences={experiences}
+        projects={projects}
+        about={about}
+        settings={settings}
+        skills={skills}
+      />
+    </AppearanceColorScope>
   );
 }

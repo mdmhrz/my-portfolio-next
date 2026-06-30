@@ -1,15 +1,35 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useSpring, useMotionValue, AnimatePresence } from "motion/react";
 
-// A smart, context-aware cursor ring that expands, glows, and shifts to brand indigo,
-// and displays custom text tags (e.g. "VIEW") when hovering over qualified elements.
+// A smart, context-aware cursor ring that expands, glows, and shifts to the theme
+// primary, and displays custom text tags (e.g. "VIEW") when hovering over qualified elements.
 export function MouseFollower() {
+  const ringRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
   const [isHovering, setIsHovering] = useState(false);
   const [cursorText, setCursorText] = useState("");
+  // Resolved `--primary` as "r, g, b" so motion can interpolate the glow (it can't
+  // tween oklch/color-mix). The ring's own `text-primary` lets the browser resolve it.
+  const [primaryRgb, setPrimaryRgb] = useState("99, 102, 241");
+
+  useEffect(() => {
+    const read = () => {
+      if (!ringRef.current) return;
+      const c = getComputedStyle(ringRef.current).color; // resolves text-primary → rgb()
+      const m = c.match(/-?\d+\.?\d*/g);
+      if (m && m.length >= 3) {
+        setPrimaryRgb(`${Math.round(+m[0])}, ${Math.round(+m[1])}, ${Math.round(+m[2])}`);
+      }
+    };
+    read();
+    // Re-resolve when the theme (light/dark) class flips.
+    const obs = new MutationObserver(read);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
 
   const springConfig = { damping: 30, stiffness: 200 };
   const springX = useSpring(mouseX, springConfig);
@@ -49,14 +69,15 @@ export function MouseFollower() {
 
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-[9999] hidden rounded-full border md:flex items-center justify-center font-mono text-[9px] font-bold tracking-widest text-indigo-600 dark:text-indigo-400 select-none uppercase overflow-hidden"
+      ref={ringRef}
+      className="pointer-events-none fixed left-0 top-0 z-[9999] hidden rounded-full border md:flex items-center justify-center font-mono text-[9px] font-bold tracking-widest text-primary select-none uppercase overflow-hidden"
       animate={{
         width: cursorText ? 64 : (isHovering ? 56 : 28),
         height: cursorText ? 64 : (isHovering ? 56 : 28),
-        backgroundColor: cursorText ? "rgba(99, 102, 241, 0.08)" : (isHovering ? "rgba(99, 102, 241, 0.06)" : "rgba(0, 0, 0, 0)"),
-        borderColor: cursorText ? "rgba(99, 102, 241, 0.6)" : (isHovering ? "rgba(99, 102, 241, 0.55)" : "rgba(163, 163, 163, 0.35)"),
+        backgroundColor: cursorText ? `rgba(${primaryRgb}, 0.08)` : (isHovering ? `rgba(${primaryRgb}, 0.06)` : "rgba(0, 0, 0, 0)"),
+        borderColor: cursorText ? `rgba(${primaryRgb}, 0.6)` : (isHovering ? `rgba(${primaryRgb}, 0.55)` : "rgba(163, 163, 163, 0.35)"),
         borderWidth: (cursorText || isHovering) ? "1.5px" : "1px",
-        boxShadow: (cursorText || isHovering) ? "0 0 15px rgba(99, 102, 241, 0.15)" : "none",
+        boxShadow: (cursorText || isHovering) ? `0 0 15px rgba(${primaryRgb}, 0.15)` : "none",
       }}
       transition={{ type: "spring", stiffness: 300, damping: 26 }}
       style={{

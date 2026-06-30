@@ -54,7 +54,7 @@ export function BlogShareButtons({ url, title }: { url: string; title: string })
           target="_blank"
           rel="noreferrer"
           aria-label={name}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-indigo-600/40 hover:text-indigo-600 dark:hover:text-indigo-400"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary dark:hover:text-primary"
         >
           <Icon className="h-4 w-4" weight="regular" />
         </a>
@@ -62,7 +62,7 @@ export function BlogShareButtons({ url, title }: { url: string; title: string })
       <button
         onClick={copyLink}
         aria-label="Copy link"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-indigo-600/40 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer"
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary dark:hover:text-primary cursor-pointer"
       >
         {copied ? <Check className="h-4 w-4 text-emerald-500" weight="bold" /> : <LinkSimple className="h-4 w-4" />}
       </button>

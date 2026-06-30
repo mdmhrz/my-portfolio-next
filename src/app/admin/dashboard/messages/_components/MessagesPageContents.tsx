@@ -121,7 +121,7 @@ export function MessagesPageContents() {
                         }}
                         className={`w-full text-left p-4 transition-colors flex justify-between gap-3 hover:bg-muted/30 cursor-pointer ${
                           selectedMsg?.id === msg.id ? "bg-muted/50" : ""
-                        } ${!msg.read ? "border-l-2 border-indigo-500 pl-3.5" : "pl-4"}`}
+                        } ${!msg.read ? "border-l-2 border-primary pl-3.5" : "pl-4"}`}
                       >
                         <div className="truncate flex-1">
                           <div className="flex justify-between items-baseline gap-2">

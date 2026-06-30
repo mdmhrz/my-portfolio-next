@@ -55,7 +55,7 @@ export default async function BlogListPage() {
 
   return (
     <div className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(120,119,198,0.06),rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,color-mix(in_oklch,var(--primary)_6%,transparent),transparent)]" />
       <div className="relative z-10">
         <BlogListClient blogs={serialized} allTags={allTags} />
       </div>

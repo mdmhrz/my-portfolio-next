@@ -53,14 +53,14 @@ function TechPill({ label, icon }: { label: string; icon: React.ReactNode }) {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="relative flex items-center gap-2 rounded-full border border-foreground/10 bg-card/65 dark:bg-card/45 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-all duration-300 hover:border-indigo-500/50 hover:text-foreground hover:shadow-[0_0_15px_rgba(99,102,241,0.06)] backdrop-blur overflow-hidden group/pill cursor-default"
+      className="relative flex items-center gap-2 rounded-full border border-foreground/10 bg-card/65 dark:bg-card/45 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-all duration-300 hover:border-primary/50 hover:text-foreground hover:shadow-[0_0_15px_color-mix(in_oklch,var(--primary)_8%,transparent)] backdrop-blur overflow-hidden group/pill cursor-default"
     >
       {/* Spotlight glow border overlay */}
       <div 
         className="pointer-events-none absolute -inset-px rounded-full opacity-0 group-hover/pill:opacity-100 transition-opacity duration-300"
         style={{
-          background: 'radial-gradient(75px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99, 102, 241, 0.15), transparent 80%)',
-          border: '1px solid rgba(99, 102, 241, 0.4)'
+          background: 'radial-gradient(75px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), color-mix(in oklch, var(--primary) 15%, transparent), transparent 80%)',
+          border: '1px solid color-mix(in oklch, var(--primary) 40%, transparent)'
         }}
       />
       <div className="relative z-10 flex items-center justify-center">
@@ -245,7 +245,10 @@ export function Hero({ start, reduced = false, banner }: { start: boolean; reduc
     const onMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
       const isDark = document.documentElement.classList.contains('dark');
-      const activeColor = isDark ? '#6366f1' : '#4f46e5';
+      // Follow the themed primary when it resolves to a hex (GSAP can't tween oklch);
+      // otherwise fall back to the built-in indigo accent.
+      const primary = getComputedStyle(section).getPropertyValue('--primary').trim();
+      const activeColor = primary.startsWith('#') ? primary : isDark ? '#6366f1' : '#4f46e5';
 
       cachedChars.forEach(({ element, cx, cy }) => {
         const dx = clientX - cx;
@@ -354,7 +357,7 @@ export function Hero({ start, reduced = false, banner }: { start: boolean; reduc
                   preserveAspectRatio="none"
                 >
                   <path
-                    className="hero-underline-path stroke-indigo-600 dark:stroke-indigo-500"
+                    className="hero-underline-path stroke-primary"
                     d="M 2,6 C 20,3 40,3 60,5 C 75,6.5 90,4.5 98,3.5"
                     fill="none"
                     strokeWidth="3.5"
@@ -370,22 +373,22 @@ export function Hero({ start, reduced = false, banner }: { start: boolean; reduc
 
             <div className="hero-reveal mt-8 flex flex-wrap gap-2.5">
               {(banner?.chips || CHIPS).map((chip, idx) => {
-                let icon = <Atom className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 animate-[spin_8s_linear_infinite] group-hover/pill:animate-[spin_1.5s_linear_infinite] transition-all duration-300" />;
+                let icon = <Atom className="h-3.5 w-3.5 text-primary animate-[spin_8s_linear_infinite] group-hover/pill:animate-[spin_1.5s_linear_infinite] transition-all duration-300" />;
                 if (idx === 1) {
                   icon = (
                     <div className="flex items-end gap-[2px] h-3 w-3 mb-[1px]">
-                      <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-2 group-hover/pill:h-3" />
-                      <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-3 group-hover/pill:h-1" />
-                      <span className="w-[2.5px] bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300 h-1.5 group-hover/pill:h-2.5" />
+                      <span className="w-[2.5px] bg-primary rounded-full transition-all duration-300 h-2 group-hover/pill:h-3" />
+                      <span className="w-[2.5px] bg-primary rounded-full transition-all duration-300 h-3 group-hover/pill:h-1" />
+                      <span className="w-[2.5px] bg-primary rounded-full transition-all duration-300 h-1.5 group-hover/pill:h-2.5" />
                     </div>
                   );
                 } else if (idx >= 2) {
                   icon = (
                     <div className="relative flex items-center justify-center">
-                      <Database className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 transition-transform duration-300 group-hover/pill:scale-110" />
+                      <Database className="h-3.5 w-3.5 text-primary transition-transform duration-300 group-hover/pill:scale-110" />
                       <span className="absolute -top-0.5 -right-0.5 flex h-1.5 w-1.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-500 opacity-75" />
-                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
                       </span>
                     </div>
                   );
@@ -399,7 +402,7 @@ export function Hero({ start, reduced = false, banner }: { start: boolean; reduc
                 <a
                   ref={ctaRef}
                   href="#work"
-                  className="group inline-flex h-12 items-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-7 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(99,102,241,0.25)]"
+                  className="group inline-flex h-12 items-center gap-2 rounded-full bg-primary hover:bg-primary/90 px-7 text-sm font-medium text-primary-foreground transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_25%,transparent)]"
                 >
                   View work
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -434,7 +437,7 @@ export function Hero({ start, reduced = false, banner }: { start: boolean; reduc
       <div className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-4 opacity-70 md:flex">
         <span className="text-xs text-muted-foreground">Scroll</span>
         <div className="flex h-8 w-5 items-start justify-center rounded-full border border-muted-foreground p-1">
-          <div className="h-1.5 w-1 animate-bounce rounded-full bg-indigo-600 dark:bg-indigo-500" />
+          <div className="h-1.5 w-1 animate-bounce rounded-full bg-primary" />
         </div>
       </div>
     </section>

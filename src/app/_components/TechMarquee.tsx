@@ -115,9 +115,9 @@ export function TechMarquee() {
             const Icon = tech.icon;
             return (
               <div key={idx} className="flex items-center gap-4 group">
-                <Icon className="h-5.5 w-5.5 text-muted-foreground/70 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300 shrink-0" />
+                <Icon className="h-5.5 w-5.5 text-muted-foreground/70 group-hover:text-primary dark:group-hover:text-primary transition-colors duration-300 shrink-0" />
                 <span
-                  className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground/70 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:scale-105 transition-all duration-300 select-none cursor-pointer whitespace-nowrap"
+                  className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground/70 group-hover:text-primary dark:group-hover:text-primary group-hover:scale-105 transition-all duration-300 select-none cursor-pointer whitespace-nowrap"
                 >
                   {tech.name}
                 </span>

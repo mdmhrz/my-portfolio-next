@@ -136,7 +136,7 @@ function MetricGauge({ value, label, id }: { value: string; label: string; id: s
             cx="40" 
             cy="40" 
             r={radius} 
-            className="stroke-indigo-600 dark:stroke-indigo-500" 
+            className="stroke-primary dark:stroke-primary" 
             strokeWidth="5.5" 
             fill="none"
             strokeLinecap="round"
@@ -163,11 +163,11 @@ export function ArchitectureShowcase() {
   return (
     <section id="architecture" className="relative border-t border-border bg-neutral-50/10 dark:bg-background/20 px-6 py-28 md:py-40 overflow-hidden">
       {/* Background glow effects */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-indigo-500/[0.03] dark:bg-indigo-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-primary/[0.03] dark:bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
         <Reveal className="mb-16 flex flex-col gap-4">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary dark:text-primary font-semibold">
             System Design
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -210,7 +210,7 @@ export function ArchitectureShowcase() {
                     {/* Animated data pulses */}
                     <motion.path
                       d={pipeline.d}
-                      className="stroke-indigo-600 dark:stroke-indigo-500"
+                      className="stroke-primary dark:stroke-primary"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeDasharray="6 24"
@@ -222,7 +222,7 @@ export function ArchitectureShowcase() {
                       }}
                       style={{ 
                         opacity: isActive ? 1 : 0.15,
-                        filter: isActive ? "drop-shadow(0 0 3px rgba(99,102,241,0.4))" : "none"
+                        filter: isActive ? "drop-shadow(0 0 3px color-mix(in oklch, var(--primary) 40%, transparent))" : "none"
                       }}
                     />
                   </g>
@@ -236,12 +236,12 @@ export function ArchitectureShowcase() {
               style={{ top: "20%", left: "25%", transform: "translate(-50%, -50%)" }}
               className={`absolute flex items-center gap-3.5 rounded-2xl border px-5 py-4 transition-all text-left group cursor-pointer z-20 ${
                 selectedId === "gateway"
-                  ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/20 text-foreground dark:text-white shadow-[0_0_20px_rgba(99,102,241,0.08)] scale-[1.03]"
+                  ? "border-primary bg-primary/10 text-foreground shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_8%,transparent)] scale-[1.03]"
                   : "border-border bg-card/90 text-muted-foreground hover:border-foreground/20 hover:text-foreground hover:scale-[1.01]"
               }`}
             >
               <div className="relative">
-                <Layers className={`h-5.5 w-5.5 transition-colors ${selectedId === "gateway" ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
+                <Layers className={`h-5.5 w-5.5 transition-colors ${selectedId === "gateway" ? "text-primary dark:text-primary" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -259,15 +259,15 @@ export function ArchitectureShowcase() {
               style={{ top: "50%", left: "25%", transform: "translate(-50%, -50%)" }}
               className={`absolute flex items-center gap-3.5 rounded-2xl border px-5 py-4 transition-all text-left group cursor-pointer z-20 ${
                 selectedId === "broker"
-                  ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/20 text-foreground dark:text-white shadow-[0_0_20px_rgba(99,102,241,0.08)] scale-[1.03]"
+                  ? "border-primary bg-primary/10 text-foreground shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_8%,transparent)] scale-[1.03]"
                   : "border-border bg-card/90 text-muted-foreground hover:border-foreground/20 hover:text-foreground hover:scale-[1.01]"
               }`}
             >
               <div className="relative">
-                <Network className={`h-5.5 w-5.5 transition-colors ${selectedId === "broker" ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
+                <Network className={`h-5.5 w-5.5 transition-colors ${selectedId === "broker" ? "text-primary dark:text-primary" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
                 </span>
               </div>
               <div>
@@ -282,19 +282,19 @@ export function ArchitectureShowcase() {
               style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
               className={`absolute flex items-center gap-4 rounded-2xl border px-6 py-5 transition-all text-left group cursor-pointer z-20 ${
                 selectedId === "services"
-                  ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/80 dark:bg-indigo-950/25 text-foreground dark:text-white shadow-[0_0_25px_rgba(99,102,241,0.12)] scale-[1.03]"
+                  ? "border-primary bg-primary/15 text-foreground shadow-[0_0_25px_color-mix(in_oklch,var(--primary)_12%,transparent)] scale-[1.03]"
                   : "border-border bg-card/90 text-muted-foreground hover:border-foreground/20 hover:text-foreground hover:scale-[1.01]"
               }`}
             >
               <div className="relative">
-                <Server className={`h-6.5 w-6.5 transition-colors ${selectedId === "services" ? "text-indigo-600 dark:text-indigo-400 animate-pulse" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
+                <Server className={`h-6.5 w-6.5 transition-colors ${selectedId === "services" ? "text-primary dark:text-primary animate-pulse" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
                 </span>
               </div>
               <div>
-                <div className="text-sm font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Go Services</div>
+                <div className="text-sm font-extrabold uppercase tracking-wider text-primary dark:text-primary">Go Services</div>
                 <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">REST APIs · Sockets</div>
               </div>
             </button>
@@ -305,12 +305,12 @@ export function ArchitectureShowcase() {
               style={{ top: "50%", left: "75%", transform: "translate(-50%, -50%)" }}
               className={`absolute flex items-center gap-3.5 rounded-2xl border px-5 py-4 transition-all text-left group cursor-pointer z-20 ${
                 selectedId === "storage"
-                  ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/20 text-foreground dark:text-white shadow-[0_0_20px_rgba(99,102,241,0.08)] scale-[1.03]"
+                  ? "border-primary bg-primary/10 text-foreground shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_8%,transparent)] scale-[1.03]"
                   : "border-border bg-card/90 text-muted-foreground hover:border-foreground/20 hover:text-foreground hover:scale-[1.01]"
               }`}
             >
               <div className="relative">
-                <HardDrive className={`h-5.5 w-5.5 transition-colors ${selectedId === "storage" ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
+                <HardDrive className={`h-5.5 w-5.5 transition-colors ${selectedId === "storage" ? "text-primary dark:text-primary" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -328,15 +328,15 @@ export function ArchitectureShowcase() {
               style={{ top: "80%", left: "25%", transform: "translate(-50%, -50%)" }}
               className={`absolute flex items-center gap-3.5 rounded-2xl border px-5 py-4 transition-all text-left group cursor-pointer z-20 ${
                 selectedId === "workers"
-                  ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/20 text-foreground dark:text-white shadow-[0_0_20px_rgba(99,102,241,0.08)] scale-[1.03]"
+                  ? "border-primary bg-primary/10 text-foreground shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_8%,transparent)] scale-[1.03]"
                   : "border-border bg-card/90 text-muted-foreground hover:border-foreground/20 hover:text-foreground hover:scale-[1.01]"
               }`}
             >
               <div className="relative">
-                <Cpu className={`h-5.5 w-5.5 transition-colors ${selectedId === "workers" ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
+                <Cpu className={`h-5.5 w-5.5 transition-colors ${selectedId === "workers" ? "text-primary dark:text-primary" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
                 </span>
               </div>
               <div>
@@ -351,15 +351,15 @@ export function ArchitectureShowcase() {
               style={{ top: "80%", left: "75%", transform: "translate(-50%, -50%)" }}
               className={`absolute flex items-center gap-3.5 rounded-2xl border px-5 py-4 transition-all text-left group cursor-pointer z-20 ${
                 selectedId === "db"
-                  ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/20 text-foreground dark:text-white shadow-[0_0_20px_rgba(99,102,241,0.08)] scale-[1.03]"
+                  ? "border-primary bg-primary/10 text-foreground shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_8%,transparent)] scale-[1.03]"
                   : "border-border bg-card/90 text-muted-foreground hover:border-foreground/20 hover:text-foreground hover:scale-[1.01]"
               }`}
             >
               <div className="relative">
-                <Database className={`h-5.5 w-5.5 transition-colors ${selectedId === "db" ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
+                <Database className={`h-5.5 w-5.5 transition-colors ${selectedId === "db" ? "text-primary dark:text-primary" : "text-muted-foreground/60 group-hover:text-foreground"}`} />
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
                 </span>
               </div>
               <div>
@@ -383,7 +383,7 @@ export function ArchitectureShowcase() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2.5 font-mono text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400 font-bold">
+                    <div className="flex items-center gap-2.5 font-mono text-[10px] uppercase tracking-widest text-primary dark:text-primary font-bold">
                       <Workflow className="h-4 w-4" /> Technical Inspector
                     </div>
                     <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-1 text-[9px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase select-none">
@@ -415,7 +415,7 @@ export function ArchitectureShowcase() {
                   <ul className="mt-8 space-y-4">
                     {details.bullets.map((b, i) => (
                       <li key={i} className="flex items-start gap-3.5 text-xs leading-relaxed text-muted-foreground">
-                        <ArrowRight className="h-3.5 w-3.5 shrink-0 mt-0.5 text-indigo-600 dark:text-indigo-400" />
+                        <ArrowRight className="h-3.5 w-3.5 shrink-0 mt-0.5 text-primary dark:text-primary" />
                         <span>{b}</span>
                       </li>
                     ))}

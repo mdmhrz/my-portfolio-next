@@ -44,7 +44,7 @@ export function BlogFooter() {
                 target={href.startsWith("http") ? "_blank" : undefined}
                 rel="noreferrer"
                 aria-label={name}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-300 hover:border-indigo-600/40 dark:hover:border-indigo-400/40 hover:bg-indigo-600/5 dark:hover:bg-indigo-400/5 hover:text-indigo-600 dark:hover:text-indigo-400"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-300 hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
               >
                 <Icon className="h-[18px] w-[18px]" weight="regular" />
               </a>

@@ -174,7 +174,7 @@ export function ProjectsPageContents() {
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs text-muted-foreground font-medium">{proj.category}</span>
                     {proj.featured && (
-                      <span className="text-xs font-medium text-indigo-500 bg-indigo-500/10 px-1.5 py-0.5 rounded">★ Featured</span>
+                      <span className="text-xs font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded">★ Featured</span>
                     )}
                   </div>
                   <span className="text-xs text-muted-foreground bg-muted/40 px-2 py-0.5 rounded">Order {proj.order}</span>
@@ -214,7 +214,7 @@ export function ProjectsPageContents() {
       />
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="!w-[90vw] !max-w-7xl max-h-[85vh] !flex !flex-col !gap-0 !p-0" data-lenis-prevent style={{ display: "flex", flexDirection: "column" }}>
+        <DialogContent className="!w-[90vw] !max-w-7xl max-h-[85vh] !flex !flex-col !gap-0 !p-0" style={{ display: "flex", flexDirection: "column" }}>
           <div className="px-8 py-4 border-b border-border flex-shrink-0">
             <DialogTitle className="text-lg font-semibold">{editingProj ? "Edit Project" : "Add Project"}</DialogTitle>
             <DialogDescription>
@@ -222,7 +222,7 @@ export function ProjectsPageContents() {
             </DialogDescription>
           </div>
 
-          <div className="flex-1 min-h-0" data-lenis-prevent="start" style={{ overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
+          <div className="flex-1 min-h-0" style={{ overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
             <form id="project-form" onSubmit={handleSubmit} className="space-y-6 px-8 py-6 w-full">
               <div className="grid grid-cols-2 gap-6 w-full">
                 <div className="space-y-2">

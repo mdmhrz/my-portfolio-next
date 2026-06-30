@@ -107,7 +107,7 @@ export function Journey({ about }: { about?: any }) {
           <div className="lg:col-span-4">
             <div className="lg:sticky lg:top-32">
               <Reveal>
-                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                <span className="text-xs font-semibold text-primary dark:text-primary">
                   Chronology
                 </span>
               </Reveal>
@@ -135,7 +135,7 @@ export function Journey({ about }: { about?: any }) {
                     <span
                       className={`h-1.5 w-1.5 rounded-full transition-all duration-300 group-hover:scale-125 ${
                         idx === activeIndex
-                          ? "bg-indigo-600 dark:bg-indigo-500 scale-125"
+                          ? "bg-primary dark:bg-primary scale-125"
                           : "bg-muted-foreground/40 group-hover:bg-muted-foreground"
                       }`}
                     />
@@ -171,11 +171,11 @@ export function Journey({ about }: { about?: any }) {
                   y1="0"
                   x2="1"
                   y2="100"
-                  className="stroke-indigo-600 dark:stroke-indigo-500"
+                  className="stroke-primary dark:stroke-primary"
                   strokeWidth="2"
                   style={{ 
                     pathLength: scrollYProgress,
-                    filter: "drop-shadow(0 0 4px rgba(99,102,241,0.5))"
+                    filter: "drop-shadow(0 0 4px color-mix(in oklch, var(--primary) 50%, transparent))"
                   }}
                 />
               </svg>
@@ -196,7 +196,7 @@ export function Journey({ about }: { about?: any }) {
                   >
                     <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                       <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 text-indigo-600 dark:text-indigo-400 transition-transform duration-500 group-hover:scale-105">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 text-primary dark:text-primary transition-transform duration-500 group-hover:scale-105">
                           <Icon className="h-5 w-5" />
                         </div>
                         <div>
@@ -205,8 +205,8 @@ export function Journey({ about }: { about?: any }) {
                               {item.phase}
                             </span>
                             {item.highlight && (
-                              <span className="flex items-center gap-1.5 rounded-full bg-indigo-500/10 dark:bg-indigo-500/15 px-2.5 py-0.5 text-[9px] font-mono font-bold text-indigo-600 dark:text-indigo-400 select-none uppercase tracking-wider">
-                                <span className="h-1 w-1 rounded-full bg-indigo-600 dark:bg-indigo-400 animate-pulse" />
+                              <span className="flex items-center gap-1.5 rounded-full bg-primary/10 dark:bg-primary/15 px-2.5 py-0.5 text-[9px] font-mono font-bold text-primary dark:text-primary select-none uppercase tracking-wider">
+                                <span className="h-1 w-1 rounded-full bg-primary dark:bg-primary animate-pulse" />
                                 Milestone
                               </span>
                             )}
@@ -230,7 +230,7 @@ export function Journey({ about }: { about?: any }) {
                         {item.tags.map((t) => (
                           <span
                             key={t}
-                            className="rounded-full border border-indigo-600/10 dark:border-indigo-400/15 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] px-3 py-1 text-[10px] font-mono tracking-wider text-indigo-600 dark:text-indigo-400 font-semibold"
+                            className="rounded-full border border-primary/10 dark:border-primary/15 bg-primary/[0.04] dark:bg-primary/[0.04] px-3 py-1 text-[10px] font-mono tracking-wider text-primary dark:text-primary font-semibold"
                           >
                             {t}
                           </span>

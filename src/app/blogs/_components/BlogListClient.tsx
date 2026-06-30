@@ -28,7 +28,7 @@ function BlogCard({ post }: { post: BlogListItem }) {
   });
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_0_30px_rgba(99,102,241,0.04)]">
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_0_30px_color-mix(in_oklch,var(--primary)_4%,transparent)]">
       <Link href={`/blogs/${post.slug}`} className="absolute inset-0 z-20" />
 
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
@@ -41,8 +41,8 @@ function BlogCard({ post }: { post: BlogListItem }) {
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-950/20 to-purple-950/20">
-            <BookOpen className="h-8 w-8 text-indigo-500/40" />
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/15 to-primary/5">
+            <BookOpen className="h-8 w-8 text-primary/40" />
           </div>
         )}
         <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5">
@@ -52,7 +52,7 @@ function BlogCard({ post }: { post: BlogListItem }) {
             </span>
           )}
           {post.category && (
-            <span className="rounded-full border border-border/60 bg-background/80 px-2.5 py-0.5 text-xs text-indigo-600 backdrop-blur dark:text-indigo-400">
+            <span className="rounded-full border border-border/60 bg-background/80 px-2.5 py-0.5 text-xs text-primary backdrop-blur dark:text-primary">
               {post.category}
             </span>
           )}
@@ -81,7 +81,7 @@ function BlogCard({ post }: { post: BlogListItem }) {
           )}
         </div>
 
-        <h3 className="mb-2 line-clamp-2 text-lg font-medium tracking-tight text-foreground transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+        <h3 className="mb-2 line-clamp-2 text-lg font-medium tracking-tight text-foreground transition-colors group-hover:text-primary dark:group-hover:text-primary">
           {post.title}
         </h3>
         <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
@@ -93,7 +93,7 @@ function BlogCard({ post }: { post: BlogListItem }) {
             {post.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-indigo-600/8 px-2 py-0.5 text-xs text-indigo-600 dark:text-indigo-400"
+                className="rounded-full bg-primary/8 px-2 py-0.5 text-xs text-primary dark:text-primary"
               >
                 #{tag}
               </span>
@@ -101,7 +101,7 @@ function BlogCard({ post }: { post: BlogListItem }) {
           </div>
         )}
 
-        <div className="mt-auto flex items-center gap-1.5 border-t border-border/50 pt-4 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+        <div className="mt-auto flex items-center gap-1.5 border-t border-border/50 pt-4 text-xs font-semibold text-primary dark:text-primary">
           Read article
         </div>
       </div>
@@ -117,7 +117,7 @@ function FeaturedHeroCard({ post }: { post: BlogListItem }) {
   });
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_0_40px_rgba(99,102,241,0.06)]">
+    <article className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_0_40px_color-mix(in_oklch,var(--primary)_6%,transparent)]">
       <Link href={`/blogs/${post.slug}`} className="absolute inset-0 z-20" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -132,8 +132,8 @@ function FeaturedHeroCard({ post }: { post: BlogListItem }) {
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-950/30 to-purple-950/30">
-              <BookOpen className="h-14 w-14 text-indigo-500/30" />
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10">
+              <BookOpen className="h-14 w-14 text-primary/30" />
             </div>
           )}
         </div>
@@ -151,7 +151,7 @@ function FeaturedHeroCard({ post }: { post: BlogListItem }) {
             )}
           </div>
 
-          <h2 className="mb-3 text-2xl font-medium tracking-tight text-foreground transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400 md:text-3xl">
+          <h2 className="mb-3 text-2xl font-medium tracking-tight text-foreground transition-colors group-hover:text-primary dark:group-hover:text-primary md:text-3xl">
             {post.title}
           </h2>
           {post.excerpt && (
@@ -165,7 +165,7 @@ function FeaturedHeroCard({ post }: { post: BlogListItem }) {
               {post.tags.slice(0, 4).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-indigo-600/8 px-2.5 py-0.5 text-[10px] font-mono text-indigo-600 dark:text-indigo-400"
+                  className="rounded-full bg-primary/8 px-2.5 py-0.5 text-[10px] font-mono text-primary dark:text-primary"
                 >
                   #{tag}
                 </span>
@@ -251,7 +251,7 @@ export function BlogListClient({
     <div className="mx-auto max-w-6xl px-6 py-16">
       {/* Heading */}
       <div className="mb-12 max-w-2xl">
-        <span className="mb-4 block text-[11px] font-mono uppercase tracking-[0.3em] font-semibold text-indigo-600 dark:text-indigo-400">
+        <span className="mb-4 block text-[11px] font-mono uppercase tracking-[0.3em] font-semibold text-primary dark:text-primary">
           Writing &amp; Thoughts
         </span>
         <h1 className="mb-6 text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -272,7 +272,7 @@ export function BlogListClient({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search articles…"
-            className="w-full rounded-full border border-border bg-card py-2.5 pl-10 pr-9 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-indigo-500/50 focus:outline-none"
+            className="w-full rounded-full border border-border bg-card py-2.5 pl-10 pr-9 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-primary/50 focus:outline-none"
           />
           {query && (
             <button
@@ -291,7 +291,7 @@ export function BlogListClient({
               onClick={() => setActiveTags([])}
               className={`cursor-pointer rounded-full border px-4 py-1.5 text-[11px] font-mono uppercase tracking-wider transition-colors ${
                 activeTags.length === 0
-                  ? "border-indigo-600/40 bg-indigo-600/[0.06] text-indigo-600 dark:text-indigo-400"
+                  ? "border-primary/40 bg-primary/[0.06] text-primary dark:text-primary"
                   : "border-border bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -303,7 +303,7 @@ export function BlogListClient({
                 onClick={() => toggleTag(tag)}
                 className={`cursor-pointer rounded-full border px-4 py-1.5 text-[11px] font-mono tracking-wider transition-colors ${
                   activeTags.includes(tag)
-                    ? "border-indigo-600/40 bg-indigo-600/[0.06] text-indigo-600 dark:text-indigo-400"
+                    ? "border-primary/40 bg-primary/[0.06] text-primary dark:text-primary"
                     : "border-border bg-card text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -334,7 +334,7 @@ export function BlogListClient({
           {isFiltering && (
             <button
               onClick={() => { setQuery(""); setActiveTags([]); }}
-              className="mt-4 cursor-pointer text-[11px] font-mono text-indigo-600 underline underline-offset-4 dark:text-indigo-400"
+              className="mt-4 cursor-pointer text-[11px] font-mono text-primary underline underline-offset-4 dark:text-primary"
             >
               Clear all filters
             </button>

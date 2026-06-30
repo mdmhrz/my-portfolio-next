@@ -63,7 +63,6 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
           exit={{ opacity: 0, y: 25, scale: 0.985 }}
           transition={{ type: "spring", damping: 28, stiffness: 200 }}
           className="fixed inset-0 z-[100000] overflow-y-auto overscroll-contain bg-background"
-          data-lenis-prevent="true"
         >
           {/* Subtle Dynamic Background Grid Lines */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(120,119,198,0.04),rgba(255,255,255,0))]" />
@@ -116,7 +115,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                 <div className="space-y-12 lg:col-span-8">
                   {/* Header Title Block */}
                   <div>
-                    <span className="inline-block rounded-full border border-indigo-600/10 dark:border-indigo-400/15 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] px-3 py-1 text-xs text-indigo-600 dark:text-indigo-400">
+                    <span className="inline-block rounded-full border border-primary/10 dark:border-primary/15 bg-primary/[0.04] dark:bg-primary/[0.04] px-3 py-1 text-xs text-primary dark:text-primary">
                       {project.category}
                     </span>
                     <h1 className="mt-4 text-4xl font-medium tracking-tight text-foreground md:text-5xl lg:text-6xl leading-[1.15]">
@@ -179,7 +178,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                         </p>
                       </div>
                       {project.architecture.tree && (
-                        <div className="relative overflow-hidden rounded-xl border border-indigo-600/10 dark:border-indigo-400/15 bg-neutral-100 dark:bg-zinc-950 p-5">
+                        <div className="relative overflow-hidden rounded-xl border border-primary/10 dark:border-primary/15 bg-neutral-100 dark:bg-zinc-950 p-5">
                           <div className="absolute top-3 right-4 flex items-center gap-1.5 font-mono text-[9px] text-muted-foreground/45">
                             <Folder className="h-3 w-3" /> DIRECTORY MAP
                           </div>
@@ -199,7 +198,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                     <ul className="space-y-3.5">
                       {project.contributions.map((c, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1.5 font-mono text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold shrink-0 select-none">
+                          <span className="mt-1.5 font-mono text-[10px] text-primary dark:text-primary font-semibold shrink-0 select-none">
                             0{i + 1}.
                           </span>
                           <span className="text-sm leading-relaxed text-muted-foreground">
@@ -221,7 +220,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                           key={i}
                           className="flex items-start gap-2.5 rounded-xl border border-border bg-card px-4 py-3.5 text-xs text-muted-foreground hover:border-neutral-300 dark:hover:border-zinc-600 transition-colors"
                         >
-                          <span className="mt-0.5 text-indigo-600 dark:text-indigo-400 shrink-0 font-mono select-none">//</span>
+                          <span className="mt-0.5 text-primary dark:text-primary shrink-0 font-mono select-none">//</span>
                           <span>{f}</span>
                         </div>
                       ))}
@@ -246,7 +245,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                             {nextProject.subtitle}
                           </p>
                         </div>
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground transition-all duration-300 group-hover:scale-105 group-hover:border-indigo-600 dark:group-hover:border-indigo-500 group-hover:bg-indigo-600 dark:group-hover:bg-indigo-500 group-hover:text-white">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground transition-all duration-300 group-hover:scale-105 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
                           <ArrowUpRight className="h-5 w-5" />
                         </span>
                       </button>
@@ -289,7 +288,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                           {project.tech.map((t) => (
                             <span
                               key={t}
-                              className="rounded-full border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 px-2.5 py-0.75 text-[9px] font-mono text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-600/40 dark:hover:border-indigo-400/40 transition-all duration-300"
+                              className="rounded-full border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 px-2.5 py-0.75 text-[9px] font-mono text-muted-foreground hover:text-primary dark:hover:text-primary hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300"
                             >
                               {t}
                             </span>
@@ -304,7 +303,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                             href={project.live}
                             target="_blank"
                             rel="noreferrer"
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-5 py-3 text-xs font-mono uppercase tracking-wider text-white transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] active:scale-95"
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-5 py-3 text-xs font-mono uppercase tracking-wider text-primary-foreground transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_20%,transparent)] active:scale-95"
                           >
                             <span>Visit Live App</span>
                             <ArrowUpRight className="h-3.5 w-3.5" />

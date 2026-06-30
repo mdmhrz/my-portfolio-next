@@ -186,11 +186,31 @@ model About {
 }
 
 model SiteSettings {
-  id          String   @id @default("singleton")
-  ctaHeadline String?
-  ctaSubtext  String?
-  footerText  String?
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default("singleton")
+
+  // CTA & Footer
+  ctaHeadline     String?
+  ctaSubtext      String?
+  footerText      String?
+
+  // FONTS
+  fontType        String?   @default("default")      // "default" | "google" | "custom"
+  fontName        String?   @default("Satoshi")
+  fontWeights     String[]  @default(["400", "500", "700", "900"])
+  customFontUrl   String?   @db.Text                 // URL to custom font (Cloudinary)
+
+  // COLORS — two independent sets. null = use built-in globals.css theme (restore target).
+  // Shape: { mode: "simple"|"themes"|"advanced", accentColor, themePreset, customPalette }
+  publicColors    Json?                              // Public site (/, /blogs, …)
+  dashboardColors Json?                              // Admin dashboard (/admin/*)
+
+  // COLORS (legacy flat fields — retained for back-compat, no longer read/written)
+  colorMode       String?   @default("simple")
+  accentColor     String?   @default("#000000")
+  themePreset     String?   @default("default")
+  customPalette   Json?
+
+  updatedAt       DateTime  @updatedAt
 
   @@map("site_settings")
 }

@@ -23,8 +23,8 @@ export function CTA({ settings, about }: { settings?: any; about?: any }) {
   return (
     <section className="relative overflow-hidden bg-background px-6 py-24 md:py-32">
       {/* Decorative Background Blur Glows */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-blue-500/10 blur-[80px] pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-indigo-500/10 blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-primary/10 blur-[80px] pointer-events-none" />
+      <div className="absolute top-1/3 right-1/4 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-primary/10 blur-[100px] pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
         <Reveal y={40}>
@@ -39,7 +39,7 @@ export function CTA({ settings, about }: { settings?: any; about?: any }) {
               className="pointer-events-none absolute -inset-px transition-opacity duration-300"
               style={{
                 opacity: isHovered ? 1 : 0,
-                background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.08), transparent 80%)`,
+                background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, color-mix(in oklch, var(--primary) 8%, transparent), transparent 80%)`,
               }}
             />
 
@@ -70,7 +70,7 @@ export function CTA({ settings, about }: { settings?: any; about?: any }) {
               <Magnetic>
                 <a
                   href="#contact"
-                  className="group relative mt-10 inline-flex h-12 items-center gap-2.5 overflow-hidden rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-8 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(99,102,241,0.25)]"
+                  className="group relative mt-10 inline-flex h-12 items-center gap-2.5 overflow-hidden rounded-full bg-primary hover:bg-primary/90 px-8 text-sm font-medium text-primary-foreground transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_color-mix(in_oklch,var(--primary)_25%,transparent)]"
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     Get in touch

@@ -114,8 +114,8 @@ export default function NotFound() {
     >
       {/* Animated background gradient */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-indigo-400/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-4xl">
@@ -128,8 +128,8 @@ export default function NotFound() {
           >
             <span className="digit text-foreground">4</span>
             <span className="digit relative">
-              <span className="text-indigo-600 dark:text-indigo-400 animate-pulse">0</span>
-              <span className="cursor absolute -right-2 top-1/2 -translate-y-1/2 w-1 h-16 bg-indigo-600 dark:bg-indigo-400" />
+              <span className="text-primary dark:text-primary animate-pulse">0</span>
+              <span className="cursor absolute -right-2 top-1/2 -translate-y-1/2 w-1 h-16 bg-primary dark:bg-primary" />
             </span>
             <span className="digit text-foreground">4</span>
           </div>
@@ -163,7 +163,7 @@ export default function NotFound() {
                     </>
                   ) : (
                     <>
-                      <span className="text-indigo-600 dark:text-indigo-400 select-none">
+                      <span className="text-primary dark:text-primary select-none">
                         {line.substring(0, line.indexOf(' '))}
                       </span>
                       <span>{line.substring(line.indexOf(' ') + 1)}</span>
@@ -171,7 +171,7 @@ export default function NotFound() {
                   )}
                 </div>
               ))}
-              <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+              <div className="flex items-center gap-2 text-primary dark:text-primary">
                 <span>$</span>
                 <span className="cursor">_</span>
               </div>
@@ -182,7 +182,7 @@ export default function NotFound() {
           <div className="not-found-reveal flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/"
-              className="group inline-flex h-12 items-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-8 text-sm font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)]"
+              className="group inline-flex h-12 items-center gap-2 rounded-full bg-primary hover:bg-primary/90 px-8 text-sm font-medium text-primary-foreground transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_30%,transparent)]"
             >
               <ArrowUpLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
               Back to home
@@ -190,7 +190,7 @@ export default function NotFound() {
 
             <Link
               href="/blogs"
-              className="inline-flex h-12 items-center gap-2 rounded-full border border-foreground/20 hover:border-indigo-600/50 hover:bg-indigo-600/5 px-8 text-sm font-medium text-foreground transition-all duration-300"
+              className="inline-flex h-12 items-center gap-2 rounded-full border border-foreground/20 hover:border-primary/50 hover:bg-primary/5 px-8 text-sm font-medium text-foreground transition-all duration-300"
             >
               Read blog posts
             </Link>
@@ -198,7 +198,7 @@ export default function NotFound() {
         </div>
 
         {/* Floating code snippets - decorative */}
-        <div className="not-found-reveal absolute top-1/4 -left-20 sm:left-0 opacity-30 text-xs font-mono text-indigo-600/40 dark:text-indigo-400/30 hidden sm:block max-w-[150px] break-words">
+        <div className="not-found-reveal absolute top-1/4 -left-20 sm:left-0 opacity-30 text-xs font-mono text-primary/40 dark:text-primary/30 hidden sm:block max-w-[150px] break-words">
           <div className="whitespace-pre-wrap">
             {`const navigate = () => {
   return home();
@@ -206,7 +206,7 @@ export default function NotFound() {
           </div>
         </div>
 
-        <div className="not-found-reveal absolute bottom-1/4 -right-20 sm:right-0 opacity-30 text-xs font-mono text-indigo-600/40 dark:text-indigo-400/30 hidden sm:block max-w-[150px] break-words">
+        <div className="not-found-reveal absolute bottom-1/4 -right-20 sm:right-0 opacity-30 text-xs font-mono text-primary/40 dark:text-primary/30 hidden sm:block max-w-[150px] break-words">
           <div className="whitespace-pre-wrap">
             {`try {
   findPage();

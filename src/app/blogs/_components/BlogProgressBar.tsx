@@ -20,7 +20,7 @@ export function BlogProgressBar() {
   return (
     <div className="fixed left-0 right-0 top-0 z-[100] h-0.5 bg-transparent">
       <div
-        className="h-full bg-indigo-600 transition-[width] duration-100 ease-linear"
+        className="h-full bg-primary transition-[width] duration-100 ease-linear"
         style={{ width: `${progress}%` }}
       />
     </div>

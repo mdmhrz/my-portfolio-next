@@ -1,3 +1,4 @@
+import React, { ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -5,11 +6,11 @@ import type { Metadata } from "next";
 import GithubSlugger from "github-slugger";
 import { prisma } from "@/lib/prisma";
 import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
-import "highlight.js/styles/github-dark.css";
 import { ArrowLeft, Calendar, Clock, ArrowRight, Eye, Tag } from "lucide-react";
 import { BlogShareButtons } from "@/app/blogs/_components/BlogShareButtons";
 import { BlogProgressBar } from "@/app/blogs/_components/BlogProgressBar";
@@ -157,57 +158,59 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
   const canonicalUrl = `${SITE_URL}/blogs/${post.slug}`;
 
-  const markdownComponents = {
-    h2: ({ children, ...props }: any) => (
+  const markdownComponents: Components = {
+    h2: ({ children, ...props }: ComponentPropsWithoutRef<"h2">) => (
       <h2 className="scroll-mt-24 text-2xl font-medium tracking-tight text-foreground mt-10 mb-4" {...props}>
         {children}
       </h2>
     ),
-    h3: ({ children, ...props }: any) => (
+    h3: ({ children, ...props }: ComponentPropsWithoutRef<"h3">) => (
       <h3 className="scroll-mt-24 text-xl font-medium tracking-tight text-foreground mt-8 mb-3" {...props}>
         {children}
       </h3>
     ),
-    p: ({ children, ...props }: any) => (
+    p: ({ children, ...props }: ComponentPropsWithoutRef<"p">) => (
       <p className="text-base leading-relaxed text-muted-foreground mb-6" {...props}>
         {children}
       </p>
     ),
-    ul: ({ children, ...props }: any) => (
+    ul: ({ children, ...props }: ComponentPropsWithoutRef<"ul">) => (
       <ul className="list-disc pl-6 mb-6 space-y-2 text-muted-foreground" {...props}>
         {children}
       </ul>
     ),
-    ol: ({ children, ...props }: any) => (
+    ol: ({ children, ...props }: ComponentPropsWithoutRef<"ol">) => (
       <ol className="list-decimal pl-6 mb-6 space-y-2 text-muted-foreground" {...props}>
         {children}
       </ol>
     ),
-    li: ({ children, ...props }: any) => (
+    li: ({ children, ...props }: ComponentPropsWithoutRef<"li">) => (
       <li className="text-base leading-relaxed pl-1" {...props}>
         {children}
       </li>
     ),
-    blockquote: ({ children, ...props }: any) => (
+    blockquote: ({ children, ...props }: ComponentPropsWithoutRef<"blockquote">) => (
       <blockquote
-        className="border-l-2 border-indigo-600 dark:border-indigo-500 pl-5 italic my-6 text-muted-foreground bg-indigo-600/[0.02] dark:bg-indigo-500/[0.02] py-3 pr-4 rounded-r-xl"
+        className="border-l-2 border-primary dark:border-primary pl-5 italic my-6 text-muted-foreground bg-primary/[0.02] dark:bg-primary/[0.02] py-3 pr-4 rounded-r-xl"
         {...props}
       >
         {children}
       </blockquote>
     ),
     // Pre wraps code blocks — extract child's language className and pass to BlogCodeBlock
-    pre: ({ children }: any) => {
+    pre: ({ children }: ComponentPropsWithoutRef<"pre">) => {
       const child = Array.isArray(children) ? children[0] : children;
-      const langClass = (child as any)?.props?.className ?? '';
+      const langClass = React.isValidElement(child)
+        ? (child.props as { className?: string })?.className ?? ""
+        : "";
       return <BlogCodeBlock className={langClass}>{children}</BlogCodeBlock>;
     },
-    code: ({ className, children, ...props }: any) => {
+    code: ({ className, children, ...props }: ComponentPropsWithoutRef<"code">) => {
       const isBlock = /language-|hljs/.test(className || "");
       if (!isBlock) {
         return (
           <code
-            className="rounded border border-border bg-neutral-100 dark:bg-zinc-900 px-1.5 py-0.5 font-mono text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold"
+            className="rounded border border-border bg-neutral-100 dark:bg-zinc-900 px-1.5 py-0.5 font-mono text-[11px] text-primary dark:text-primary font-semibold"
             {...props}
           >
             {children}
@@ -216,7 +219,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       }
       return <code className={className} {...props}>{children}</code>;
     },
-    img: ({ src, alt, ...props }: any) => (
+    img: ({ src, alt, ...props }: ComponentPropsWithoutRef<"img">) => (
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={src}
@@ -226,12 +229,12 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         {...props}
       />
     ),
-    a: ({ href, children, ...props }: any) => (
+    a: ({ href, children, ...props }: ComponentPropsWithoutRef<"a">) => (
       <a
         href={href}
         target="_blank"
         rel="noreferrer"
-        className="text-indigo-600 dark:text-indigo-400 underline underline-offset-4 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors font-medium"
+        className="text-primary dark:text-primary underline underline-offset-4 hover:text-primary dark:hover:text-primary transition-colors font-medium"
         {...props}
       >
         {children}
@@ -266,7 +269,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   };
 
   return (
-    <div className="relative overflow-hidden pb-24 selection:bg-primary selection:text-primary-foreground">
+    <div className="relative overflow-x-clip pb-24 selection:bg-primary selection:text-primary-foreground">
       {/* Reading progress bar */}
       <BlogProgressBar />
 
@@ -278,7 +281,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingJsonLd) }}
       />
 
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(120,119,198,0.05),rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,color-mix(in_oklch,var(--primary)_5%,transparent),transparent)]" />
 
       <div className="relative z-10 mx-auto max-w-6xl px-6 py-16">
         {/* Back Link */}
@@ -297,7 +300,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           <article className="lg:col-span-8">
             {/* Header */}
             <header className="mb-10">
-              <div className="mb-6 flex flex-wrap items-center gap-4 text-[10px] font-mono uppercase tracking-widest font-semibold text-indigo-600 dark:text-indigo-400">
+              <div className="mb-6 flex flex-wrap items-center gap-4 text-[10px] font-mono uppercase tracking-widest font-semibold text-primary dark:text-primary">
                 {post.category && (
                   <>
                     <span>{post.category}</span>
@@ -329,7 +332,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               </h1>
 
               {post.excerpt && (
-                <p className="border-l border-indigo-600/30 py-1 pl-4 text-lg leading-relaxed text-muted-foreground">
+                <p className="border-l border-primary/30 py-1 pl-4 text-lg leading-relaxed text-muted-foreground">
                   {post.excerpt}
                 </p>
               )}
@@ -342,7 +345,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                     <Link
                       key={tag}
                       href={`/blogs?tag=${encodeURIComponent(tag)}`}
-                      className="rounded-full bg-indigo-600/8 px-3 py-1 text-[11px] font-mono text-indigo-600 transition-colors hover:bg-indigo-600/15 dark:text-indigo-400"
+                      className="rounded-full bg-primary/8 px-3 py-1 text-[11px] font-mono text-primary transition-colors hover:bg-primary/15 dark:text-primary"
                     >
                       #{tag}
                     </Link>
@@ -352,7 +355,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
               <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600/10 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-mono text-xs font-semibold text-primary dark:text-primary">
                     MH
                   </div>
                   <div>
@@ -378,12 +381,11 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               </div>
             )}
 
-            {/* Markdown Content */}
             <div className="prose prose-neutral max-w-none dark:prose-invert">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw, rehypeHighlight, rehypeSlug]}
-                components={markdownComponents as any}
+                rehypePlugins={[rehypeRaw, [rehypeHighlight, { detect: true }], rehypeSlug]}
+                components={markdownComponents}
               >
                 {post.content}
               </ReactMarkdown>
@@ -400,7 +402,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                     <span className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
                       <ArrowLeft className="h-3 w-3" /> Previous
                     </span>
-                    <span className="mt-2 block text-sm font-medium text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                    <span className="mt-2 block text-sm font-medium text-foreground group-hover:text-primary dark:group-hover:text-primary">
                       {prev.title}
                     </span>
                   </Link>
@@ -415,7 +417,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                     <span className="flex items-center justify-end gap-1.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
                       Next <ArrowRight className="h-3 w-3" />
                     </span>
-                    <span className="mt-2 block text-sm font-medium text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                    <span className="mt-2 block text-sm font-medium text-foreground group-hover:text-primary dark:group-hover:text-primary">
                       {next.title}
                     </span>
                   </Link>
@@ -450,7 +452,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                       />
                     ) : null}
                   </div>
-                  <h3 className="text-base font-medium tracking-tight text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                  <h3 className="text-base font-medium tracking-tight text-foreground group-hover:text-primary dark:group-hover:text-primary">
                     {r.title}
                   </h3>
                 </Link>

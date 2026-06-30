@@ -138,7 +138,7 @@ export function BlogEditorSidebar({ form, wordCount, readingTime, onChange }: Bl
                 {form.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-1 rounded-full bg-indigo-600/10 px-2 py-0.5 text-xs text-indigo-600 dark:text-indigo-400"
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary dark:text-primary"
                   >
                     {tag}
                     <button

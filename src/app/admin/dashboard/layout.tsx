@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AdminShell } from "./_components/AdminShell";
+import { AppearanceColorScope } from "@/components/global/AppearanceColorScope";
 
 export default async function AdminDashboardLayout({
   children,
@@ -16,5 +17,9 @@ export default async function AdminDashboardLayout({
     redirect("/admin/login");
   }
 
-  return <AdminShell>{children}</AdminShell>;
+  return (
+    <AppearanceColorScope scope="admin">
+      <AdminShell>{children}</AdminShell>
+    </AppearanceColorScope>
+  );
 }

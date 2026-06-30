@@ -18,144 +18,169 @@ export default function OgImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "#09090b",
+          background: "#f8fafc",
           fontFamily: "sans-serif",
           overflow: "hidden",
         }}
       >
-        {/* ── Left: Photo panel ── */}
-        <div
-          style={{
-            width: 440,
-            height: 630,
-            flexShrink: 0,
-            display: "flex",
-            position: "relative",
-            backgroundImage: `url(${photoSrc})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center top",
-          }}
-        >
-          {/* Gradient: right edge fades into background */}
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: 160,
-              height: "100%",
-              background: "linear-gradient(to right, transparent, #09090b)",
-              display: "flex",
-            }}
-          />
-          {/* Gradient: bottom edge */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              width: "100%",
-              height: 100,
-              background: "linear-gradient(to bottom, transparent, #09090b)",
-              display: "flex",
-            }}
-          />
-        </div>
-
-        {/* ── Right: Text content ── */}
+        {/* ── Left: Text content (65%) ── */}
         <div
           style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            paddingLeft: 48,
-            paddingRight: 72,
+            padding: "60px 56px",
             position: "relative",
           }}
         >
-          {/* Indigo radial glow */}
+          {/* Top brand row: avatar + name */}
           <div
             style={{
-              position: "absolute",
-              top: 60,
-              right: 40,
-              width: 480,
-              height: 300,
-              background:
-                "radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 70%)",
               display: "flex",
+              alignItems: "center",
+              gap: 14,
+              marginBottom: 36,
             }}
-          />
+          >
+            <img
+              src={photoSrc}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                objectFit: "cover",
+                objectPosition: "center top",
+                border: "2px solid #e2e8f0",
+              }}
+            />
+            <span
+              style={{
+                fontSize: 17,
+                fontWeight: 600,
+                color: "#374151",
+                letterSpacing: "0.2px",
+              }}
+            >
+              mhrazu.com
+            </span>
+          </div>
 
-          {/* Name */}
+          {/* Role badge */}
           <div
             style={{
-              fontSize: 50,
-              fontWeight: 700,
-              color: "#fafafa",
-              letterSpacing: "-1.5px",
+              display: "flex",
+              marginBottom: 24,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 500,
+                color: "#2563eb",
+                background: "#eff6ff",
+                border: "1px solid #bfdbfe",
+                borderRadius: 9999,
+                padding: "6px 20px",
+                display: "flex",
+                letterSpacing: "0.3px",
+              }}
+            >
+              Available for Hire
+            </div>
+          </div>
+
+          {/* Main heading */}
+          <div
+            style={{
+              fontSize: 52,
+              fontWeight: 800,
+              color: "#0f172a",
+              letterSpacing: "-2px",
               lineHeight: 1.1,
               display: "flex",
-              marginBottom: 20,
+              flexDirection: "column",
+              marginBottom: 24,
             }}
           >
-            Mobarak Hossain Razu
+            <span>Mobarak Hossain</span>
+            <span>Full-Stack Developer</span>
           </div>
 
-          {/* Role badges */}
+          {/* What I do */}
           <div
             style={{
+              fontSize: 20,
+              color: "#64748b",
+              lineHeight: 1.6,
               display: "flex",
-              gap: 10,
-              marginBottom: 28,
-            }}
-          >
-            {["Frontend Developer", "Full-Stack Engineer"].map((role) => (
-              <div
-                key={role}
-                style={{
-                  fontSize: 15,
-                  color: "#818cf8",
-                  background: "rgba(99,102,241,0.10)",
-                  border: "1px solid rgba(99,102,241,0.30)",
-                  borderRadius: 6,
-                  padding: "5px 16px",
-                  display: "flex",
-                  letterSpacing: "0.3px",
-                }}
-              >
-                {role}
-              </div>
-            ))}
-          </div>
-
-          {/* Description */}
-          <div
-            style={{
-              fontSize: 22,
-              color: "#71717a",
-              lineHeight: 1.55,
-              display: "flex",
-              flexWrap: "wrap",
-              maxWidth: 520,
+              maxWidth: 500,
               marginBottom: 44,
             }}
           >
-            Building fast, scalable web applications with React, Next.js, Go & PostgreSQL.
+            I design, build, and ship full-stack web apps — turning ideas into fast, scalable products that work beautifully.
           </div>
 
-          {/* Domain */}
+          {/* CTA button */}
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <div
+              style={{
+                fontSize: 17,
+                fontWeight: 600,
+                color: "#ffffff",
+                background: "#0f172a",
+                borderRadius: 8,
+                padding: "13px 28px",
+                display: "flex",
+                letterSpacing: "0.2px",
+              }}
+            >
+              View Portfolio →
+            </div>
+            <span
+              style={{
+                fontSize: 15,
+                color: "#94a3b8",
+                display: "flex",
+              }}
+            >
+              mhrazu.com
+            </span>
+          </div>
+        </div>
+
+        {/* ── Right: Full-height photo (35%) ── */}
+        <div
+          style={{
+            width: 420,
+            height: 630,
+            flexShrink: 0,
+            display: "flex",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src={photoSrc}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+            }}
+          />
+          {/* Subtle left fade into background */}
           <div
             style={{
-              fontSize: 15,
-              color: "#3f3f46",
-              letterSpacing: "1px",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 80,
+              height: "100%",
+              background: "linear-gradient(to right, #f8fafc, transparent)",
               display: "flex",
             }}
-          >
-            mhrazu.com
-          </div>
+          />
         </div>
       </div>
     ),

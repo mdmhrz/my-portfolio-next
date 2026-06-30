@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { List, GithubLogo, LinkedinLogo, FacebookLogo } from "@phosphor-icons/react";
 import { ThemeToggle } from "@/components/global/ThemeToggle";
-import { useLenisRef } from "@/components/global/SmoothScroll";
 import { Logo } from "@/components/global/Logo";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -32,13 +32,15 @@ const SocialLinks = [
   { Icon: FacebookLogo, href: "https://www.facebook.com/mdmhrz", label: "Facebook" },
 ];
 
+const RESUME_URL =
+  "https://drive.google.com/file/d/1c6qzTSxSI84Tx2DBd5QByb_B1Kc6lxaU/view?usp=drive_link";
+
 const NAV_OFFSET = 96;
 
 export function Navbar() {
-  const lenisRef = useLenisRef();
   const [activeId, setActiveId] = useState<string>("");
 
-  // Smooth scroll on anchor click — uses Lenis when available, falls back to native.
+  // Smooth scroll on anchor click — native scroll, offset for the fixed navbar.
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     // Route links (e.g. /blog) navigate normally.
     if (!href.startsWith("#")) return;
@@ -46,13 +48,8 @@ export function Navbar() {
     const target = document.querySelector(href);
     if (!target) return;
 
-    const lenis = lenisRef?.current;
-    if (lenis) {
-      lenis.scrollTo(target as HTMLElement, { offset: -NAV_OFFSET });
-    } else {
-      const top = (target as HTMLElement).getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
+    const top = (target as HTMLElement).getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+    window.scrollTo({ top, behavior: "smooth" });
   };
 
   // Scroll-spy: highlight the nav link of the section currently in view.
@@ -111,7 +108,7 @@ export function Navbar() {
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className={`text-[11px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ${
-                  isActive ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground hover:text-foreground"
+                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {link.name}
@@ -123,26 +120,23 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <Magnetic>
-            <a
-              href="https://drive.google.com/file/d/1c6qzTSxSI84Tx2DBd5QByb_B1Kc6lxaU/view?usp=drive_link"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden h-9 items-center rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:scale-[1.03] active:scale-95 sm:inline-flex"
+            <Button
+              asChild
+              className="hidden h-9 rounded-full px-5 text-[11px] font-semibold uppercase tracking-[0.16em] transition-all duration-300 hover:scale-[1.03] active:scale-95 sm:inline-flex"
             >
-              Resume
-            </a>
+              <a href={RESUME_URL} target="_blank" rel="noopener noreferrer">
+                Resume
+              </a>
+            </Button>
           </Magnetic>
 
           {/* Mobile sidebar */}
           <div className="lg:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <button
-                  aria-label="Open menu"
-                  className="p-1.5 text-foreground transition-colors hover:text-muted-foreground"
-                >
+                <Button variant="ghost" size="icon" aria-label="Open menu" className="h-9 w-9">
                   <List size={24} weight="bold" />
-                </button>
+                </Button>
               </SheetTrigger>
               <SheetContent
                 side="right"
@@ -166,9 +160,7 @@ export function Navbar() {
                           href={link.href}
                           onClick={(e) => handleNavClick(e, link.href)}
                           className={`text-2xl font-medium tracking-tight transition-all duration-300 hover:translate-x-1 ${
-                            isActive
-                              ? "text-indigo-600 dark:text-indigo-400"
-                              : "text-muted-foreground hover:text-foreground"
+                            isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                           }`}
                         >
                           {link.name}
@@ -179,14 +171,14 @@ export function Navbar() {
                 </nav>
 
                 <div className="p-6 pt-0">
-                  <a
-                    href="https://drive.google.com/file/d/1c6qzTSxSI84Tx2DBd5QByb_B1Kc6lxaU/view?usp=drive_link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-10 items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-colors duration-300"
+                  <Button
+                    asChild
+                    className="h-10 w-full rounded-full text-xs font-semibold uppercase tracking-[0.16em]"
                   >
-                    Resume
-                  </a>
+                    <a href={RESUME_URL} target="_blank" rel="noopener noreferrer">
+                      Resume
+                    </a>
+                  </Button>
                 </div>
 
                 <div className="space-y-4 p-6">

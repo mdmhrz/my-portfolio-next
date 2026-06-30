@@ -48,6 +48,18 @@ export function BlogTOC({ headings }: BlogTOCProps) {
     };
   }, [headings]);
 
+  // Explicit JS smooth scroll (matches Navbar/Footer) — reliable across browsers
+  // and offsets for the fixed navbar so the heading lands cleanly below it.
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const target = document.getElementById(id);
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - 96;
+    window.scrollTo({ top, behavior: "smooth" });
+    history.replaceState(null, "", `#${id}`);
+    setActiveId(id);
+  };
+
   if (headings.length === 0) return null;
 
   return (
@@ -62,11 +74,12 @@ export function BlogTOC({ headings }: BlogTOCProps) {
             <a
               key={h.id}
               href={`#${h.id}`}
+              onClick={(e) => handleClick(e, h.id)}
               className={`-ml-px block border-l py-1 text-sm transition-all duration-150 ${
                 h.level === 3 ? 'pl-6' : 'pl-4'
               } ${
                 isActive
-                  ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 font-medium'
+                  ? 'border-primary text-primary dark:text-primary font-medium'
                   : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
               }`}
             >

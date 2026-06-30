@@ -146,11 +146,11 @@ export function CodeCard({ start }: { start: boolean }) {
       <div className="flex h-[366px] w-full max-w-md items-center justify-center">
         <button
           onClick={() => setIsClosed(false)}
-          className="group flex items-center gap-3 rounded-full border border-indigo-500/30 bg-card px-6 py-3 text-sm font-medium text-indigo-600 dark:text-indigo-400 shadow-xl transition-all duration-300 hover:scale-105 hover:border-indigo-500 hover:shadow-indigo-500/10 active:scale-95"
+          className="group flex items-center gap-3 rounded-full border border-primary/30 bg-card px-6 py-3 text-sm font-medium text-primary dark:text-primary shadow-xl transition-all duration-300 hover:scale-105 hover:border-primary hover:shadow-primary/10 active:scale-95"
         >
           <Terminal className="h-4 w-4 transition-transform group-hover:rotate-6" />
           <span>Restore Terminal</span>
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-500/10 text-[10px]">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px]">
             <Eye className="h-3 w-3" />
           </span>
         </button>

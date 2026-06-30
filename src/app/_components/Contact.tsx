@@ -13,6 +13,7 @@ import {
   FacebookLogo,
 } from "@phosphor-icons/react";
 import { Reveal } from "@/components/global/Reveal";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -111,7 +112,7 @@ export function Contact() {
           {/* Left: info */}
           <div>
             <Reveal>
-              <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+              <span className="text-xs font-semibold text-primary">
                 Contact
               </span>
             </Reveal>
@@ -162,7 +163,7 @@ export function Contact() {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={label}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-indigo-600/5 dark:hover:bg-indigo-400/5 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-600/40 dark:hover:border-indigo-400/40"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-primary/5 hover:text-primary hover:border-primary/40"
                   >
                     <Icon className="h-5 w-5" />
                   </a>
@@ -186,7 +187,7 @@ export function Contact() {
                     placeholder="Your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="h-12 w-full rounded-xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:border-indigo-600 dark:focus-visible:border-indigo-400 focus-visible:ring-1 focus-visible:ring-indigo-600/10 dark:focus-visible:ring-indigo-400/10"
+                    className="h-12 w-full rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20"
                   />
                 </Field>
                 <Field label="Email">
@@ -197,7 +198,7 @@ export function Contact() {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-12 w-full rounded-xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:border-indigo-600 dark:focus-visible:border-indigo-400 focus-visible:ring-1 focus-visible:ring-indigo-600/10 dark:focus-visible:ring-indigo-400/10"
+                    className="h-12 w-full rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20"
                   />
                 </Field>
               </div>
@@ -210,7 +211,7 @@ export function Contact() {
                     placeholder="What's this about?"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="h-12 w-full rounded-xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:border-indigo-600 dark:focus-visible:border-indigo-400 focus-visible:ring-1 focus-visible:ring-indigo-600/10 dark:focus-visible:ring-indigo-400/10"
+                    className="h-12 w-full rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20"
                   />
                 </Field>
               </div>
@@ -218,10 +219,10 @@ export function Contact() {
               <div className="mt-5">
                 <Field label="Inquiry type">
                   <Select value={type} onValueChange={setType}>
-                    <SelectTrigger className="h-12 w-full rounded-xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 text-sm text-foreground focus-visible:border-indigo-600 dark:focus-visible:border-indigo-400 focus-visible:ring-1 focus-visible:ring-indigo-600/10 dark:focus-visible:ring-indigo-400/10">
+                    <SelectTrigger className="h-12 w-full rounded-xl border border-input bg-background px-4 text-sm text-foreground focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20">
                       <SelectValue placeholder="Select a type" />
                     </SelectTrigger>
-                    <SelectContent className="bg-popover border border-neutral-200 dark:border-zinc-700 text-foreground">
+                    <SelectContent className="bg-popover border border-border text-foreground">
                       <SelectItem value="Freelance project">Freelance project</SelectItem>
                       <SelectItem value="Full-time role">Full-time role</SelectItem>
                       <SelectItem value="Collaboration">Collaboration</SelectItem>
@@ -240,19 +241,19 @@ export function Contact() {
                     placeholder="Tell me about your project..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="min-h-[120px] w-full rounded-xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:border-indigo-600 dark:focus-visible:border-indigo-400 focus-visible:ring-1 focus-visible:ring-indigo-600/10 dark:focus-visible:ring-indigo-400/10 resize-none"
+                    className="min-h-[120px] w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 resize-none"
                   />
                 </Field>
               </div>
 
-              <button
+              <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="group mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white text-sm font-medium transition-all hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="group mt-7 h-12 w-full rounded-full text-sm font-medium transition-all hover:scale-[1.01] hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_20%,transparent)]"
               >
                 {isSubmitting ? "Sending..." : "Send message"}
                 {!isSubmitting && <PaperPlaneTilt className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />}
-              </button>
+              </Button>
             </form>
           </Reveal>
         </div>

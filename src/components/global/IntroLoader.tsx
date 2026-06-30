@@ -173,7 +173,7 @@ export function IntroLoader({ onDone }: { onDone: () => void }) {
       <div className="mt-8 h-[2px] w-56 overflow-hidden bg-foreground/10 rounded-full">
         <div
           ref={barRef}
-          className="h-full w-full origin-left scale-x-0 bg-indigo-600 dark:bg-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.8)]"
+          className="h-full w-full origin-left scale-x-0 bg-primary shadow-[0_0_12px_color-mix(in_oklch,var(--primary)_80%,transparent)]"
           style={{ transform: 'scaleX(0)' }}
         />
       </div>
@@ -184,7 +184,7 @@ export function IntroLoader({ onDone }: { onDone: () => void }) {
         <span ref={pctRef} className="text-foreground font-bold min-w-[24px] text-right">0</span>
         <span>% ]</span>
         <span className="text-muted-foreground/30">•</span>
-        <span className="flex overflow-hidden text-indigo-600 dark:text-indigo-400">
+        <span className="flex overflow-hidden text-primary dark:text-primary">
           {"INITIALIZING PORTFOLIO".split("").map((char, index) => (
             <motion.span
               key={index}

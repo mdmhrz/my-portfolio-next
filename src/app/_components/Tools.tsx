@@ -575,7 +575,7 @@ export function Tools({ skills }: { skills?: any[] }) {
 
       <div className="container mx-auto max-w-7xl relative z-10">
         <Reveal className="mb-16 flex flex-col gap-4">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary dark:text-primary font-semibold">
             Technical Stack
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -609,7 +609,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                     {skills.map((s) => (
                       <span
                         key={s.id}
-                        className="rounded-full border border-indigo-600/20 dark:border-indigo-400/20 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] px-4 py-1.5 text-xs text-foreground font-medium"
+                        className="rounded-full border border-primary/20 dark:border-primary/20 bg-primary/[0.04] dark:bg-primary/[0.04] px-4 py-1.5 text-xs text-foreground font-medium"
                       >
                         {s.name}
                       </span>
@@ -651,7 +651,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                             onMouseLeave={handleMouseLeave}
                             className={`group/tag flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs transition-all duration-300 ${
                               isHovered
-                                ? "border-indigo-600/40 dark:border-indigo-400/40 bg-indigo-600/[0.04] dark:bg-indigo-400/[0.04] text-indigo-600 dark:text-indigo-400 font-medium shadow-sm"
+                                ? "border-primary/40 dark:border-primary/40 bg-primary/[0.04] dark:bg-primary/[0.04] text-primary dark:text-primary font-medium shadow-sm"
                                 : "border-neutral-200 dark:border-zinc-700 bg-foreground/[0.01] text-muted-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] hover:text-foreground"
                             }`}
                           >
@@ -693,7 +693,7 @@ export function Tools({ skills }: { skills?: any[] }) {
 
                     {/* Window Title */}
                     <div className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/80 uppercase tracking-widest">
-                      <FileCode2 className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                      <FileCode2 className="h-3.5 w-3.5 text-primary dark:text-primary" />
                       <span className={`transition-all duration-200 ${isFading ? 'opacity-0 -translate-x-1.5' : 'opacity-100 translate-x-0'}`}>
                         {activeSnippet.filename}
                       </span>
@@ -715,11 +715,11 @@ export function Tools({ skills }: { skills?: any[] }) {
                           onClick={() => handleTabClick(key)}
                           className={`flex items-center gap-1.5 border-r border-border/40 px-3.5 py-2 font-mono text-[10px] cursor-pointer transition-all ${
                             isActive
-                              ? "border-t border-t-indigo-600 dark:border-t-indigo-500 bg-card text-foreground font-semibold"
+                              ? "border-t border-t-primary bg-card text-foreground font-semibold"
                               : "text-muted-foreground/80 hover:text-foreground hover:bg-neutral-100/20 dark:hover:bg-zinc-800/10"
                           }`}
                         >
-                          <FileCode2 className={`h-3 w-3 ${isActive ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground/50"}`} />
+                          <FileCode2 className={`h-3 w-3 ${isActive ? "text-primary dark:text-primary" : "text-muted-foreground/50"}`} />
                           <span>{filename}</span>
                         </button>
                       );
@@ -737,9 +737,9 @@ export function Tools({ skills }: { skills?: any[] }) {
                         {activeSnippet.lines.slice(0, visibleLinesCount).map((line, idx) => {
                           const isLastLine = idx === Math.min(visibleLinesCount - 1, activeSnippet.lines.length - 1);
                           return (
-                            <tr key={idx} className="group/line hover:bg-indigo-600/[0.03] dark:hover:bg-indigo-500/[0.03] transition-colors">
+                            <tr key={idx} className="group/line hover:bg-primary/[0.03] dark:hover:bg-primary/[0.03] transition-colors">
                               {/* Line Number */}
-                              <td className="w-8 select-none pr-4 text-right font-mono text-[10px] text-muted-foreground/30 group-hover/line:text-indigo-600 dark:group-hover/line:text-indigo-400 font-semibold transition-colors">
+                              <td className="w-8 select-none pr-4 text-right font-mono text-[10px] text-muted-foreground/30 group-hover/line:text-primary dark:group-hover/line:text-primary font-semibold transition-colors">
                                 {idx + 1}
                               </td>
                               {/* Code Text */}
@@ -750,7 +750,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                                   </span>
                                 ))}
                                 {isLastLine && (
-                                  <span className="inline-block w-1.5 h-3.5 bg-indigo-500 ml-1 align-middle animate-[pulse_0.8s_infinite]" />
+                                  <span className="inline-block w-1.5 h-3.5 bg-primary ml-1 align-middle animate-[pulse_0.8s_infinite]" />
                                 )}
                               </td>
                             </tr>

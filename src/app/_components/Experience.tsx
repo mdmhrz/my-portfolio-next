@@ -24,7 +24,7 @@ export function Experience({ experiences: dbExperiences }: { experiences?: any[]
     <section id="experience" className="relative overflow-hidden border-t border-border bg-background px-6 py-28 md:py-40">
       <div className="container mx-auto max-w-7xl">
         <Reveal className="mb-16 flex flex-col gap-4">
-          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+          <span className="text-xs font-semibold text-primary dark:text-primary">
             Career record
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -43,13 +43,13 @@ export function Experience({ experiences: dbExperiences }: { experiences?: any[]
                     <div className="flex flex-col gap-8">
                       <div className="flex flex-wrap items-start justify-between gap-4">
                         <div className="flex items-center gap-4">
-                          <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-100 dark:bg-zinc-950 text-indigo-600 dark:text-indigo-400">
+                          <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-100 dark:bg-zinc-950 text-primary dark:text-primary">
                             <Briefcase className="h-6 w-6" />
                           </div>
                           <div>
                             <h3 className="text-2xl font-medium tracking-tight text-foreground">{exp.company}</h3>
                             <div className="mt-1 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                              <Lightning className="h-3.5 w-3.5 text-indigo-500" /> {exp.role}
+                              <Lightning className="h-3.5 w-3.5 text-primary" /> {exp.role}
                             </div>
                           </div>
                         </div>
@@ -96,7 +96,7 @@ export function Experience({ experiences: dbExperiences }: { experiences?: any[]
                             <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
                               {p.desc}
                             </p>
-                            <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-primary dark:text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                               View case <ArrowUpRight className="h-3.5 w-3.5" />
                             </div>
                           </div>

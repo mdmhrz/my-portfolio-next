@@ -24,7 +24,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
     <section id="work" className="relative border-t border-border bg-background px-6 py-28 md:py-40">
       <div className="container mx-auto max-w-7xl">
         <Reveal className="mb-14 flex flex-col gap-4">
-          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+          <span className="text-xs font-semibold text-primary dark:text-primary">
             Selected work
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -92,7 +92,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                         </h3>
                         <p className="mt-1 text-xs font-mono text-muted-foreground">{p.subtitle}</p>
                       </div>
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-neutral-200 dark:border-zinc-700 text-foreground transition-all duration-500 group-hover:-translate-y-0.5 group-hover:border-indigo-600 dark:group-hover:border-indigo-500 group-hover:bg-indigo-600 dark:group-hover:bg-indigo-500 group-hover:text-white">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-all duration-500 group-hover:-translate-y-0.5 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
                         <ArrowUpRight className="h-4 w-4" />
                       </span>
                     </div>
@@ -110,7 +110,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                               {t}
                             </span>
                             {idx < Math.min(p.tech.length, 6) - 1 && (
-                              <span className="h-1 w-1 rounded-full bg-indigo-500/80" />
+                              <span className="h-1 w-1 rounded-full bg-primary/80" />
                             )}
                           </span>
                         ))}

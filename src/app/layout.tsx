@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/global/ThemeProvider";
-import { SmoothScroll } from "@/components/global/SmoothScroll";
+import { AppearanceFont } from "@/components/global/AppearanceFont";
 import { Toaster } from "@/components/ui/sonner";
 
 const satoshi = localFont({
   src: [
-    { path: "../../public/fonts/Satoshi-Regular.woff2", weight: "400", style: "normal" },
-    { path: "../../public/fonts/Satoshi-Medium.woff2", weight: "500", style: "normal" },
-    { path: "../../public/fonts/Satoshi-Bold.woff2", weight: "700", style: "normal" },
-    { path: "../../public/fonts/Satoshi-Black.woff2", weight: "900", style: "normal" },
+    { path: "../../public/fonts/satoshi/satoshi-400.woff2", weight: "400", style: "normal" },
+    { path: "../../public/fonts/satoshi/satoshi-500.woff2", weight: "500", style: "normal" },
+    { path: "../../public/fonts/satoshi/satoshi-700.woff2", weight: "700", style: "normal" },
+    { path: "../../public/fonts/satoshi/satoshi-900.woff2", weight: "900", style: "normal" },
   ],
   variable: "--font-satoshi",
 });
@@ -82,12 +82,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={satoshi.variable} suppressHydrationWarning>
       <body className="antialiased font-sans bg-background text-foreground">
+        <AppearanceFont />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
         <ThemeProvider>
-          <SmoothScroll>{children}</SmoothScroll>
+          {children}
           <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>

@@ -11,7 +11,6 @@ import {
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/global/Logo";
-import { useLenisRef } from "@/components/global/SmoothScroll";
 
 const socials = [
   { name: "GitHub", Icon: GithubLogo, href: "https://github.com/mdmhrz" },
@@ -34,7 +33,6 @@ const NAV_OFFSET = 96;
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  const lenisRef = useLenisRef();
   const [mounted, setMounted] = useState(false);
   const [timeString, setTimeString] = useState("");
   const [ping, setPing] = useState(12);
@@ -76,22 +74,17 @@ export function Footer() {
     const target = document.querySelector(href);
     if (!target) return;
 
-    const lenis = lenisRef?.current;
-    if (lenis) {
-      lenis.scrollTo(target as HTMLElement, { offset: -NAV_OFFSET });
-    } else {
-      const top = (target as HTMLElement).getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
+    const top = (target as HTMLElement).getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+    window.scrollTo({ top, behavior: "smooth" });
   };
 
   return (
     <footer className="relative overflow-hidden border-t border-border bg-background">
       {/* Background Soft Glow */}
-      <div className="pointer-events-none absolute -bottom-48 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-500/5 dark:bg-indigo-500/5 blur-[120px] rounded-full" />
-      
+      <div className="pointer-events-none absolute -bottom-48 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 blur-[120px] rounded-full" />
+
       {/* Top hairline accent */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
 
       <div className="container mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 gap-12 py-20 md:grid-cols-12 md:gap-10">
@@ -113,7 +106,7 @@ export function Footer() {
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel="noreferrer"
                   aria-label={name}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-300 hover:border-indigo-600/40 dark:hover:border-indigo-400/40 hover:bg-indigo-600/5 dark:hover:bg-indigo-400/5 hover:text-indigo-600 dark:hover:text-indigo-400"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-300 hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
                 >
                   <Icon className="h-[18px] w-[18px]" weight="regular" />
                 </a>
@@ -123,7 +116,7 @@ export function Footer() {
 
           {/* Navigation Column */}
           <div className="space-y-5 md:col-span-3">
-            <h4 className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+            <h4 className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary font-semibold">
               Navigation
             </h4>
             <ul className="space-y-3">
@@ -135,7 +128,7 @@ export function Footer() {
                     className="group relative inline-flex items-center text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground"
                   >
                     <span>{item.label}</span>
-                    <span className="absolute left-0 right-0 bottom-[-2px] h-[1px] bg-indigo-500 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
+                    <span className="absolute left-0 right-0 bottom-[-2px] h-[1px] bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
                   </a>
                 </li>
               ))}
@@ -144,7 +137,7 @@ export function Footer() {
 
           {/* Status Column */}
           <div className="space-y-5 md:col-span-4">
-            <h4 className="text-[11px] font-mono uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 font-semibold">
+            <h4 className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary font-semibold">
               Availability
             </h4>
             
@@ -183,7 +176,7 @@ export function Footer() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full rounded-full border-indigo-600/20 dark:border-indigo-400/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600/5 dark:hover:bg-indigo-400/5 hover:border-indigo-600/40 dark:hover:border-indigo-400/40 transition-colors duration-300"
+                  className="w-full rounded-full border-primary/20 text-primary hover:bg-primary/5 hover:border-primary/40 transition-colors duration-300"
                 >
                   Get in touch
                   <ArrowUpRight weight="bold" className="ml-1 h-3 w-3" />
@@ -201,8 +194,8 @@ export function Footer() {
         >
           <span 
             className={`block text-[clamp(2rem,11.5vw,7.5rem)] font-extrabold uppercase leading-none tracking-tighter select-none pointer-events-none transition-all duration-700 ${
-              isWatermarkHovered 
-                ? "text-indigo-600/70 dark:text-indigo-400/80" 
+              isWatermarkHovered
+                ? "text-primary/70"
                 : "text-muted-foreground/20 dark:text-zinc-700/40"
             }`}
             style={{ 
@@ -230,7 +223,7 @@ export function Footer() {
             className="group flex items-center gap-2 text-[10px] font-mono font-medium uppercase tracking-[0.3em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
           >
             Back to top
-            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border transition-colors duration-300 group-hover:border-indigo-600 dark:group-hover:border-indigo-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border transition-colors duration-300 group-hover:border-primary group-hover:text-primary">
               <ArrowUp weight="bold" className="h-3 w-3" />
             </span>
           </a>
