@@ -108,7 +108,7 @@ export default async function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="relative min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+      <div className="relative min-h-screen overflow-hidden bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
         <Navbar />
 
         {/* Decorative background gradients */}

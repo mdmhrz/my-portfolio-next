@@ -5,7 +5,7 @@ import { AppearanceColorScope } from "@/components/global/AppearanceColorScope";
 export const revalidate = 3600; // Revalidate every hour; admin mutations call revalidatePath("/")
 
 export default async function Home() {
-  const [banner, experiences, projects, about, settings, skills] = await Promise.all([
+  const [banner, experiences, projects, about, settings, skills, homepageBlogs] = await Promise.all([
     prisma.banner.findFirst(),
     prisma.experience.findMany({
       include: {
@@ -55,7 +55,32 @@ export default async function Home() {
     prisma.about.findUnique({ where: { id: "singleton" } }),
     prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
     prisma.skill.findMany({ orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
+    // Featured, published blogs for the landing-page slider. Dates are serialized
+    // to ISO strings so they cross the server→client boundary as plain JSON.
+    prisma.blog.findMany({
+      where: { published: true, featured: true },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        coverImage: true,
+        coverImageAlt: true,
+        category: true,
+        tags: true,
+        featured: true,
+        readingTime: true,
+        views: true,
+        createdAt: true,
+      },
+    }),
   ]);
+
+  const serializedBlogs = homepageBlogs.map((b) => ({
+    ...b,
+    createdAt: b.createdAt.toISOString(),
+  }));
 
   return (
     <AppearanceColorScope scope="public">
@@ -66,6 +91,7 @@ export default async function Home() {
         about={about}
         settings={settings}
         skills={skills}
+        homepageBlogs={serializedBlogs}
       />
     </AppearanceColorScope>
   );

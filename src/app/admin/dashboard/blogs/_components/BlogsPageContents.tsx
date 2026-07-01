@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Edit2, Trash2, Star, Eye, Clock } from "lucide-react";
+import { Plus, Edit2, Trash2, Star, StarOff, EyeOff, Globe, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,21 +14,13 @@ import { RowActionsMenu } from "@/components/admin/RowActionsMenu";
 import { DeleteDialog } from "@/components/admin/DeleteDialog";
 import { Pagination } from "@/components/admin/Pagination";
 
-const COLUMNS = [
-  "Title",
-  "Tags",
-  "Status",
-  <span key="views" className="flex items-center gap-1"><Eye className="h-3 w-3" /> Views</span>,
-  <span key="read" className="flex items-center gap-1"><Clock className="h-3 w-3" /> Read</span>,
-  "Date",
-  "Actions",
-];
+const COLUMNS = ["Title", "Tags", "Status", "Featured", "Views", "Read", "Date", "Actions"];
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
 export function BlogsPageContents() {
   const router = useRouter();
-  const { blogs, fetchBlogs, deleteBlog } = usePortfolioStore();
+  const { blogs, fetchBlogs, deleteBlog, updateBlog } = usePortfolioStore();
 
   const [isLoading, setIsLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
@@ -55,13 +47,31 @@ export function BlogsPageContents() {
     }
   };
 
+  const handleToggleFeatured = async (id: string, currentFeatured: boolean) => {
+    try {
+      await updateBlog(id, { featured: !currentFeatured });
+      toast.success(currentFeatured ? "Removed from homepage slider." : "Added to homepage slider!");
+    } catch {
+      toast.error("Failed to update featured status.");
+    }
+  };
+
+  const handleTogglePublished = async (id: string, currentPublished: boolean) => {
+    try {
+      await updateBlog(id, { published: !currentPublished });
+      toast.success(currentPublished ? "Post moved to drafts." : "Post published successfully!");
+    } catch {
+      toast.error("Failed to update publish status.");
+    }
+  };
+
   const paginatedBlogs = blogs.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Blog Posts"
-        description={`${blogs.length} post${blogs.length !== 1 ? "s" : ""} · ${blogs.filter((b) => b.published).length} published`}
+        description={`${blogs.length} post${blogs.length !== 1 ? "s" : ""} · ${blogs.filter((b) => b.published).length} published · ${blogs.filter((b) => b.featured && b.published).length} featured on homepage`}
         action={
           <Button onClick={() => router.push("/admin/dashboard/blogs/new")}>
             <Plus className="h-4 w-4" />
@@ -79,12 +89,7 @@ export function BlogsPageContents() {
         {paginatedBlogs.map((b) => (
           <TableRow key={b.id} className="group">
             <TableCell className="max-w-[220px]">
-              <div className="flex items-center gap-2">
-                {b.featured && (
-                  <Star className="h-3.5 w-3.5 flex-shrink-0 text-amber-500" />
-                )}
-                <span className="truncate font-medium text-foreground">{b.title}</span>
-              </div>
+              <span className="block truncate font-medium text-foreground">{b.title}</span>
               <span className="block truncate font-mono text-xs text-muted-foreground">{b.slug}</span>
             </TableCell>
 
@@ -113,6 +118,20 @@ export function BlogsPageContents() {
               </Badge>
             </TableCell>
 
+            <TableCell>
+              {b.featured ? (
+                <span
+                  title="Appears in the homepage blog slider"
+                  className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400"
+                >
+                  <Globe className="h-3 w-3" />
+                  Homepage
+                </span>
+              ) : (
+                <span className="text-xs text-muted-foreground">—</span>
+              )}
+            </TableCell>
+
             <TableCell className="font-mono text-xs text-muted-foreground">
               {(b.views ?? 0).toLocaleString()}
             </TableCell>
@@ -137,6 +156,28 @@ export function BlogsPageContents() {
                     icon: <Edit2 className="h-3.5 w-3.5" />,
                     onClick: () => router.push(`/admin/dashboard/blogs/${b.id}/edit`),
                   },
+                  b.published
+                    ? {
+                        label: "Move to Draft",
+                        icon: <EyeOff className="h-3.5 w-3.5" />,
+                        onClick: () => handleTogglePublished(b.id, b.published),
+                      }
+                    : {
+                        label: "Publish",
+                        icon: <Send className="h-3.5 w-3.5" />,
+                        onClick: () => handleTogglePublished(b.id, b.published),
+                      },
+                  b.featured
+                    ? {
+                        label: "Remove from Homepage",
+                        icon: <StarOff className="h-3.5 w-3.5" />,
+                        onClick: () => handleToggleFeatured(b.id, b.featured),
+                      }
+                    : {
+                        label: "Feature on Homepage",
+                        icon: <Star className="h-3.5 w-3.5" />,
+                        onClick: () => handleToggleFeatured(b.id, b.featured),
+                      },
                   {
                     label: "Delete",
                     icon: <Trash2 className="h-3.5 w-3.5" />,

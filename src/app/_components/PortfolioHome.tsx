@@ -13,6 +13,8 @@ import { CTA } from "./CTA";
 import { Contact } from "./Contact";
 import { Footer } from "@/components/global/Footer";
 import { MouseFollower } from "@/components/global/MouseFollower";
+import { HomepageBlogs } from "./HomepageBlogs";
+import type { BlogListItem } from "@/components/blog";
 
 interface PortfolioHomeProps {
   banner: any;
@@ -21,9 +23,10 @@ interface PortfolioHomeProps {
   about?: any;
   settings?: any;
   skills?: any[];
+  homepageBlogs?: BlogListItem[];
 }
 
-export function PortfolioHome({ banner, experiences, projects, about, settings, skills }: PortfolioHomeProps) {
+export function PortfolioHome({ banner, experiences, projects, about, settings, skills, homepageBlogs }: PortfolioHomeProps) {
   const [introDone, setIntroDone] = useState(false);
   const [reduced, setReduced] = useState(false);
 
@@ -44,6 +47,7 @@ export function PortfolioHome({ banner, experiences, projects, about, settings, 
         <Experience experiences={experiences} />
         <Tools skills={skills} />
         <CaseStudies projects={projects} />
+        <HomepageBlogs posts={homepageBlogs ?? []} settings={settings} />
         <CTA settings={settings} about={about} />
         <Contact />
         <Footer />

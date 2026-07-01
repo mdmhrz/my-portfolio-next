@@ -23,7 +23,7 @@ const NavLinks = [
   { name: "Experience", href: "/#experience" },
   { name: "Skills", href: "/#skills" },
   { name: "Work", href: "/#work" },
-  { name: "Blog", href: "/blogs" },
+  { name: "Blog", href: "/#blog" },
   { name: "Contact", href: "/contact" },
   { name: "About", href: "/about" },
 ];
@@ -42,6 +42,16 @@ const NAV_OFFSET = 96;
 export function Navbar() {
   const pathname = usePathname();
   const [activeId, setActiveId] = useState<string>("");
+  // Radix Sheet portals to <body> by default, which escapes AppearanceColorScope
+  // ([data-appearance="public"]). Render the portal inside the scope so the
+  // mobile sidebar inherits the same theme variables as the rest of the page.
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setPortalContainer(
+      document.querySelector<HTMLElement>("[data-appearance='public']") ?? document.body
+    );
+  }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     const isAnchor = href.startsWith("#") || href.includes("#");
@@ -147,6 +157,7 @@ export function Navbar() {
               </SheetTrigger>
               <SheetContent
                 side="right"
+                container={portalContainer}
                 className="w-[85vw] border-l border-border bg-background/95 p-0 backdrop-blur-xl sm:w-[400px]"
               >
                 <SheetHeader className="flex flex-row items-center justify-between border-b border-border p-6">

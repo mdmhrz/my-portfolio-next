@@ -224,7 +224,7 @@ export function BlogEditorSidebar({ form, wordCount, readingTime, onChange }: Bl
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">Featured</p>
-              <p className="text-xs text-muted-foreground">Pinned at top of blog list</p>
+              <p className="text-xs text-muted-foreground">Shows in homepage slider &amp; pinned on /blogs</p>
             </div>
             <Switch
               checked={form.featured}

@@ -211,6 +211,12 @@ model SiteSettings {
   themePreset     String?   @default("default")
   customPalette   Json?
 
+  // HOMEPAGE BLOG SECTION — controls the "Featured Articles" slider on the landing page
+  homepageBlogVisible   Boolean  @default(true)      // show/hide the section
+  homepageBlogTitle     String?                        // custom heading; null = default
+  homepageBlogSubtitle  String?                        // custom subheading; null = default
+  homepageBlogTemplate  String   @default("standard")  // "standard" | "overlay" | "minimal"
+
   updatedAt       DateTime  @updatedAt
 
   @@map("site_settings")

@@ -72,6 +72,11 @@ export interface SiteSettingsData {
   ctaHeadline?: string | null;
   ctaSubtext?: string | null;
   footerText?: string | null;
+  // Homepage "Featured Articles" slider controls
+  homepageBlogVisible?: boolean | null;
+  homepageBlogTitle?: string | null;
+  homepageBlogSubtitle?: string | null;
+  homepageBlogTemplate?: string | null;
 }
 
 export interface SkillData {

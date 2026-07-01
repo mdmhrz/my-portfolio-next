@@ -25,6 +25,11 @@ export async function POST(request: Request) {
       ctaHeadline: body.ctaHeadline || null,
       ctaSubtext: body.ctaSubtext || null,
       footerText: body.footerText || null,
+      // Homepage blog section
+      homepageBlogVisible: body.homepageBlogVisible ?? true,
+      homepageBlogTitle: body.homepageBlogTitle || null,
+      homepageBlogSubtitle: body.homepageBlogSubtitle || null,
+      homepageBlogTemplate: body.homepageBlogTemplate || "standard",
     };
 
     const settings = await prisma.siteSettings.upsert({

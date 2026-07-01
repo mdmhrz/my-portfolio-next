@@ -10,7 +10,8 @@ import {
 import { TableSkeleton } from "@/components/admin/TableSkeleton";
 
 interface DataTableProps {
-  columns: (string | ReactNode)[];
+  /** Plain string labels only — no JSX nodes; icons belong in cells, not headers. */
+  columns: string[];
   children?: ReactNode;
   isEmpty?: boolean;
   emptyMessage?: string;
@@ -33,16 +34,16 @@ export function DataTable({
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
       <Table>
-        <TableHeader className="bg-muted/50">
-          <TableRow>
+        <TableHeader>
+          <TableRow className="border-b border-border bg-muted/60 hover:bg-muted/60">
             {columns.map((col, i) => (
               <TableHead
                 key={i}
-                className={`text-xs font-semibold text-muted-foreground ${
+                className={
                   lastColRight && i === columns.length - 1 ? "text-right" : ""
-                }`}
+                }
               >
                 {col}
               </TableHead>
@@ -51,10 +52,10 @@ export function DataTable({
         </TableHeader>
         <TableBody>
           {isEmpty ? (
-            <TableRow>
+            <TableRow className="hover:bg-transparent">
               <TableCell
                 colSpan={columns.length}
-                className="py-12 text-center text-sm text-muted-foreground"
+                className="py-16 text-center text-sm text-muted-foreground"
               >
                 {emptyMessage}
               </TableCell>
