@@ -70,7 +70,7 @@ export function MouseFollower() {
   return (
     <motion.div
       ref={ringRef}
-      className="pointer-events-none fixed left-0 top-0 z-[9999] hidden rounded-full border md:flex items-center justify-center font-mono text-[9px] font-bold tracking-widest text-primary select-none uppercase overflow-hidden"
+      className="pointer-events-none fixed left-0 top-0 z-[9999] hidden rounded-full border md:flex items-center justify-center font-sans text-[9px] font-bold tracking-widest text-primary select-none uppercase overflow-hidden"
       animate={{
         width: cursorText ? 64 : (isHovering ? 56 : 28),
         height: cursorText ? 64 : (isHovering ? 56 : 28),

@@ -21,9 +21,9 @@ export const revalidate = 3600; // Cache and revalidate page every hour
 
 // Dynamic SEO metadata generation
 export async function generateMetadata(): Promise<Metadata> {
-  const about = await prisma.about.findUnique({ where: { id: "singleton" } });
+  const profile = await prisma.profile.findUnique({ where: { id: "singleton" } });
   const siteTitle = "Contact Mobarak Hossain Razu | Full-Stack Software Developer";
-  const siteDesc = about?.bio ? `Get in touch with Mobarak Hossain: ${about.bio}` : "Contact Mobarak Hossain Razu for freelance projects, full-time opportunities, or tech collaboration.";
+  const siteDesc = profile?.bio ? `Get in touch with Mobarak Hossain: ${profile.bio}` : "Contact Mobarak Hossain Razu for freelance projects, full-time opportunities, or tech collaboration.";
 
   return {
     title: siteTitle,
@@ -42,18 +42,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const [banner, about] = await Promise.all([
-    prisma.banner.findFirst(),
-    prisma.about.findUnique({ where: { id: "singleton" } }),
+  const [profile, settings] = await Promise.all([
+    prisma.profile.findUnique({ where: { id: "singleton" } }),
+    prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
   ]);
 
-  const email = banner?.email || "mdmobarakhossainrazu@gmail.com";
-  const github = banner?.github || "https://github.com/mdmhrz";
-  const linkedin = banner?.linkedin || "https://www.linkedin.com/in/mdmhrz";
-  const facebook = banner?.facebook || "https://www.facebook.com/mdmhrz";
-  const whatsapp = banner?.whatsapp || "+880 1824975616";
-  const location = about?.location || "Dhaka, Bangladesh";
-  const availability = about?.availability || "Open to work";
+  const email = profile?.email || "mdmobarakhossainrazu@gmail.com";
+  const github = profile?.github || "https://github.com/mdmhrz";
+  const linkedin = profile?.linkedin || "https://www.linkedin.com/in/mdmhrz";
+  const facebook = profile?.facebook || "https://www.facebook.com/mdmhrz";
+  const whatsapp = profile?.whatsapp || "+880 1824975616";
+  const location = profile?.location || "Dhaka, Bangladesh";
+  const availability = profile?.availability || "Open to work";
 
   const contactOptions = [
     {
@@ -97,7 +97,7 @@ export default async function ContactPage() {
     "url": "https://mhrazu.com/contact",
     "mainEntity": {
       "@type": "Person",
-      "name": "Mobarak Hossain Razu",
+      "name": profile?.name || "Mobarak Hossain Razu",
       "email": email,
       "address": {
         "@type": "PostalAddress",
@@ -141,7 +141,7 @@ export default async function ContactPage() {
             <div className="lg:col-span-5 space-y-8">
               <div>
                 <Reveal delay={0.05}>
-                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary font-mono">
+                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary font-sans">
                     Let&apos;s Connect
                   </span>
                 </Reveal>
@@ -191,7 +191,7 @@ export default async function ContactPage() {
               {/* Social links row */}
               <div className="space-y-4 pt-4">
                 <Reveal delay={0.35}>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-muted-foreground">
+                  <span className="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-muted-foreground">
                     Find Me Online
                   </span>
                 </Reveal>
@@ -222,7 +222,7 @@ export default async function ContactPage() {
           </div>
         </main>
 
-        <Footer />
+        <Footer profile={profile} footerText={settings?.footerText} />
       </div>
     </AppearanceColorScope>
   );

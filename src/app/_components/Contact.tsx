@@ -24,42 +24,58 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const EMAIL = "mdmobarakhossainrazu@gmail.com";
+const DEFAULT_EMAIL = "mdmobarakhossainrazu@gmail.com";
+const DEFAULT_WHATSAPP = "+880 1824975616";
+const DEFAULT_LOCATION = "Dhaka, Bangladesh";
+const DEFAULT_GITHUB = "https://github.com/mdmhrz";
+const DEFAULT_LINKEDIN = "https://www.linkedin.com/in/mdmhrz";
+const DEFAULT_FACEBOOK = "https://www.facebook.com/mdmhrz";
 
-const info = [
-  {
-    icon: EnvelopeSimple,
-    label: "Email",
-    value: EMAIL,
-    href: `mailto:${EMAIL}`,
-  },
-  {
-    icon: WhatsappLogo,
-    label: "WhatsApp",
-    value: "+880 1824975616",
-    href: "https://wa.me/8801824975616",
-  },
-  {
-    icon: MapPin,
-    label: "Location",
-    value: "Dhaka, Bangladesh",
-    href: undefined,
-  },
-  {
-    icon: Clock,
-    label: "Timezone",
-    value: "GMT+6 (BST)",
-    href: undefined,
-  },
-];
+interface ContactProfile {
+  email?: string | null;
+  whatsapp?: string | null;
+  location?: string | null;
+  github?: string | null;
+  linkedin?: string | null;
+  facebook?: string | null;
+}
 
-const socials = [
-  { Icon: GithubLogo, href: "https://github.com/mdmhrz", label: "GitHub" },
-  { Icon: LinkedinLogo, href: "https://www.linkedin.com/in/mdmhrz", label: "LinkedIn" },
-  { Icon: FacebookLogo, href: "https://www.facebook.com/mdmhrz", label: "Facebook" },
-];
+export function Contact({ profile }: { profile?: ContactProfile | null }) {
+  const contactEmail = profile?.email || DEFAULT_EMAIL;
+  const whatsapp = profile?.whatsapp || DEFAULT_WHATSAPP;
 
-export function Contact() {
+  const info = [
+    {
+      icon: EnvelopeSimple,
+      label: "Email",
+      value: contactEmail,
+      href: `mailto:${contactEmail}`,
+    },
+    {
+      icon: WhatsappLogo,
+      label: "WhatsApp",
+      value: whatsapp.startsWith("http") ? "Send a message" : whatsapp,
+      href: whatsapp.startsWith("http") ? whatsapp : `https://wa.me/${whatsapp.replace(/[^0-9]/g, "")}`,
+    },
+    {
+      icon: MapPin,
+      label: "Location",
+      value: profile?.location || DEFAULT_LOCATION,
+      href: undefined,
+    },
+    {
+      icon: Clock,
+      label: "Timezone",
+      value: "GMT+6 (BST)",
+      href: undefined,
+    },
+  ];
+
+  const socials = [
+    { Icon: GithubLogo, href: profile?.github || DEFAULT_GITHUB, label: "GitHub" },
+    { Icon: LinkedinLogo, href: profile?.linkedin || DEFAULT_LINKEDIN, label: "LinkedIn" },
+    { Icon: FacebookLogo, href: profile?.facebook || DEFAULT_FACEBOOK, label: "Facebook" },
+  ];
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -265,7 +281,7 @@ export function Contact() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="block space-y-2">
-      <span className="ml-1 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+      <span className="ml-1 text-[10px] font-sans uppercase tracking-[0.2em] text-muted-foreground font-semibold">
         {label}
       </span>
       {children}

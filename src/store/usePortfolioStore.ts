@@ -3,17 +3,10 @@ import { api } from "@/lib/api-client";
 
 export interface BannerData {
   id?: string;
-  name: string;
-  title: string;
   description: string;
   chips: string[];
   backgroundImg?: string | null;
   backgroundAlt?: string | null;
-  github?: string | null;
-  linkedin?: string | null;
-  facebook?: string | null;
-  email?: string | null;
-  whatsapp?: string | null;
 }
 
 export interface ExperienceData {
@@ -56,15 +49,22 @@ export interface ProjectData {
   experienceId?: string | null;
 }
 
-export interface AboutData {
+export interface ProfileData {
   id?: string;
+  name: string;
+  designation: string;
   bio: string;
   longBio?: string | null;
-  resumeUrl?: string | null;
   avatarUrl?: string | null;
   avatarAlt?: string | null;
+  resumeUrl?: string | null;
   location?: string | null;
   availability?: string | null;
+  email?: string | null;
+  whatsapp?: string | null;
+  github?: string | null;
+  linkedin?: string | null;
+  facebook?: string | null;
 }
 
 export interface SiteSettingsData {
@@ -125,7 +125,7 @@ interface PortfolioStore {
   projects: ProjectData[];
   messages: MessageData[];
   blogs: BlogData[];
-  about: AboutData | null;
+  profile: ProfileData | null;
   settings: SiteSettingsData | null;
   skills: SkillData[];
   loading: Record<string, boolean>;
@@ -152,8 +152,8 @@ interface PortfolioStore {
   updateBlog: (id: string, data: Partial<BlogData>) => Promise<void>;
   deleteBlog: (id: string) => Promise<void>;
 
-  fetchAbout: () => Promise<void>;
-  updateAbout: (data: AboutData) => Promise<void>;
+  fetchProfile: () => Promise<void>;
+  updateProfile: (data: ProfileData) => Promise<void>;
 
   fetchSettings: () => Promise<void>;
   updateSettings: (data: SiteSettingsData) => Promise<void>;
@@ -168,7 +168,7 @@ interface PortfolioStore {
   setProjects: (projects: ProjectData[]) => void;
   setMessages: (messages: MessageData[]) => void;
   setBlogs: (blogs: BlogData[]) => void;
-  setAbout: (about: AboutData | null) => void;
+  setProfile: (profile: ProfileData | null) => void;
   setSettings: (settings: SiteSettingsData | null) => void;
   setSkills: (skills: SkillData[]) => void;
 }
@@ -179,7 +179,7 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   projects: [],
   messages: [],
   blogs: [],
-  about: null,
+  profile: null,
   settings: null,
   skills: [],
   loading: {},
@@ -189,7 +189,7 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   setProjects: (projects) => set({ projects }),
   setMessages: (messages) => set({ messages }),
   setBlogs: (blogs) => set({ blogs }),
-  setAbout: (about) => set({ about }),
+  setProfile: (profile) => set({ profile }),
   setSettings: (settings) => set({ settings }),
   setSkills: (skills) => set({ skills }),
 
@@ -363,21 +363,21 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
     }
   },
 
-  // About Actions
-  fetchAbout: async () => {
+  // Profile Actions
+  fetchProfile: async () => {
     try {
-      const res = await api.get("/admin/about");
-      set({ about: res.data.data });
+      const res = await api.get("/admin/profile");
+      set({ profile: res.data.data });
     } catch (err) {
-      console.error("Error fetching about:", err);
+      console.error("Error fetching profile:", err);
     }
   },
-  updateAbout: async (data) => {
+  updateProfile: async (data) => {
     try {
-      const res = await api.post("/admin/about", data);
-      set({ about: res.data.data });
+      const res = await api.post("/admin/profile", data);
+      set({ profile: res.data.data });
     } catch (err) {
-      console.error("Error updating about:", err);
+      console.error("Error updating profile:", err);
       throw err;
     }
   },

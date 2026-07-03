@@ -52,7 +52,7 @@ export function BlogEditorTopbar({
         <span className="h-4 w-px bg-border" />
 
         {!isNew && (
-          <span className={`flex items-center gap-1.5 text-xs font-mono ${status.className}`}>
+          <span className={`flex items-center gap-1.5 text-xs font-sans ${status.className}`}>
             {status.icon}
             {status.label}
           </span>

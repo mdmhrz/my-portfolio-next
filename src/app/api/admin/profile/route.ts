@@ -5,11 +5,11 @@ import { verifyAdmin } from "@/lib/auth-helpers";
 
 export async function GET() {
   try {
-    const about = await prisma.about.findUnique({ where: { id: "singleton" } });
-    return NextResponse.json({ success: true, data: about });
+    const profile = await prisma.profile.findUnique({ where: { id: "singleton" } });
+    return NextResponse.json({ success: true, data: profile });
   } catch (error) {
-    console.error("GET about error:", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch about" }, { status: 500 });
+    console.error("GET profile error:", error);
+    return NextResponse.json({ success: false, error: "Failed to fetch profile" }, { status: 500 });
   }
 }
 
@@ -22,29 +22,37 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const data = {
+      name: body.name,
+      designation: body.designation,
       bio: body.bio,
       longBio: body.longBio || null,
-      resumeUrl: body.resumeUrl || null,
       avatarUrl: body.avatarUrl || null,
       avatarAlt: body.avatarAlt || null,
+      resumeUrl: body.resumeUrl || null,
       location: body.location || null,
       availability: body.availability || null,
+      email: body.email || null,
+      whatsapp: body.whatsapp || null,
+      github: body.github || null,
+      linkedin: body.linkedin || null,
+      facebook: body.facebook || null,
     };
 
-    const about = await prisma.about.upsert({
+    const profile = await prisma.profile.upsert({
       where: { id: "singleton" },
       update: data,
       create: { id: "singleton", ...data },
     });
 
     revalidatePath("/");
-    return NextResponse.json({ success: true, data: about });
+    revalidatePath("/about");
+    revalidatePath("/contact");
+    return NextResponse.json({ success: true, data: profile });
   } catch (error) {
-    console.error("POST about error:", error instanceof Error ? error.message : String(error));
-    console.error("Full error:", error);
+    console.error("POST profile error:", error instanceof Error ? error.message : String(error));
     return NextResponse.json({
       success: false,
-      error: error instanceof Error ? error.message : "Failed to update about"
+      error: error instanceof Error ? error.message : "Failed to update profile"
     }, { status: 500 });
   }
 }

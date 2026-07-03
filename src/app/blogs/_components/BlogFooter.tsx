@@ -30,7 +30,7 @@ export function BlogFooter() {
 
           <Link
             href="/"
-            className="group inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
+            className="group inline-flex items-center gap-2 text-xs font-sans uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
           >
             View Portfolio
             <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -53,7 +53,7 @@ export function BlogFooter() {
         </div>
 
         <div className="mt-10 border-t border-border/60 pt-6">
-          <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground/70">
+          <p className="text-[11px] font-sans uppercase tracking-[0.2em] text-muted-foreground/70">
             © {currentYear} Mobarak Hossain Razu — Built with Next.js
           </p>
         </div>

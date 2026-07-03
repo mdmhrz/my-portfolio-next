@@ -52,7 +52,7 @@ const journey = [
   },
 ];
 
-export function Journey({ about }: { about?: any }) {
+export function Journey({ profile }: { profile?: any }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -120,7 +120,7 @@ export function Journey({ about }: { about?: any }) {
               </Reveal>
               <Reveal delay={0.1}>
                 <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                  {about?.bio || "From mechanical engineering to production web — a timeline of how the stack came together."}
+                  {profile?.bio || "From mechanical engineering to production web — a timeline of how the stack came together."}
                 </p>
               </Reveal>
 
@@ -201,11 +201,11 @@ export function Journey({ about }: { about?: any }) {
                         </div>
                         <div>
                           <div className="flex items-center gap-3.5">
-                            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground/80">
+                            <span className="text-[10px] font-sans uppercase tracking-[0.25em] text-muted-foreground/80">
                               {item.phase}
                             </span>
                             {item.highlight && (
-                              <span className="flex items-center gap-1.5 rounded-full bg-primary/10 dark:bg-primary/15 px-2.5 py-0.5 text-[9px] font-mono font-bold text-primary dark:text-primary select-none uppercase tracking-wider">
+                              <span className="flex items-center gap-1.5 rounded-full bg-primary/10 dark:bg-primary/15 px-2.5 py-0.5 text-[9px] font-sans font-bold text-primary dark:text-primary select-none uppercase tracking-wider">
                                 <span className="h-1 w-1 rounded-full bg-primary dark:bg-primary animate-pulse" />
                                 Milestone
                               </span>
@@ -230,7 +230,7 @@ export function Journey({ about }: { about?: any }) {
                         {item.tags.map((t) => (
                           <span
                             key={t}
-                            className="rounded-full border border-primary/10 dark:border-primary/15 bg-primary/[0.04] dark:bg-primary/[0.04] px-3 py-1 text-[10px] font-mono tracking-wider text-primary dark:text-primary font-semibold"
+                            className="rounded-full border border-primary/10 dark:border-primary/15 bg-primary/[0.04] dark:bg-primary/[0.04] px-3 py-1 text-[10px] font-sans tracking-wider text-primary dark:text-primary font-semibold"
                           >
                             {t}
                           </span>

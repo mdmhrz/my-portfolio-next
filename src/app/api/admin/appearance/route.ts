@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -12,7 +12,7 @@ const DEFAULT_FONT = {
 
 export async function GET() {
   try {
-    const s = await db.siteSettings.findUnique({ where: { id: "singleton" } });
+    const s = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
 
     return NextResponse.json({
       font: {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       data.dashboardColors = body.dashboardColors ?? Prisma.DbNull;
     }
 
-    await db.siteSettings.upsert({
+    await prisma.siteSettings.upsert({
       where: { id: "singleton" },
       create: { id: "singleton", ...data },
       update: data,

@@ -84,7 +84,7 @@ export function BlogEditorSidebar({ form, wordCount, readingTime, onChange }: Bl
               value={form.slug}
               onChange={(e) => onChange({ slug: e.target.value })}
               placeholder="auto-generated"
-              className="h-8 font-mono text-xs"
+              className="h-8 font-sans text-xs"
             />
           </div>
 
@@ -189,7 +189,7 @@ export function BlogEditorSidebar({ form, wordCount, readingTime, onChange }: Bl
           <div>
             <div className="mb-1.5 flex items-center justify-between">
               <FieldLabel htmlFor="sb-meta-desc">Meta Description</FieldLabel>
-              <span className={`text-[10px] font-mono ${form.metaDescription.length > 160 ? 'text-red-500' : 'text-muted-foreground'}`}>
+              <span className={`text-[10px] font-sans ${form.metaDescription.length > 160 ? 'text-red-500' : 'text-muted-foreground'}`}>
                 {form.metaDescription.length}/160
               </span>
             </div>
@@ -244,7 +244,7 @@ export function BlogEditorSidebar({ form, wordCount, readingTime, onChange }: Bl
           ].map(({ label, value }) => (
             <div key={label} className="rounded-lg border border-border bg-muted/30 px-3 py-2 text-center">
               <p className="text-base font-semibold text-foreground">{value}</p>
-              <p className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">{label}</p>
+              <p className="text-[10px] font-sans uppercase tracking-wider text-muted-foreground">{label}</p>
             </div>
           ))}
         </div>

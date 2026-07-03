@@ -5,7 +5,7 @@ import { AppearanceColorScope } from "@/components/global/AppearanceColorScope";
 export const revalidate = 3600; // Revalidate every hour; admin mutations call revalidatePath("/")
 
 export default async function Home() {
-  const [banner, experiences, projects, about, settings, skills, homepageBlogs] = await Promise.all([
+  const [banner, experiences, projects, profile, settings, skills, homepageBlogs] = await Promise.all([
     prisma.banner.findFirst(),
     prisma.experience.findMany({
       include: {
@@ -52,7 +52,7 @@ export default async function Home() {
         order: "asc"
       }
     }),
-    prisma.about.findUnique({ where: { id: "singleton" } }),
+    prisma.profile.findUnique({ where: { id: "singleton" } }),
     prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
     prisma.skill.findMany({ orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
     // Featured, published blogs for the landing-page slider. Dates are serialized
@@ -88,7 +88,7 @@ export default async function Home() {
         banner={banner}
         experiences={experiences}
         projects={projects}
-        about={about}
+        profile={profile}
         settings={settings}
         skills={skills}
         homepageBlogs={serializedBlogs}

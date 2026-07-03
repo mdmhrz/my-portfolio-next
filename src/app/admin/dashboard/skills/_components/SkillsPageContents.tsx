@@ -156,8 +156,8 @@ export function SkillsPageContents() {
                   {items.map((skill) => (
                     <TableRow key={skill.id}>
                       <TableCell className="font-semibold text-foreground">{skill.name}</TableCell>
-                      <TableCell className="text-muted-foreground font-mono text-xs">{skill.icon || "—"}</TableCell>
-                      <TableCell className="text-muted-foreground font-mono text-xs">Order {skill.order}</TableCell>
+                      <TableCell className="text-muted-foreground font-sans text-xs">{skill.icon || "—"}</TableCell>
+                      <TableCell className="text-muted-foreground font-sans text-xs">Order {skill.order}</TableCell>
                       <TableCell className="text-right">
                         <RowActionsMenu
                           actions={[

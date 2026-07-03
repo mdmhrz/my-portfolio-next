@@ -165,7 +165,7 @@ function FeaturedHeroCard({ post }: { post: BlogListItem }) {
               {post.tags.slice(0, 4).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-primary/8 px-2.5 py-0.5 text-[10px] font-mono text-primary dark:text-primary"
+                  className="rounded-full bg-primary/8 px-2.5 py-0.5 text-[10px] font-sans text-primary dark:text-primary"
                 >
                   #{tag}
                 </span>
@@ -173,7 +173,7 @@ function FeaturedHeroCard({ post }: { post: BlogListItem }) {
             </div>
           )}
 
-          <div className="flex items-center gap-4 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+          <div className="flex items-center gap-4 text-[10px] font-sans uppercase tracking-wider text-muted-foreground">
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               {formattedDate}
@@ -251,7 +251,7 @@ export function BlogListClient({
     <div className="mx-auto max-w-6xl px-6 py-16">
       {/* Heading */}
       <div className="mb-12 max-w-2xl">
-        <span className="mb-4 block text-[11px] font-mono uppercase tracking-[0.3em] font-semibold text-primary dark:text-primary">
+        <span className="mb-4 block text-[11px] font-sans uppercase tracking-[0.3em] font-semibold text-primary dark:text-primary">
           Writing &amp; Thoughts
         </span>
         <h1 className="mb-6 text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -289,7 +289,7 @@ export function BlogListClient({
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setActiveTags([])}
-              className={`cursor-pointer rounded-full border px-4 py-1.5 text-[11px] font-mono uppercase tracking-wider transition-colors ${
+              className={`cursor-pointer rounded-full border px-4 py-1.5 text-[11px] font-sans uppercase tracking-wider transition-colors ${
                 activeTags.length === 0
                   ? "border-primary/40 bg-primary/[0.06] text-primary dark:text-primary"
                   : "border-border bg-card text-muted-foreground hover:text-foreground"
@@ -301,7 +301,7 @@ export function BlogListClient({
               <button
                 key={tag}
                 onClick={() => toggleTag(tag)}
-                className={`cursor-pointer rounded-full border px-4 py-1.5 text-[11px] font-mono tracking-wider transition-colors ${
+                className={`cursor-pointer rounded-full border px-4 py-1.5 text-[11px] font-sans tracking-wider transition-colors ${
                   activeTags.includes(tag)
                     ? "border-primary/40 bg-primary/[0.06] text-primary dark:text-primary"
                     : "border-border bg-card text-muted-foreground hover:text-foreground"
@@ -313,7 +313,7 @@ export function BlogListClient({
             {activeTags.length > 0 && (
               <button
                 onClick={() => setActiveTags([])}
-                className="cursor-pointer text-[11px] font-mono text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                className="cursor-pointer text-[11px] font-sans text-muted-foreground underline underline-offset-4 hover:text-foreground"
               >
                 Clear filters
               </button>
@@ -334,7 +334,7 @@ export function BlogListClient({
           {isFiltering && (
             <button
               onClick={() => { setQuery(""); setActiveTags([]); }}
-              className="mt-4 cursor-pointer text-[11px] font-mono text-primary underline underline-offset-4 dark:text-primary"
+              className="mt-4 cursor-pointer text-[11px] font-sans text-primary underline underline-offset-4 dark:text-primary"
             >
               Clear all filters
             </button>
@@ -356,7 +356,7 @@ export function BlogListClient({
         <>
           {filteredFeatured.length > 0 && (
             <div className="mb-8 flex items-center gap-4">
-              <span className="text-[11px] font-mono uppercase tracking-[0.2em] font-semibold text-muted-foreground">
+              <span className="text-[11px] font-sans uppercase tracking-[0.2em] font-semibold text-muted-foreground">
                 All Articles
               </span>
               <div className="h-px flex-1 bg-border" />

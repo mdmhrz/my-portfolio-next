@@ -121,7 +121,7 @@ export function FontsTab() {
             <Type className="h-3.5 w-3.5" />
             <span>Active Font Specimen</span>
           </div>
-          <span className="text-[9px] bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-mono uppercase font-bold tracking-wider">
+          <span className="text-[9px] bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-sans uppercase font-bold tracking-wider">
             {fontType}
           </span>
         </div>
@@ -132,7 +132,7 @@ export function FontsTab() {
           >
             {selectedFont}
           </p>
-          <p className="text-[10px] text-muted-foreground mt-3 font-mono">
+          <p className="text-[10px] text-muted-foreground mt-3 font-sans">
             Weights loaded: {selectedWeights.join(", ")}
           </p>
         </div>

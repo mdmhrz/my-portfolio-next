@@ -64,7 +64,7 @@ export function BlogTOC({ headings }: BlogTOCProps) {
 
   return (
     <div>
-      <p className="mb-4 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+      <p className="mb-4 text-[10px] font-sans uppercase tracking-[0.2em] text-muted-foreground font-semibold">
         On this page
       </p>
       <nav className="space-y-0.5 border-l border-border">

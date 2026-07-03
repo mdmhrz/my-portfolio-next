@@ -71,7 +71,7 @@ export function DefaultFontSelector({
                   key={weight}
                   type="button"
                   onClick={() => toggleWeight(String(weight))}
-                  className={`px-4 py-2 rounded-lg border text-xs font-mono transition-all duration-150 cursor-pointer ${
+                  className={`px-4 py-2 rounded-lg border text-xs font-sans transition-all duration-150 cursor-pointer ${
                     active
                       ? "border-primary bg-primary/10 text-primary font-semibold shadow-sm"
                       : "border-border hover:border-primary/40 hover:bg-neutral-100/10 text-muted-foreground"

@@ -21,7 +21,7 @@ import {
   type BlogListItem,
 } from "@/components/blog";
 
-interface HomepageSettingsProps {
+interface BlogDisplaySettingsProps {
   /** Real blog used to render the live template previews. May be null. */
   sampleBlog: BlogListItem | null;
 }
@@ -54,7 +54,7 @@ interface FormState {
   homepageBlogTemplate: BlogCardTemplateId;
 }
 
-export function HomepageSettings({ sampleBlog }: HomepageSettingsProps) {
+export function BlogDisplaySettings({ sampleBlog }: BlogDisplaySettingsProps) {
   const { settings, fetchSettings, updateSettings } = usePortfolioStore();
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -107,8 +107,8 @@ export function HomepageSettings({ sampleBlog }: HomepageSettingsProps) {
   return (
     <>
       <PageHeader
-        title="Homepage"
-        description="Control the Featured Articles slider shown on the landing page."
+        title="Display Settings"
+        description="Control the Featured Articles slider shown on the homepage."
       />
 
       <form onSubmit={handleSubmit} className="space-y-6">

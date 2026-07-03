@@ -179,7 +179,7 @@ export function IntroLoader({ onDone }: { onDone: () => void }) {
       </div>
 
       {/* Percentage Counter */}
-      <div className="mt-4 font-mono text-[11px] tracking-[0.15em] text-muted-foreground flex items-center gap-1.5 uppercase font-semibold">
+      <div className="mt-4 font-sans text-[11px] tracking-[0.15em] text-muted-foreground flex items-center gap-1.5 uppercase font-semibold">
         <span>[</span>
         <span ref={pctRef} className="text-foreground font-bold min-w-[24px] text-right">0</span>
         <span>% ]</span>

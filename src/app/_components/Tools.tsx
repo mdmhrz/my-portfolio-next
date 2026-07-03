@@ -575,7 +575,7 @@ export function Tools({ skills }: { skills?: any[] }) {
 
       <div className="container mx-auto max-w-7xl relative z-10">
         <Reveal className="mb-16 flex flex-col gap-4">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary dark:text-primary font-semibold">
+          <span className="text-[11px] font-sans uppercase tracking-[0.3em] text-primary dark:text-primary font-semibold">
             Technical Stack
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -597,7 +597,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                     <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 text-muted-foreground">
                       <Sparkles className="h-3.5 w-3.5" />
                     </div>
-                    <h3 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold">
+                    <h3 className="font-sans text-xs uppercase tracking-wider text-foreground font-semibold">
                       Current Stack
                     </h3>
                     <span className="h-px flex-1 bg-neutral-200 dark:bg-zinc-700/40" />
@@ -629,7 +629,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 text-muted-foreground">
                         <Icon className="h-3.5 w-3.5" />
                       </div>
-                      <h3 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold">
+                      <h3 className="font-sans text-xs uppercase tracking-wider text-foreground font-semibold">
                         {g.label}
                       </h3>
                       <span className="h-px flex-1 bg-neutral-200 dark:bg-zinc-700/40" />
@@ -657,7 +657,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                           >
                             <span>{it.name}</span>
                             <span
-                              className={`font-mono text-[9px] uppercase tracking-wider opacity-60 transition-all duration-300 ${
+                              className={`font-sans text-[9px] uppercase tracking-wider opacity-60 transition-all duration-300 ${
                                 isHovered 
                                   ? "max-w-[80px] ml-1 opacity-60" 
                                   : "max-w-0 overflow-hidden opacity-0 group-hover/tag:max-w-[80px] group-hover/tag:opacity-60 group-hover/tag:ml-1"
@@ -692,7 +692,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                     </div>
 
                     {/* Window Title */}
-                    <div className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/80 uppercase tracking-widest">
+                    <div className="flex items-center gap-1.5 font-sans text-[10px] text-muted-foreground/80 uppercase tracking-widest">
                       <FileCode2 className="h-3.5 w-3.5 text-primary dark:text-primary" />
                       <span className={`transition-all duration-200 ${isFading ? 'opacity-0 -translate-x-1.5' : 'opacity-100 translate-x-0'}`}>
                         {activeSnippet.filename}
@@ -700,7 +700,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                     </div>
 
                     {/* Language Badge */}
-                    <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/40">
+                    <span className="font-sans text-[9px] uppercase tracking-wider text-muted-foreground/40">
                       {activeSnippet.lang}
                     </span>
                   </div>
@@ -713,7 +713,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                         <button
                           key={key}
                           onClick={() => handleTabClick(key)}
-                          className={`flex items-center gap-1.5 border-r border-border/40 px-3.5 py-2 font-mono text-[10px] cursor-pointer transition-all ${
+                          className={`flex items-center gap-1.5 border-r border-border/40 px-3.5 py-2 font-sans text-[10px] cursor-pointer transition-all ${
                             isActive
                               ? "border-t border-t-primary bg-card text-foreground font-semibold"
                               : "text-muted-foreground/80 hover:text-foreground hover:bg-neutral-100/20 dark:hover:bg-zinc-800/10"
@@ -728,7 +728,7 @@ export function Tools({ skills }: { skills?: any[] }) {
 
                   {/* Code Workspace Editor Area */}
                   <div className="relative overflow-x-auto bg-card p-6 min-h-[280px]">
-                    <div className="absolute top-4 right-5 flex items-center gap-1.5 font-mono text-[9px] text-muted-foreground/35 select-none">
+                    <div className="absolute top-4 right-5 flex items-center gap-1.5 font-sans text-[9px] text-muted-foreground/35 select-none">
                       <TerminalSquare className="h-3 w-3" /> EDITOR ACTIVE
                     </div>
                     

@@ -73,7 +73,7 @@ function ColorInput({
           value={value}
           onChange={(e) => handleTextChange(e.target.value)}
           placeholder="#000000"
-          className="h-8 w-20 font-mono text-[11px] px-2 border-border bg-background text-center focus-visible:ring-1 focus-visible:ring-primary"
+          className="h-8 w-20 font-sans text-[11px] px-2 border-border bg-background text-center focus-visible:ring-1 focus-visible:ring-primary"
         />
       </div>
     </div>

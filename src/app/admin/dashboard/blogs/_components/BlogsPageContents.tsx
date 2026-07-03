@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Edit2, Trash2, Star, StarOff, EyeOff, Globe, Send } from "lucide-react";
+import { Plus, Edit2, Trash2, Star, StarOff, EyeOff, Globe, Send, Sliders } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -73,10 +73,19 @@ export function BlogsPageContents() {
         title="Blog Posts"
         description={`${blogs.length} post${blogs.length !== 1 ? "s" : ""} · ${blogs.filter((b) => b.published).length} published · ${blogs.filter((b) => b.featured && b.published).length} featured on homepage`}
         action={
-          <Button onClick={() => router.push("/admin/dashboard/blogs/new")}>
-            <Plus className="h-4 w-4" />
-            New Post
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => router.push("/admin/dashboard/blogs/display-settings")}
+            >
+              <Sliders className="h-4 w-4" />
+              Display Settings
+            </Button>
+            <Button onClick={() => router.push("/admin/dashboard/blogs/new")}>
+              <Plus className="h-4 w-4" />
+              New Post
+            </Button>
+          </div>
         }
       />
 
@@ -90,7 +99,7 @@ export function BlogsPageContents() {
           <TableRow key={b.id} className="group">
             <TableCell className="max-w-[220px]">
               <span className="block truncate font-medium text-foreground">{b.title}</span>
-              <span className="block truncate font-mono text-xs text-muted-foreground">{b.slug}</span>
+              <span className="block truncate font-sans text-xs text-muted-foreground">{b.slug}</span>
             </TableCell>
 
             <TableCell>
@@ -99,7 +108,7 @@ export function BlogsPageContents() {
                   <Badge
                     key={tag}
                     variant="secondary"
-                    className="rounded-full font-mono text-xs px-2 py-0.5"
+                    className="rounded-full font-sans text-xs px-2 py-0.5"
                   >
                     {tag}
                   </Badge>
@@ -132,15 +141,15 @@ export function BlogsPageContents() {
               )}
             </TableCell>
 
-            <TableCell className="font-mono text-xs text-muted-foreground">
+            <TableCell className="font-sans text-xs text-muted-foreground">
               {(b.views ?? 0).toLocaleString()}
             </TableCell>
 
-            <TableCell className="font-mono text-xs text-muted-foreground">
+            <TableCell className="font-sans text-xs text-muted-foreground">
               {b.readingTime ?? 1}m
             </TableCell>
 
-            <TableCell className="font-mono text-xs text-muted-foreground">
+            <TableCell className="font-sans text-xs text-muted-foreground">
               {new Date(b.createdAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",

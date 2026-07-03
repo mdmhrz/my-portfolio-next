@@ -146,10 +146,10 @@ function MetricGauge({ value, label, id }: { value: string; label: string; id: s
             transition={{ duration: 1.2, ease: "easeOut" }}
           />
         </svg>
-        <span className="absolute text-[11px] font-mono font-bold text-foreground">{value}</span>
+        <span className="absolute text-[11px] font-sans font-bold text-foreground">{value}</span>
       </div>
       <div>
-        <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/60">Benchmark Metric</div>
+        <div className="text-[9px] font-sans uppercase tracking-widest text-muted-foreground/60">Benchmark Metric</div>
         <div className="text-xs font-semibold text-foreground mt-0.5">{label}</div>
       </div>
     </div>
@@ -167,7 +167,7 @@ export function ArchitectureShowcase() {
 
       <div className="container mx-auto max-w-7xl relative z-10">
         <Reveal className="mb-16 flex flex-col gap-4">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary dark:text-primary font-semibold">
+          <span className="text-[11px] font-sans uppercase tracking-[0.3em] text-primary dark:text-primary font-semibold">
             System Design
           </span>
           <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -184,10 +184,10 @@ export function ArchitectureShowcase() {
           <div className="relative rounded-3xl border border-border bg-card/60 dark:bg-card/25 backdrop-blur-md p-8 lg:col-span-7 aspect-[4/3] flex flex-col justify-between shadow-sm overflow-hidden select-none">
             
             {/* Grid coordinates */}
-            <div className="absolute top-4 left-5 font-mono text-[9px] text-muted-foreground/35 select-none font-semibold">
+            <div className="absolute top-4 left-5 font-sans text-[9px] text-muted-foreground/35 select-none font-semibold">
               SYS.LOC // 45.9082.N
             </div>
-            <div className="absolute bottom-4 right-5 font-mono text-[9px] text-muted-foreground/35 select-none font-semibold">
+            <div className="absolute bottom-4 right-5 font-sans text-[9px] text-muted-foreground/35 select-none font-semibold">
               GRID_ID // B.0912
             </div>
 
@@ -249,7 +249,7 @@ export function ArchitectureShowcase() {
               </div>
               <div>
                 <div className="text-xs font-bold tracking-tight">Edge Gateway</div>
-                <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">HTTP/3 · SSL</div>
+                <div className="text-[9px] font-sans text-muted-foreground/60 mt-0.5">HTTP/3 · SSL</div>
               </div>
             </button>
 
@@ -272,7 +272,7 @@ export function ArchitectureShowcase() {
               </div>
               <div>
                 <div className="text-xs font-bold tracking-tight">Redis Event Bus</div>
-                <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">Streams · PubSub</div>
+                <div className="text-[9px] font-sans text-muted-foreground/60 mt-0.5">Streams · PubSub</div>
               </div>
             </button>
 
@@ -295,7 +295,7 @@ export function ArchitectureShowcase() {
               </div>
               <div>
                 <div className="text-sm font-extrabold uppercase tracking-wider text-primary dark:text-primary">Go Services</div>
-                <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">REST APIs · Sockets</div>
+                <div className="text-[9px] font-sans text-muted-foreground/60 mt-0.5">REST APIs · Sockets</div>
               </div>
             </button>
 
@@ -318,7 +318,7 @@ export function ArchitectureShowcase() {
               </div>
               <div>
                 <div className="text-xs font-bold tracking-tight">S3 Asset Hub</div>
-                <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">AWS S3 · Caching</div>
+                <div className="text-[9px] font-sans text-muted-foreground/60 mt-0.5">AWS S3 · Caching</div>
               </div>
             </button>
 
@@ -341,7 +341,7 @@ export function ArchitectureShowcase() {
               </div>
               <div>
                 <div className="text-xs font-bold tracking-tight">Task Workers</div>
-                <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">BullMQ · Docker</div>
+                <div className="text-[9px] font-sans text-muted-foreground/60 mt-0.5">BullMQ · Docker</div>
               </div>
             </button>
 
@@ -364,7 +364,7 @@ export function ArchitectureShowcase() {
               </div>
               <div>
                 <div className="text-xs font-bold tracking-tight">PostgreSQL</div>
-                <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">Core SQL DB</div>
+                <div className="text-[9px] font-sans text-muted-foreground/60 mt-0.5">Core SQL DB</div>
               </div>
             </button>
 
@@ -383,10 +383,10 @@ export function ArchitectureShowcase() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2.5 font-mono text-[10px] uppercase tracking-widest text-primary dark:text-primary font-bold">
+                    <div className="flex items-center gap-2.5 font-sans text-[10px] uppercase tracking-widest text-primary dark:text-primary font-bold">
                       <Workflow className="h-4 w-4" /> Technical Inspector
                     </div>
-                    <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-1 text-[9px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase select-none">
+                    <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-1 text-[9px] font-sans font-bold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase select-none">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       Status: Active
                     </div>
@@ -405,7 +405,7 @@ export function ArchitectureShowcase() {
                     {details.tech.map((t) => (
                       <span
                         key={t}
-                        className="rounded-lg border border-border bg-muted/40 px-3 py-1 font-mono text-[10px] text-muted-foreground font-semibold"
+                        className="rounded-lg border border-border bg-muted/40 px-3 py-1 font-sans text-[10px] text-muted-foreground font-semibold"
                       >
                         {t}
                       </span>

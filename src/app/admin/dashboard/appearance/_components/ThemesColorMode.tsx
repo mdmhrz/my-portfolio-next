@@ -43,7 +43,7 @@ export function ThemesColorMode({
               <div className="space-y-2">
                 {/* Light Palette Preview */}
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-mono text-muted-foreground w-8">Light</span>
+                  <span className="text-[9px] font-sans text-muted-foreground w-8">Light</span>
                   <div className="flex -space-x-1.5">
                     <div
                       className="h-5 w-5 rounded-full border border-background shadow-sm"
@@ -70,7 +70,7 @@ export function ThemesColorMode({
 
                 {/* Dark Palette Preview */}
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-mono text-muted-foreground w-8">Dark</span>
+                  <span className="text-[9px] font-sans text-muted-foreground w-8">Dark</span>
                   <div className="flex -space-x-1.5">
                     <div
                       className="h-5 w-5 rounded-full border border-background shadow-sm"

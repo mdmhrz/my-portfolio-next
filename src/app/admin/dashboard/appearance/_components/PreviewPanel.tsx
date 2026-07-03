@@ -73,7 +73,7 @@ export function PreviewPanel() {
               <span className="h-2 w-2 rounded-full bg-border" />
               <span className="h-2 w-2 rounded-full bg-border" />
             </div>
-            <div className="flex-1 max-w-xs mx-auto bg-background text-[10px] text-muted-foreground py-0.5 px-3 rounded text-center border font-mono select-none truncate">
+            <div className="flex-1 max-w-xs mx-auto bg-background text-[10px] text-muted-foreground py-0.5 px-3 rounded text-center border font-sans select-none truncate">
               localhost:3000
             </div>
           </div>
@@ -134,7 +134,7 @@ export function PreviewPanel() {
           </div>
         </div>
 
-        <p className="mt-4 text-center text-[10px] font-mono text-muted-foreground">
+        <p className="mt-4 text-center text-[10px] font-sans text-muted-foreground">
           Font: {draftFont?.name || "Satoshi"} · Theme: {mode} mode
         </p>
       </CardContent>

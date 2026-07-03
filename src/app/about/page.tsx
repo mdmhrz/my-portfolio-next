@@ -24,9 +24,9 @@ export const revalidate = 3600; // Cache and revalidate page every hour
 
 // Dynamic SEO metadata generation
 export async function generateMetadata(): Promise<Metadata> {
-  const about = await prisma.about.findUnique({ where: { id: "singleton" } });
-  const siteTitle = about?.bio ? `About — ${about.bio.slice(0, 50)}...` : "About Mobarak Hossain | Full-Stack Developer";
-  const siteDesc = about?.longBio ? about.longBio.slice(0, 160) : "Learn more about Mobarak Hossain Razu, full-stack software developer, technical background, and experience.";
+  const profile = await prisma.profile.findUnique({ where: { id: "singleton" } });
+  const siteTitle = profile?.bio ? `About — ${profile.bio.slice(0, 50)}...` : "About Mobarak Hossain | Full-Stack Developer";
+  const siteDesc = profile?.longBio ? profile.longBio.slice(0, 160) : "Learn more about Mobarak Hossain Razu, full-stack software developer, technical background, and experience.";
 
   return {
     title: siteTitle,
@@ -45,14 +45,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [about, banner, skills] = await Promise.all([
-    prisma.about.findUnique({ where: { id: "singleton" } }),
-    prisma.banner.findFirst(),
+  const [profile, settings, skills] = await Promise.all([
+    prisma.profile.findUnique({ where: { id: "singleton" } }),
+    prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
     prisma.skill.findMany({ orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
   ]);
 
   // Fallback defaults if DB is empty
-  const defaultAbout = {
+  const defaultProfile = {
+    name: "Mobarak Hossain Razu",
+    designation: "Full-Stack Developer",
     bio: "Full-Stack Developer building modern web applications.",
     longBio: "I am a software engineer focused on designing and engineering high-performance SaaS platforms, clean user interfaces, and robust backend systems.",
     avatarUrl: "/images/placeholder-avatar.jpg",
@@ -62,18 +64,20 @@ export default async function AboutPage() {
     resumeUrl: "#",
   };
 
-  const bio = about?.bio || defaultAbout.bio;
-  const longBio = about?.longBio || defaultAbout.longBio;
-  const avatarUrl = about?.avatarUrl || defaultAbout.avatarUrl;
-  const avatarAlt = about?.avatarAlt || defaultAbout.avatarAlt;
-  const location = about?.location || defaultAbout.location;
-  const availability = about?.availability || defaultAbout.availability;
-  const resumeUrl = about?.resumeUrl || defaultAbout.resumeUrl;
+  const name = profile?.name || defaultProfile.name;
+  const designation = profile?.designation || defaultProfile.designation;
+  const bio = profile?.bio || defaultProfile.bio;
+  const longBio = profile?.longBio || defaultProfile.longBio;
+  const avatarUrl = profile?.avatarUrl || defaultProfile.avatarUrl;
+  const avatarAlt = profile?.avatarAlt || defaultProfile.avatarAlt;
+  const location = profile?.location || defaultProfile.location;
+  const availability = profile?.availability || defaultProfile.availability;
+  const resumeUrl = profile?.resumeUrl || defaultProfile.resumeUrl;
 
-  const email = banner?.email || "mdmobarakhossainrazu@gmail.com";
-  const github = banner?.github || "https://github.com/mdmhrz";
-  const linkedin = banner?.linkedin || "https://www.linkedin.com/in/mdmhrz";
-  const facebook = banner?.facebook || "https://www.facebook.com/mdmhrz";
+  const email = profile?.email || "mdmobarakhossainrazu@gmail.com";
+  const github = profile?.github || "https://github.com/mdmhrz";
+  const linkedin = profile?.linkedin || "https://www.linkedin.com/in/mdmhrz";
+  const facebook = profile?.facebook || "https://www.facebook.com/mdmhrz";
 
   // Categorize skills
   const skillsByCategory = (skills || []).reduce((acc: Record<string, typeof skills>, skill) => {
@@ -89,8 +93,8 @@ export default async function AboutPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": "Mobarak Hossain Razu",
-    "jobTitle": "Full-Stack Developer",
+    "name": name,
+    "jobTitle": designation,
     "url": "https://mhrazu.com/about",
     "image": avatarUrl,
     "address": {
@@ -150,7 +154,7 @@ export default async function AboutPage() {
                       sizes="(max-width: 768px) 100vw, 300px"
                     />
                   ) : (
-                    <div className="w-full h-full bg-neutral-900 rounded-2xl flex items-center justify-center text-muted-foreground font-mono text-sm">
+                    <div className="w-full h-full bg-neutral-900 rounded-2xl flex items-center justify-center text-muted-foreground font-sans text-sm">
                       No Image Uploaded
                     </div>
                   )}
@@ -163,7 +167,7 @@ export default async function AboutPage() {
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
                       <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                     </span>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.1em] text-foreground">
+                    <span className="text-[10px] font-sans font-bold uppercase tracking-[0.1em] text-foreground">
                       {availability}
                     </span>
                   </div>
@@ -252,13 +256,13 @@ export default async function AboutPage() {
               {/* Header */}
               <div>
                 <Reveal delay={0.05}>
-                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary font-mono">
+                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary font-sans">
                     Professional Profile
                   </span>
                 </Reveal>
                 <Reveal delay={0.1}>
                   <h1 className="mt-4 text-4xl font-medium leading-[0.95] tracking-tight text-foreground md:text-5xl lg:text-6xl">
-                    Mobarak Hossain Razu
+                    {name}
                   </h1>
                 </Reveal>
                 <Reveal delay={0.15}>
@@ -272,7 +276,7 @@ export default async function AboutPage() {
               {longBio && (
                 <div className="border-t border-border/50 pt-8">
                   <Reveal delay={0.2}>
-                    <h2 className="text-xs font-mono uppercase tracking-[0.3em] text-primary font-semibold mb-6">
+                    <h2 className="text-xs font-sans uppercase tracking-[0.3em] text-primary font-semibold mb-6">
                       My Story &amp; Approach
                     </h2>
                   </Reveal>
@@ -288,7 +292,7 @@ export default async function AboutPage() {
               {skills && skills.length > 0 && (
                 <div className="border-t border-border/50 pt-8">
                   <Reveal delay={0.25}>
-                    <h2 className="text-xs font-mono uppercase tracking-[0.3em] text-primary font-semibold mb-8">
+                    <h2 className="text-xs font-sans uppercase tracking-[0.3em] text-primary font-semibold mb-8">
                       Tools &amp; Stack Expertise
                     </h2>
                   </Reveal>
@@ -348,7 +352,7 @@ export default async function AboutPage() {
           </div>
         </main>
 
-        <Footer />
+        <Footer profile={profile} footerText={settings?.footerText} />
       </div>
     </AppearanceColorScope>
   );

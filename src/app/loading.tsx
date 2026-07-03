@@ -46,7 +46,7 @@ export default function GlobalLoading() {
         
         {/* Center Pulse Core with Monogram */}
         <div className="absolute inset-6 rounded-full bg-neutral-50 dark:bg-zinc-900 border border-border/40 shadow-sm flex items-center justify-center select-none">
-          <span className="text-sm font-bold tracking-wider text-foreground font-mono bg-gradient-to-r from-foreground via-foreground/90 to-primary bg-clip-text">
+          <span className="text-sm font-bold tracking-wider text-foreground font-sans bg-gradient-to-r from-foreground via-foreground/90 to-primary bg-clip-text">
             MHR
           </span>
         </div>

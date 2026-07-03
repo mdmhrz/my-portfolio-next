@@ -343,7 +343,7 @@ export function ProjectsPageContents() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="proj-archTree" className="text-xs font-semibold">Folder Tree Directory Map</Label>
-                  <Textarea id="proj-archTree" rows={3} placeholder={"my-app/\n├── src/\n│   ├── app/\n│   └── components/"} value={form.architectureTree} onChange={(e) => setForm({ ...form, architectureTree: e.target.value })} className="font-mono text-xs text-green-500/90" />
+                  <Textarea id="proj-archTree" rows={3} placeholder={"my-app/\n├── src/\n│   ├── app/\n│   └── components/"} value={form.architectureTree} onChange={(e) => setForm({ ...form, architectureTree: e.target.value })} className="font-sans text-xs text-green-500/90" />
                 </div>
               </div>
 

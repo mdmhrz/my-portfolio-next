@@ -7,13 +7,13 @@ import { motion } from "motion/react";
 
 import { Magnetic } from "@/components/global/Magnetic";
 
-export function CTA({ settings, about }: { settings?: any; about?: any }) {
+export function CTA({ settings, profile }: { settings?: any; profile?: any }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
   const headline = settings?.ctaHeadline || "Let's build something solid.";
   const subtext = settings?.ctaSubtext || "Frontend & full-stack engineering — from Next.js interfaces to Node & Go services. Open to freelance work, consulting, and full-time roles.";
-  const availability = about?.availability || "Available for projects & roles";
+  const availability = profile?.availability || "Available for projects & roles";
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { left, top } = e.currentTarget.getBoundingClientRect();

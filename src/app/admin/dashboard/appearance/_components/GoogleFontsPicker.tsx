@@ -120,7 +120,7 @@ export function GoogleFontsPicker({
                 >
                   {font.name}
                 </div>
-                <div className="text-[10px] font-mono text-muted-foreground flex justify-between">
+                <div className="text-[10px] font-sans text-muted-foreground flex justify-between">
                   <span>{font.category}</span>
                   <span>{font.weights.length} weights</span>
                 </div>
@@ -152,7 +152,7 @@ export function GoogleFontsPicker({
                   key={weight}
                   type="button"
                   onClick={() => toggleWeight(weight)}
-                  className={`px-3 py-1.5 rounded-lg border text-xs font-mono transition-all duration-150 cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg border text-xs font-sans transition-all duration-150 cursor-pointer ${
                     active
                       ? "border-primary bg-primary/10 text-primary font-semibold shadow-sm"
                       : "border-border hover:border-primary/40 hover:bg-neutral-100/10 text-muted-foreground"

@@ -71,9 +71,9 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
             {/* Top Bar */}
             <div className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-border bg-background/80 px-6 py-4 backdrop-blur-xl md:px-10">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Portfolio</span>
+                <span className="font-sans text-xs uppercase tracking-widest text-muted-foreground">Portfolio</span>
                 <span className="text-muted-foreground/30">/</span>
-                <span className="font-mono text-xs uppercase tracking-widest text-foreground font-semibold">{project.title}</span>
+                <span className="font-sans text-xs uppercase tracking-widest text-foreground font-semibold">{project.title}</span>
               </div>
               
               <div className="flex items-center gap-4">
@@ -134,7 +134,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                         <span className="h-2.5 w-2.5 rounded-full bg-foreground/10" />
                         <span className="h-2.5 w-2.5 rounded-full bg-foreground/10" />
                       </div>
-                      <div className="font-mono text-xs text-muted-foreground/60 truncate max-w-xs md:max-w-md">
+                      <div className="font-sans text-xs text-muted-foreground/60 truncate max-w-xs md:max-w-md">
                         {project.live ? project.live.replace(/^https?:\/\//, "") : `${project.id}.app`}
                       </div>
                       <div className="w-10" />
@@ -158,7 +158,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
 
                   {/* Project Overview */}
                   <div className="space-y-4">
-                    <h3 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold">
+                    <h3 className="font-sans text-xs uppercase tracking-wider text-foreground font-semibold">
                       // Project Overview
                     </h3>
                     <p className="text-base leading-relaxed text-muted-foreground/95">
@@ -170,7 +170,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                   {project.architecture && (
                     <div className="space-y-5">
                       <div className="space-y-2">
-                        <h3 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold">
+                        <h3 className="font-sans text-xs uppercase tracking-wider text-foreground font-semibold">
                           // System Architecture
                         </h3>
                         <p className="text-sm leading-relaxed text-muted-foreground/80">
@@ -179,7 +179,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                       </div>
                       {project.architecture.tree && (
                         <div className="relative overflow-hidden rounded-xl border border-primary/10 dark:border-primary/15 bg-neutral-100 dark:bg-zinc-950 p-5">
-                          <div className="absolute top-3 right-4 flex items-center gap-1.5 font-mono text-[9px] text-muted-foreground/45">
+                          <div className="absolute top-3 right-4 flex items-center gap-1.5 font-sans text-[9px] text-muted-foreground/45">
                             <Folder className="h-3 w-3" /> DIRECTORY MAP
                           </div>
                           <pre className="overflow-x-auto font-mono text-[11px] leading-normal text-emerald-500/90 whitespace-pre">
@@ -192,13 +192,13 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
 
                   {/* Key Contributions */}
                   <div className="space-y-5">
-                    <h3 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold">
+                    <h3 className="font-sans text-xs uppercase tracking-wider text-foreground font-semibold">
                       // Key Contributions
                     </h3>
                     <ul className="space-y-3.5">
                       {project.contributions.map((c, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1.5 font-mono text-[10px] text-primary dark:text-primary font-semibold shrink-0 select-none">
+                          <span className="mt-1.5 font-sans text-[10px] text-primary dark:text-primary font-semibold shrink-0 select-none">
                             0{i + 1}.
                           </span>
                           <span className="text-sm leading-relaxed text-muted-foreground">
@@ -211,7 +211,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
 
                   {/* Features */}
                   <div className="space-y-5">
-                    <h3 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold">
+                    <h3 className="font-sans text-xs uppercase tracking-wider text-foreground font-semibold">
                       // Key Modules & Features
                     </h3>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -220,7 +220,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                           key={i}
                           className="flex items-start gap-2.5 rounded-xl border border-border bg-card px-4 py-3.5 text-xs text-muted-foreground hover:border-neutral-300 dark:hover:border-zinc-600 transition-colors"
                         >
-                          <span className="mt-0.5 text-primary dark:text-primary shrink-0 font-mono select-none">//</span>
+                          <span className="mt-0.5 text-primary dark:text-primary shrink-0 font-sans select-none">//</span>
                           <span>{f}</span>
                         </div>
                       ))}
@@ -230,7 +230,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                   {/* Project Navigation Link */}
                   {onNavigate && nextProject && (
                     <div className="border-t border-border pt-12 mt-16">
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">
+                      <span className="font-sans text-[10px] uppercase tracking-wider text-muted-foreground/60">
                         Explore Next Project
                       </span>
                       <button
@@ -257,38 +257,38 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                 <div className="lg:col-span-4">
                   <div className="sticky top-28 space-y-6">
                     <div className="rounded-2xl border border-border bg-card p-6 backdrop-blur-xl shadow-xl space-y-6">
-                      <h2 className="font-mono text-xs uppercase tracking-wider text-foreground font-semibold border-b border-border/40 pb-3">
+                      <h2 className="font-sans text-xs uppercase tracking-wider text-foreground font-semibold border-b border-border/40 pb-3">
                         // Quick Information
                       </h2>
 
                       {/* Details table list */}
                       <div className="space-y-4">
                         <div className="flex justify-between items-center text-xs">
-                          <span className="font-mono text-muted-foreground/60 uppercase">Role</span>
+                          <span className="font-sans text-muted-foreground/60 uppercase">Role</span>
                           <span className="font-medium text-foreground">{project.role || "Developer"}</span>
                         </div>
                         <div className="h-px bg-border" />
                         <div className="flex justify-between items-center text-xs">
-                          <span className="font-mono text-muted-foreground/60 uppercase">Company</span>
+                          <span className="font-sans text-muted-foreground/60 uppercase">Company</span>
                           <span className="font-medium text-foreground">{project.company || "Personal"}</span>
                         </div>
                         <div className="h-px bg-border" />
                         <div className="flex justify-between items-center text-xs">
-                          <span className="font-mono text-muted-foreground/60 uppercase">Timeline</span>
+                          <span className="font-sans text-muted-foreground/60 uppercase">Timeline</span>
                           <span className="font-medium text-foreground">{project.timeline || "Ongoing"}</span>
                         </div>
                       </div>
 
                       {/* Tech Stack section inside the card */}
                       <div className="space-y-3 pt-2">
-                        <span className="block font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">
+                        <span className="block font-sans text-[10px] uppercase tracking-wider text-muted-foreground/60">
                           Technologies Used
                         </span>
                         <div className="flex flex-wrap gap-1.5">
                           {project.tech.map((t) => (
                             <span
                               key={t}
-                              className="rounded-full border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 px-2.5 py-0.75 text-[9px] font-mono text-muted-foreground hover:text-primary dark:hover:text-primary hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300"
+                              className="rounded-full border border-neutral-200 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-950 px-2.5 py-0.75 text-[9px] font-sans text-muted-foreground hover:text-primary dark:hover:text-primary hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300"
                             >
                               {t}
                             </span>
@@ -303,7 +303,7 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                             href={project.live}
                             target="_blank"
                             rel="noreferrer"
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-5 py-3 text-xs font-mono uppercase tracking-wider text-primary-foreground transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_20%,transparent)] active:scale-95"
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-5 py-3 text-xs font-sans uppercase tracking-wider text-primary-foreground transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_20%,transparent)] active:scale-95"
                           >
                             <span>Visit Live App</span>
                             <ArrowUpRight className="h-3.5 w-3.5" />

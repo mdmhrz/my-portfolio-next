@@ -128,7 +128,7 @@ export function ExperiencePageContents() {
             <TableCell className="font-semibold text-foreground">{exp.company}</TableCell>
             <TableCell className="text-muted-foreground">{exp.role}</TableCell>
             <TableCell className="text-muted-foreground">{exp.timeline}</TableCell>
-            <TableCell className="text-muted-foreground font-mono">{exp.order}</TableCell>
+            <TableCell className="text-muted-foreground font-sans">{exp.order}</TableCell>
             <TableCell className="text-right">
               <RowActionsMenu
                 actions={[

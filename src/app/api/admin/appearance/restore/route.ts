@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       data.dashboardColors = Prisma.DbNull;
     }
 
-    await db.siteSettings.upsert({
+    await prisma.siteSettings.upsert({
       where: { id: "singleton" },
       create: { id: "singleton", ...data },
       update: data,

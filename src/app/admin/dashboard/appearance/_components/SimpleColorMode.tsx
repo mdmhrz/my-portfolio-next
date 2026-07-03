@@ -54,7 +54,7 @@ export function SimpleColorMode({
             value={accentColor}
             onChange={(e) => handleInputChange(e.target.value)}
             placeholder="#000000"
-            className="font-mono text-sm w-full border-border bg-background focus-visible:ring-1 focus-visible:ring-primary"
+            className="font-sans text-sm w-full border-border bg-background focus-visible:ring-1 focus-visible:ring-primary"
           />
         </div>
       </div>

@@ -13,12 +13,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/global/Logo";
 
-const socials = [
-  { name: "GitHub", Icon: GithubLogo, href: "https://github.com/mdmhrz" },
-  { name: "LinkedIn", Icon: LinkedinLogo, href: "https://www.linkedin.com/in/mdmhrz" },
-  { name: "Facebook", Icon: FacebookLogo, href: "https://www.facebook.com/mdmhrz" },
-  { name: "Email", Icon: EnvelopeSimple, href: "mailto:mdmobarakhossainrazu@gmail.com" },
-];
+const DEFAULT_NAME = "Mobarak Hossain";
+const DEFAULT_BIO =
+  "Full-stack developer building production SaaS, CRM, and web apps — from Next.js interfaces to Node.js & Go APIs, PostgreSQL, and Docker-on-AWS deployments.";
+const DEFAULT_GITHUB = "https://github.com/mdmhrz";
+const DEFAULT_LINKEDIN = "https://www.linkedin.com/in/mdmhrz";
+const DEFAULT_FACEBOOK = "https://www.facebook.com/mdmhrz";
+const DEFAULT_EMAIL = "mdmobarakhossainrazu@gmail.com";
+
+interface FooterProfile {
+  name?: string | null;
+  bio?: string | null;
+  github?: string | null;
+  linkedin?: string | null;
+  facebook?: string | null;
+  email?: string | null;
+}
 
 const nav = [
   { label: "Journey", href: "/#journey" },
@@ -32,8 +42,20 @@ const nav = [
 
 const NAV_OFFSET = 96;
 
-export function Footer() {
+interface FooterProps {
+  profile?: FooterProfile | null;
+  footerText?: string | null;
+}
+
+export function Footer({ profile, footerText }: FooterProps = {}) {
   const pathname = usePathname();
+  const name = profile?.name || DEFAULT_NAME;
+  const socials = [
+    { name: "GitHub", Icon: GithubLogo, href: profile?.github || DEFAULT_GITHUB },
+    { name: "LinkedIn", Icon: LinkedinLogo, href: profile?.linkedin || DEFAULT_LINKEDIN },
+    { name: "Facebook", Icon: FacebookLogo, href: profile?.facebook || DEFAULT_FACEBOOK },
+    { name: "Email", Icon: EnvelopeSimple, href: `mailto:${profile?.email || DEFAULT_EMAIL}` },
+  ];
   const currentYear = new Date().getFullYear();
   const [mounted, setMounted] = useState(false);
   const [timeString, setTimeString] = useState("");
@@ -101,8 +123,7 @@ export function Footer() {
               <Logo className="h-8 w-auto" />
             </a>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Full-stack developer building production SaaS, CRM, and web apps — from Next.js
-              interfaces to Node.js &amp; Go APIs, PostgreSQL, and Docker-on-AWS deployments.
+              {footerText || profile?.bio || DEFAULT_BIO}
             </p>
             <div className="flex items-center gap-3">
               {socials.map(({ name, Icon, href }) => (
@@ -122,7 +143,7 @@ export function Footer() {
 
           {/* Navigation Column */}
           <div className="space-y-5 md:col-span-3">
-            <h4 className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary font-semibold">
+            <h4 className="text-[11px] font-sans uppercase tracking-[0.3em] text-primary font-semibold">
               Navigation
             </h4>
             <ul className="space-y-3">
@@ -143,7 +164,7 @@ export function Footer() {
 
           {/* Status Column */}
           <div className="space-y-5 md:col-span-4">
-            <h4 className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary font-semibold">
+            <h4 className="text-[11px] font-sans uppercase tracking-[0.3em] text-primary font-semibold">
               Availability
             </h4>
             
@@ -154,11 +175,11 @@ export function Footer() {
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                   </span>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-foreground">
+                  <span className="text-[10px] font-sans font-bold uppercase tracking-[0.15em] text-foreground">
                     Open for roles
                   </span>
                 </div>
-                <span className="text-[9px] font-mono uppercase text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
+                <span className="text-[9px] font-sans uppercase text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
                   Active
                 </span>
               </div>
@@ -167,7 +188,7 @@ export function Footer() {
                 Currently accepting freelance contracts, SaaS consulting, and full-time frontend/full-stack engineering roles.
               </p>
 
-              <div className="space-y-2 text-[10px] font-mono text-muted-foreground pt-1 border-t border-border/50">
+              <div className="space-y-2 text-[10px] font-sans text-muted-foreground pt-1 border-t border-border/50">
                 <div className="flex items-center justify-between">
                   <span>Location</span>
                   <span className="text-foreground font-medium">Remote / UTC+6</span>
@@ -204,18 +225,18 @@ export function Footer() {
                 ? "text-primary/70"
                 : "text-muted-foreground/20 dark:text-zinc-700/40"
             }`}
-            style={{ 
+            style={{
               WebkitTextFillColor: "transparent",
               WebkitTextStroke: "1px currentColor"
             }}
           >
-            Mobarak Hossain
+            {name}
           </span>
         </div>
 
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-6 border-t border-border py-8 md:flex-row">
-          <div className="flex items-center gap-4 text-[10px] font-mono font-medium uppercase tracking-[0.3em] text-muted-foreground">
+          <div className="flex items-center gap-4 text-[10px] font-sans font-medium uppercase tracking-[0.3em] text-muted-foreground">
             <span>© {currentYear} MHR.DEV</span>
             <span className="hidden h-3 w-px bg-border md:block" />
             <span>
@@ -226,7 +247,7 @@ export function Footer() {
           <a
             href="/"
             onClick={(e) => handleNavClick(e, "/#home")}
-            className="group flex items-center gap-2 text-[10px] font-mono font-medium uppercase tracking-[0.3em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
+            className="group flex items-center gap-2 text-[10px] font-sans font-medium uppercase tracking-[0.3em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
           >
             Back to top
             <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border transition-colors duration-300 group-hover:border-primary group-hover:text-primary">

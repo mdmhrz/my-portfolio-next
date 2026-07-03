@@ -124,7 +124,7 @@ export default function NotFound() {
           {/* 404 Number */}
           <div
             ref={titleRef}
-            className="mb-8 flex items-center justify-center gap-3 font-mono text-8xl sm:text-9xl font-black tracking-tighter"
+            className="mb-8 flex items-center justify-center gap-3 font-sans text-8xl sm:text-9xl font-black tracking-tighter"
           >
             <span className="digit text-foreground">4</span>
             <span className="digit relative">

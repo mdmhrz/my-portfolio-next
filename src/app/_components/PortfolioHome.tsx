@@ -20,13 +20,13 @@ interface PortfolioHomeProps {
   banner: any;
   experiences: any[];
   projects: any[];
-  about?: any;
+  profile?: any;
   settings?: any;
   skills?: any[];
   homepageBlogs?: BlogListItem[];
 }
 
-export function PortfolioHome({ banner, experiences, projects, about, settings, skills, homepageBlogs }: PortfolioHomeProps) {
+export function PortfolioHome({ banner, experiences, projects, profile, settings, skills, homepageBlogs }: PortfolioHomeProps) {
   const [introDone, setIntroDone] = useState(false);
   const [reduced, setReduced] = useState(false);
 
@@ -41,16 +41,16 @@ export function PortfolioHome({ banner, experiences, projects, about, settings, 
 
       <main className="relative z-10 w-full">
         <MouseFollower />
-        <Hero start={introDone} reduced={reduced} banner={banner} />
+        <Hero start={introDone} reduced={reduced} banner={banner} profile={profile} />
         <TechMarquee />
-        <Journey about={about} />
+        <Journey profile={profile} />
         <Experience experiences={experiences} />
         <Tools skills={skills} />
         <CaseStudies projects={projects} />
         <HomepageBlogs posts={homepageBlogs ?? []} settings={settings} />
-        <CTA settings={settings} about={about} />
-        <Contact />
-        <Footer />
+        <CTA settings={settings} profile={profile} />
+        <Contact profile={profile} />
+        <Footer profile={profile} footerText={settings?.footerText} />
       </main>
     </div>
   );

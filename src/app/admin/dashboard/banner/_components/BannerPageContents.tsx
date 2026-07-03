@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Save, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
@@ -17,15 +17,8 @@ export function BannerPageContents() {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    title: "",
     description: "",
     chips: "",
-    github: "",
-    linkedin: "",
-    facebook: "",
-    email: "",
-    whatsapp: "",
   });
 
   useEffect(() => {
@@ -35,15 +28,8 @@ export function BannerPageContents() {
   useEffect(() => {
     if (banner) {
       setFormData({
-        name: banner.name || "",
-        title: banner.title || "",
         description: banner.description || "",
         chips: Array.isArray(banner.chips) ? banner.chips.join(", ") : "",
-        github: banner.github || "",
-        linkedin: banner.linkedin || "",
-        facebook: banner.facebook || "",
-        email: banner.email || "",
-        whatsapp: banner.whatsapp || "",
       });
     }
   }, [banner]);
@@ -57,53 +43,30 @@ export function BannerPageContents() {
       .filter((c) => c.length > 0);
     try {
       await updateBanner({ ...formData, chips: chipsArray });
-      toast.success("Banner updated successfully!");
+      toast.success("Hero banner updated successfully!");
     } catch {
-      toast.error("Failed to update banner.");
+      toast.error("Failed to update hero banner.");
     } finally {
       setLoading(false);
     }
   };
 
   if (isLoading) {
-    return <FormPageSkeleton fields={3} hasGridRow />;
+    return <FormPageSkeleton fields={2} hasGridRow={false} />;
   }
 
   return (
     <div className="max-w-3xl space-y-6">
       <PageHeader
         title="Hero Banner"
-        description="Configure text parameters, chips, and socials displayed on the landing page hero."
+        description="Presentation-only styling for the landing page hero — tagline and tech chips. Your name, contact links, and photo live under Profile."
       />
 
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-xs font-semibold">Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="title" className="text-xs font-semibold">Title</Label>
-                <Input
-                  id="title"
-                  type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                />
-              </div>
-            </div>
-
             <div className="space-y-2">
-              <Label htmlFor="description" className="text-xs font-semibold">Description</Label>
+              <Label htmlFor="description" className="text-xs font-semibold">Hero Tagline</Label>
               <Textarea
                 id="description"
                 required
@@ -122,35 +85,9 @@ export function BannerPageContents() {
                 value={formData.chips}
                 onChange={(e) => setFormData({ ...formData, chips: e.target.value })}
               />
-              <span className="text-[10px] text-muted-foreground font-mono">
+              <span className="text-[10px] text-muted-foreground font-sans">
                 Example: Frontend Dev @ Xgenious, Next.js, Docker
               </span>
-            </div>
-
-            <div className="border-t border-border pt-6">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">Social Accounts</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="github" className="text-xs font-semibold">GitHub Link</Label>
-                  <Input id="github" type="url" value={formData.github} onChange={(e) => setFormData({ ...formData, github: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="linkedin" className="text-xs font-semibold">LinkedIn Link</Label>
-                  <Input id="linkedin" type="url" value={formData.linkedin} onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="facebook" className="text-xs font-semibold">Facebook Link</Label>
-                  <Input id="facebook" type="url" value={formData.facebook} onChange={(e) => setFormData({ ...formData, facebook: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-xs font-semibold">Public Contact Email</Label>
-                  <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="whatsapp" className="text-xs font-semibold">WhatsApp (Number or Link)</Label>
-                  <Input id="whatsapp" type="text" placeholder="+880 1824975616" value={formData.whatsapp} onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })} />
-                </div>
-              </div>
             </div>
 
             <div className="flex justify-end">

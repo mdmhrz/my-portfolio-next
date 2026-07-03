@@ -47,7 +47,7 @@ export function Pagination({
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-      <span className="text-xs text-muted-foreground font-mono">
+      <span className="text-xs text-muted-foreground font-sans">
         {total === 0 ? "No results" : `Showing ${from}–${to} of ${total}`}
       </span>
 

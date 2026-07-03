@@ -21,16 +21,19 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const data = {
-      ctaHeadline: body.ctaHeadline || null,
-      ctaSubtext: body.ctaSubtext || null,
-      footerText: body.footerText || null,
-      // Homepage blog section
-      homepageBlogVisible: body.homepageBlogVisible ?? true,
-      homepageBlogTitle: body.homepageBlogTitle || null,
-      homepageBlogSubtitle: body.homepageBlogSubtitle || null,
-      homepageBlogTemplate: body.homepageBlogTemplate || "standard",
-    };
+    // Settings (CTA/footer) and Blog Display Settings save to this same endpoint
+    // independently — only touch fields actually present in the request body,
+    // or saving one silently wipes the other's fields back to null/default.
+    const data: Record<string, unknown> = {};
+
+    if ("ctaHeadline" in body) data.ctaHeadline = body.ctaHeadline || null;
+    if ("ctaSubtext" in body) data.ctaSubtext = body.ctaSubtext || null;
+    if ("footerText" in body) data.footerText = body.footerText || null;
+    // Homepage blog section
+    if ("homepageBlogVisible" in body) data.homepageBlogVisible = body.homepageBlogVisible ?? true;
+    if ("homepageBlogTitle" in body) data.homepageBlogTitle = body.homepageBlogTitle || null;
+    if ("homepageBlogSubtitle" in body) data.homepageBlogSubtitle = body.homepageBlogSubtitle || null;
+    if ("homepageBlogTemplate" in body) data.homepageBlogTemplate = body.homepageBlogTemplate || "standard";
 
     const settings = await prisma.siteSettings.upsert({
       where: { id: "singleton" },

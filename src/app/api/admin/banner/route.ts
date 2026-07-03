@@ -21,31 +21,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+    const data = {
+      description: body.description,
+      chips: body.chips,
+      backgroundImg: body.backgroundImg || null,
+      backgroundAlt: body.backgroundAlt || null,
+    };
+
     const banner = await prisma.banner.upsert({
       where: { id: "singleton" },
-      update: {
-        name: body.name,
-        title: body.title,
-        description: body.description,
-        chips: body.chips,
-        github: body.github,
-        linkedin: body.linkedin,
-        facebook: body.facebook,
-        email: body.email,
-        whatsapp: body.whatsapp,
-      },
-      create: {
-        id: "singleton",
-        name: body.name,
-        title: body.title,
-        description: body.description,
-        chips: body.chips,
-        github: body.github,
-        linkedin: body.linkedin,
-        facebook: body.facebook,
-        email: body.email,
-        whatsapp: body.whatsapp,
-      },
+      update: data,
+      create: { id: "singleton", ...data },
     });
 
     revalidatePath("/");

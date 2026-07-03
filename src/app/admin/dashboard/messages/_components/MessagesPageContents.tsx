@@ -103,7 +103,7 @@ export function MessagesPageContents() {
             <ScrollArea className="flex-1">
               <div className="divide-y divide-border/40">
                 {messages.length === 0 ? (
-                  <div className="p-8 text-center text-muted-foreground text-xs font-mono">
+                  <div className="p-8 text-center text-muted-foreground text-xs font-sans">
                     No messages yet.
                   </div>
                 ) : (
@@ -128,7 +128,7 @@ export function MessagesPageContents() {
                             <h4 className={`text-xs truncate ${!msg.read ? "font-bold text-foreground" : "text-foreground"}`}>
                               {msg.name}
                             </h4>
-                            <span className="text-[10px] text-muted-foreground font-mono shrink-0">{formattedDate}</span>
+                            <span className="text-[10px] text-muted-foreground font-sans shrink-0">{formattedDate}</span>
                           </div>
                           <p className={`text-xs truncate mt-1 ${!msg.read ? "font-semibold text-foreground" : "text-muted-foreground"}`}>
                             {msg.subject || "(No Subject)"}
@@ -152,7 +152,7 @@ export function MessagesPageContents() {
                       <h3 className="text-lg font-medium text-foreground">{selectedMsg.name}</h3>
                       <a
                         href={`mailto:${selectedMsg.email}`}
-                        className="text-xs text-foreground hover:underline font-mono"
+                        className="text-xs text-foreground hover:underline font-sans"
                       >
                         {selectedMsg.email}
                       </a>
@@ -173,7 +173,7 @@ export function MessagesPageContents() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 text-xs bg-background/30 p-3 rounded-lg border border-border/40 font-mono">
+                  <div className="grid grid-cols-2 gap-4 text-xs bg-background/30 p-3 rounded-lg border border-border/40 font-sans">
                     <div>
                       <span className="text-muted-foreground">SENT ON:</span>
                       <p className="text-foreground mt-0.5">{new Date(selectedMsg.createdAt).toLocaleString()}</p>
@@ -185,7 +185,7 @@ export function MessagesPageContents() {
                   </div>
 
                   <div className="space-y-2">
-                    <span className="block font-mono text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">
+                    <span className="block font-sans text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">
                       // Message Content
                     </span>
                     <div className="rounded-xl border border-border/60 bg-background/20 p-5 text-sm leading-relaxed text-foreground whitespace-pre-wrap">

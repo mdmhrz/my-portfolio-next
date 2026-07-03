@@ -50,7 +50,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                       <span className="h-2 w-2 rounded-full bg-foreground/10" />
                       <span className="h-2 w-2 rounded-full bg-foreground/10" />
                       <span className="h-2 w-2 rounded-full bg-foreground/10" />
-                      <span className="ml-3 truncate font-mono text-xs text-muted-foreground/60">
+                      <span className="ml-3 truncate font-sans text-xs text-muted-foreground/60">
                         {p.live.replace(/^https?:\/\//, "")}
                       </span>
                     </div>
@@ -90,7 +90,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                         <h3 className="text-2xl font-medium tracking-tight text-foreground md:text-3xl">
                           {p.title}
                         </h3>
-                        <p className="mt-1 text-xs font-mono text-muted-foreground">{p.subtitle}</p>
+                        <p className="mt-1 text-xs font-sans text-muted-foreground">{p.subtitle}</p>
                       </div>
                       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-all duration-500 group-hover:-translate-y-0.5 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
                         <ArrowUpRight className="h-4 w-4" />
@@ -106,7 +106,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 border-t border-border/80 pt-4">
                         {p.tech.slice(0, 6).map((t, idx) => (
                           <span key={t} className="flex items-center gap-2">
-                            <span className="font-mono text-xs text-muted-foreground/80">
+                            <span className="font-sans text-xs text-muted-foreground/80">
                               {t}
                             </span>
                             {idx < Math.min(p.tech.length, 6) - 1 && (
@@ -115,7 +115,7 @@ export function CaseStudies({ projects: dbProjects }: { projects?: any[] }) {
                           </span>
                         ))}
                         {p.tech.length > 6 && (
-                          <span className="font-mono text-xs text-muted-foreground/40">
+                          <span className="font-sans text-xs text-muted-foreground/40">
                             +{p.tech.length - 6} more
                           </span>
                         )}

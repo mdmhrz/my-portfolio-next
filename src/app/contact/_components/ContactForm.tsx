@@ -156,7 +156,7 @@ export function ContactForm() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="block space-y-2">
-      <span className="ml-1 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-bold">
+      <span className="ml-1 text-[10px] font-sans uppercase tracking-[0.2em] text-muted-foreground font-bold">
         {label}
       </span>
       {children}

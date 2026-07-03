@@ -17,10 +17,13 @@ const Scene = dynamic(() => import('./Scene').then((m) => m.Scene), {
 });
 
 interface BannerProp {
-  name: string;
-  title: string;
   description: string;
   chips: string[];
+}
+
+interface ProfileProp {
+  name: string;
+  designation: string;
   github?: string | null;
   linkedin?: string | null;
   facebook?: string | null;
@@ -71,25 +74,25 @@ function TechPill({ label, icon }: { label: string; icon: React.ReactNode }) {
   );
 }
 
-export function Hero({ start, reduced = false, banner }: { start: boolean; reduced?: boolean; banner?: BannerProp | null }) {
+export function Hero({ start, reduced = false, banner, profile }: { start: boolean; reduced?: boolean; banner?: BannerProp | null; profile?: ProfileProp | null }) {
   const sectionRef = useRef<HTMLElement>(null);
   const cardWrapRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
 
-  const name = banner?.name || "Mobarak Hossain Razu";
-  const title = banner?.title || "Full-Stack Developer";
+  const name = profile?.name || "Mobarak Hossain Razu";
+  const title = profile?.designation || "Full-Stack Developer";
   const description = banner?.description || "I build production SaaS, CRM, and full-stack web apps — from Next.js interfaces to Node.js & Go APIs, PostgreSQL, and Docker-on-AWS deployments.";
-  
+
   // Split title into first word and remaining words for stylized underline decoration
   const titleParts = title.split(" ");
   const titleFirstWord = titleParts[0] || "";
   const titleRemainingWords = titleParts.slice(1).join(" ") || "";
 
   const socialsList = [
-    banner?.github && { Icon: GithubLogo, href: banner.github, label: 'GitHub' },
-    banner?.linkedin && { Icon: LinkedinLogo, href: banner.linkedin, label: 'LinkedIn' },
-    banner?.facebook && { Icon: FacebookLogo, href: banner.facebook, label: 'Facebook' },
-    banner?.email && { Icon: EnvelopeSimple, href: `mailto:${banner.email}`, label: 'Email' },
+    profile?.github && { Icon: GithubLogo, href: profile.github, label: 'GitHub' },
+    profile?.linkedin && { Icon: LinkedinLogo, href: profile.linkedin, label: 'LinkedIn' },
+    profile?.facebook && { Icon: FacebookLogo, href: profile.facebook, label: 'Facebook' },
+    profile?.email && { Icon: EnvelopeSimple, href: `mailto:${profile.email}`, label: 'Email' },
   ].filter(Boolean) as { Icon: any; href: string; label: string }[];
 
   // Entrance — only plays once the loader has signalled `start`.
@@ -341,7 +344,7 @@ export function Hero({ start, reduced = false, banner }: { start: boolean; reduc
               <Terminal />
             </div>
 
-            <p className="hero-reveal mb-3 font-mono text-base uppercase tracking-[0.25em] text-muted-foreground font-semibold">
+            <p className="hero-reveal mb-3 font-sans text-base uppercase tracking-[0.25em] text-muted-foreground font-semibold">
               {name}
             </p>
 

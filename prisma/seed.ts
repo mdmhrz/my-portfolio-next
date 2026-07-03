@@ -47,25 +47,19 @@ async function main() {
     console.log(`✅ Admin user created (${adminEmail})`);
   }
 
-  // 2. Create Singleton Banner Info
+  // 2. Create Singleton Banner Info (hero presentation only — identity/contact live on Profile)
   const bannerExists = await prisma.banner.findFirst();
   if (!bannerExists) {
     console.log("📺 Creating initial homepage banner text...");
     await prisma.banner.create({
       data: {
         id: "singleton",
-        name: "Mobarak Hossain Razu",
-        title: "Full-Stack Developer",
         description: "I build production SaaS, CRM, and full-stack web apps — from Next.js interfaces to Node.js & Go APIs, PostgreSQL, and Docker-on-AWS deployments.",
         chips: [
           "Frontend Dev @ Xgenious",
           "SaaS · CRM · Shopify Apps",
           "Docker · AWS · CI/CD"
         ],
-        github: "https://github.com/mdmhrz",
-        linkedin: "https://www.linkedin.com/in/mdmhrz",
-        facebook: "https://www.facebook.com/mdmhrz",
-        email: "mdmobarakhossainrazu@gmail.com",
       },
     });
     console.log("✅ Banner text seeded");
@@ -334,20 +328,27 @@ async function main() {
   });
   console.log(`★ Flagged ${featuredResult.count} project(s) as featured (nexdrop, taskip)`);
 
-  // 6. About singleton — create with defaults only if missing (never overwrites).
-  const about = await prisma.about.findUnique({ where: { id: "singleton" } });
-  if (!about) {
-    await prisma.about.create({
+  // 6. Profile singleton — create with defaults only if missing (never overwrites).
+  // Single source of truth for identity/contact: name, designation, bio, socials.
+  const profile = await prisma.profile.findUnique({ where: { id: "singleton" } });
+  if (!profile) {
+    await prisma.profile.create({
       data: {
         id: "singleton",
+        name: "Mobarak Hossain Razu",
+        designation: "Full-Stack Developer",
         bio: "Full-stack developer building production SaaS, CRM, and web apps.",
         location: "Dhaka, Bangladesh",
         availability: "Available for projects & roles",
+        github: "https://github.com/mdmhrz",
+        linkedin: "https://www.linkedin.com/in/mdmhrz",
+        facebook: "https://www.facebook.com/mdmhrz",
+        email: "mdmobarakhossainrazu@gmail.com",
       },
     });
-    console.log("✅ Default About singleton seeded");
+    console.log("✅ Default Profile singleton seeded");
   } else {
-    console.log("✅ About already exists — skipped");
+    console.log("✅ Profile already exists — skipped");
   }
 
   // 7. SiteSettings singleton — create with defaults only if missing (never overwrites).

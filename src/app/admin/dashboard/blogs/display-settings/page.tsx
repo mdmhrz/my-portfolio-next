@@ -1,20 +1,21 @@
 import { prisma } from "@/lib/prisma";
-import { HomepageSettings } from "./_components/HomepageSettings";
+import { BlogDisplaySettings } from "../_components/BlogDisplaySettings";
 import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Admin "Homepage" section. Lets the admin toggle the featured-blog slider,
- * customize its copy, and pick a card template with a live preview.
+ * Lets the admin toggle the homepage "Featured Articles" slider, customize its
+ * copy, and pick a card template with a live preview. Lives under Blog because
+ * it configures blog display — not because it edits the homepage itself.
  *
  * The sample blog used for the live preview is the most recent published+featured
  * post (falling back to any published post) so the admin compares templates
  * against real content. Settings themselves are loaded client-side via the store
  * (same flow as the Settings page).
  */
-export default async function HomepagePage() {
+export default async function BlogDisplaySettingsPage() {
   // Prefer a featured post for the preview; otherwise show the latest published one.
   const sampleBlog = await prisma.blog.findFirst({
     where: { published: true },
@@ -42,7 +43,7 @@ export default async function HomepagePage() {
   return (
     <div className="max-w-5xl space-y-6">
       <Suspense fallback={<FormPageSkeleton fields={2} hasGridRow={false} />}>
-        <HomepageSettings sampleBlog={serializedSample} />
+        <BlogDisplaySettings sampleBlog={serializedSample} />
       </Suspense>
     </div>
   );

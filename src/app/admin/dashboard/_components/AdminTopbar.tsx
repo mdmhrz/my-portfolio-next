@@ -1,12 +1,22 @@
 'use client';
 
+import { useEffect } from "react";
 import { Menu, Bell, User, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/global/ThemeToggle";
 import { authClient } from "@/lib/auth-client";
-import { NAV_ITEMS } from "./nav-items";
+import { usePortfolioStore } from "@/store/usePortfolioStore";
+import { NAV_GROUPS, NAV_ITEMS } from "./nav-items";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,14 +52,25 @@ export function AdminTopbar({
   onOpenMobileNav,
 }: AdminTopbarProps) {
   const pathname = usePathname();
+
+  // Breadcrumb trail: Dashboard > Group (if any) > current page. The Overview
+  // page (dashboard root) has no group and no "Dashboard" prefix — it IS home.
   const activeItem = NAV_ITEMS.find((item) => item.href === pathname);
-  const pageTitle = activeItem?.label ?? "Dashboard";
+  const activeGroup = NAV_GROUPS.find((group) => group.items.some((item) => item.href === pathname));
+  const isOverview = pathname === "/admin/dashboard";
+  const currentLabel = activeItem?.label ?? "Dashboard";
 
   const { data: session } = authClient.useSession();
   const userName = session?.user?.name ?? "Razu Admin";
   const userEmail = session?.user?.email ?? "admin@portfolio.com";
   const userRole = session?.user?.role ?? "Superuser";
-  const userImage = session?.user?.image;
+
+  const { profile, fetchProfile } = usePortfolioStore();
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+  // Profile avatar (uploaded on the Profile page) takes priority over the auth session image.
+  const userImage = profile?.avatarUrl || session?.user?.image;
 
   return (
     <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-3 shrink-0">
@@ -64,7 +85,31 @@ export function AdminTopbar({
         >
           <Menu className="h-5 w-5" />
         </Button>
-        <h1 className="text-sm font-semibold text-foreground truncate">{pageTitle}</h1>
+        <Breadcrumb>
+          <BreadcrumbList>
+            {!isOverview && (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/admin/dashboard">Dashboard</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                {activeGroup && activeGroup.label !== "Overview" && (
+                  <>
+                    <BreadcrumbItem className="hidden sm:block">
+                      {activeGroup.label}
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="hidden sm:block" />
+                  </>
+                )}
+              </>
+            )}
+            <BreadcrumbItem>
+              <BreadcrumbPage>{currentLabel}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* Right: notifications + theme + profile */}
@@ -86,7 +131,7 @@ export function AdminTopbar({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72">
-            <DropdownMenuLabel className="font-mono text-[10px] uppercase tracking-wider">
+            <DropdownMenuLabel className="font-sans text-[10px] uppercase tracking-wider">
               Notifications {unreadCount > 0 && `(${unreadCount} unread)`}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -137,7 +182,7 @@ export function AdminTopbar({
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs font-semibold text-foreground truncate">{userName}</span>
                   <span className="text-[10px] text-muted-foreground truncate">{userEmail}</span>
-                  <span className="text-[9px] font-mono text-green-500 uppercase tracking-wider mt-0.5">{userRole}</span>
+                  <span className="text-[9px] font-sans text-green-500 uppercase tracking-wider mt-0.5">{userRole}</span>
                 </div>
               </div>
               <DropdownMenuSeparator />
@@ -147,8 +192,8 @@ export function AdminTopbar({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/admin/dashboard/about" className="cursor-pointer text-xs flex items-center gap-2">
-                  Edit Bio
+                <Link href="/admin/dashboard/profile" className="cursor-pointer text-xs flex items-center gap-2">
+                  Profile
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
