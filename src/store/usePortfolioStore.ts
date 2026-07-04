@@ -3,8 +3,12 @@ import { api } from "@/lib/api-client";
 
 export interface BannerData {
   id?: string;
+  headline?: string;
+  subtitle?: string;
   description: string;
   chips: string[];
+  ctaLabel?: string;
+  ctaHref?: string;
   backgroundImg?: string | null;
   backgroundAlt?: string | null;
   backgroundTemplate?: string | null;
@@ -12,6 +16,7 @@ export interface BannerData {
   animationTemplate?: string | null;
   heroImage?: string | null;
   heroImageAlt?: string | null;
+  showcaseImageSide?: string | null;
 }
 
 export interface ExperienceData {
@@ -74,14 +79,46 @@ export interface ProfileData {
 
 export interface SiteSettingsData {
   id?: string;
-  ctaHeadline?: string | null;
-  ctaSubtext?: string | null;
-  footerText?: string | null;
+  logoUrl?: string | null;
+  logoAlt?: string | null;
   // Homepage "Featured Articles" slider controls
-  homepageBlogVisible?: boolean | null;
   homepageBlogTitle?: string | null;
   homepageBlogSubtitle?: string | null;
   homepageBlogTemplate?: string | null;
+}
+
+export interface CtaData {
+  id?: string;
+  headline: string;
+  subtext: string;
+  buttonLabel: string;
+  buttonHref: string;
+}
+
+export interface FooterData {
+  id?: string;
+  bio?: string | null;
+  availabilityBadge: string;
+  availabilityText: string;
+  location: string;
+  primaryStack: string;
+  copyrightName: string;
+}
+
+export interface NavLinkData {
+  id: string;
+  label: string;
+  href: string;
+  order: number;
+  showInNav: boolean;
+  showInFooter: boolean;
+}
+
+export interface SectionConfigData {
+  id: string;
+  key: string;
+  visible: boolean;
+  order: number;
 }
 
 export interface SkillData {
@@ -133,10 +170,29 @@ interface PortfolioStore {
   profile: ProfileData | null;
   settings: SiteSettingsData | null;
   skills: SkillData[];
+  cta: CtaData | null;
+  footer: FooterData | null;
+  navLinks: NavLinkData[];
+  sections: SectionConfigData[];
   loading: Record<string, boolean>;
 
   fetchBanner: () => Promise<void>;
   updateBanner: (data: BannerData) => Promise<void>;
+
+  fetchCta: () => Promise<void>;
+  updateCta: (data: CtaData) => Promise<void>;
+
+  fetchFooter: () => Promise<void>;
+  updateFooter: (data: FooterData) => Promise<void>;
+
+  fetchNavLinks: () => Promise<void>;
+  createNavLink: (data: Omit<NavLinkData, "id" | "order">) => Promise<void>;
+  updateNavLink: (id: string, data: Partial<NavLinkData>) => Promise<void>;
+  deleteNavLink: (id: string) => Promise<void>;
+  reorderNavLinks: (items: NavLinkData[]) => Promise<void>;
+
+  fetchSections: () => Promise<void>;
+  updateSections: (items: SectionConfigData[]) => Promise<void>;
 
   fetchExperiences: () => Promise<void>;
   createExperience: (data: Omit<ExperienceData, "id">) => Promise<void>;
@@ -187,6 +243,10 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   profile: null,
   settings: null,
   skills: [],
+  cta: null,
+  footer: null,
+  navLinks: [],
+  sections: [],
   loading: {},
 
   setBanner: (banner) => set({ banner }),
@@ -217,6 +277,119 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
       set({ banner: res.data.data });
     } catch (err) {
       console.error("Error updating banner:", err);
+      throw err;
+    }
+  },
+
+  // CTA Actions
+  fetchCta: async () => {
+    try {
+      const res = await api.get("/admin/cta");
+      set({ cta: res.data.data });
+    } catch (err) {
+      console.error("Error fetching CTA:", err);
+    }
+  },
+  updateCta: async (data) => {
+    try {
+      const res = await api.post("/admin/cta", data);
+      set({ cta: res.data.data });
+    } catch (err) {
+      console.error("Error updating CTA:", err);
+      throw err;
+    }
+  },
+
+  // Footer Actions
+  fetchFooter: async () => {
+    try {
+      const res = await api.get("/admin/footer");
+      set({ footer: res.data.data });
+    } catch (err) {
+      console.error("Error fetching footer:", err);
+    }
+  },
+  updateFooter: async (data) => {
+    try {
+      const res = await api.post("/admin/footer", data);
+      set({ footer: res.data.data });
+    } catch (err) {
+      console.error("Error updating footer:", err);
+      throw err;
+    }
+  },
+
+  // NavLink Actions
+  fetchNavLinks: async () => {
+    try {
+      const res = await api.get("/admin/nav-links");
+      set({ navLinks: res.data.data });
+    } catch (err) {
+      console.error("Error fetching nav links:", err);
+    }
+  },
+  createNavLink: async (data) => {
+    try {
+      const res = await api.post("/admin/nav-links", data);
+      set((state) => ({ navLinks: [...state.navLinks, res.data.data].sort((a, b) => a.order - b.order) }));
+    } catch (err) {
+      console.error("Error creating nav link:", err);
+      throw err;
+    }
+  },
+  updateNavLink: async (id, data) => {
+    try {
+      const res = await api.put(`/admin/nav-links/${id}`, data);
+      set((state) => ({
+        navLinks: state.navLinks.map((l) => (l.id === id ? res.data.data : l)),
+      }));
+    } catch (err) {
+      console.error("Error updating nav link:", err);
+      throw err;
+    }
+  },
+  deleteNavLink: async (id) => {
+    try {
+      await api.delete(`/admin/nav-links/${id}`);
+      set((state) => ({ navLinks: state.navLinks.filter((l) => l.id !== id) }));
+    } catch (err) {
+      console.error("Error deleting nav link:", err);
+      throw err;
+    }
+  },
+  reorderNavLinks: async (items) => {
+    // Optimistic: reflect the new order instantly, resync from server on failure.
+    set({ navLinks: items });
+    try {
+      await api.put("/admin/nav-links/reorder", {
+        items: items.map((l, i) => ({ id: l.id, order: i })),
+      });
+    } catch (err) {
+      console.error("Error reordering nav links:", err);
+      await get().fetchNavLinks();
+      throw err;
+    }
+  },
+
+  // SectionConfig Actions
+  fetchSections: async () => {
+    try {
+      const res = await api.get("/admin/sections");
+      set({ sections: res.data.data });
+    } catch (err) {
+      console.error("Error fetching sections:", err);
+    }
+  },
+  updateSections: async (items) => {
+    // Optimistic: reflect toggle/reorder instantly, resync from server on failure.
+    set({ sections: items });
+    try {
+      await api.put("/admin/sections", {
+        items: items.map((s, i) => ({ key: s.key, visible: s.visible, order: i })),
+      });
+    } catch (err) {
+      console.error("Error updating sections:", err);
+      await get().fetchSections();
       throw err;
     }
   },

@@ -59,9 +59,11 @@ interface LayoutSignatureProps {
 }
 
 export function LayoutSignature({ start, fullHeight = true, banner, profile }: LayoutSignatureProps) {
-  const name = profile?.name || "Mobarak Hossain Razu";
-  const title = profile?.designation || "Full-Stack Developer";
+  const name = banner?.headline || "Mobarak Hossain Razu";
+  const title = banner?.subtitle || "Full-Stack Developer";
   const description = banner?.description || "I build production SaaS, CRM, and full-stack web apps — from Next.js interfaces to Node.js & Go APIs, PostgreSQL, and Docker-on-AWS deployments.";
+  const ctaLabel = banner?.ctaLabel || "View work";
+  const ctaHref = banner?.ctaHref || "#work";
 
   // Split title into first word and remaining words for stylized underline decoration
   const titleParts = title.split(" ");
@@ -143,10 +145,10 @@ export function LayoutSignature({ start, fullHeight = true, banner, profile }: L
           <div className="hero-reveal mt-10 flex items-center gap-6">
             <Magnetic>
               <a
-                href="#work"
+                href={ctaHref}
                 className="hero-cta group inline-flex h-12 items-center gap-2 rounded-full bg-primary hover:bg-primary/90 px-7 text-sm font-medium text-primary-foreground transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_25%,transparent)]"
               >
-                View work
+                {ctaLabel}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
             </Magnetic>

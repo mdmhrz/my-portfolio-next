@@ -7,8 +7,6 @@ import vertexShader from './shaders/gravity.vert';
 import fragmentShader from './shaders/gravity.frag';
 
 const COUNT = 550;
-const MAX_RANGE = 16;
-const RESPAWN_RADIUS = 9;
 
 // A swarm of particles orbiting a gravity well that follows the cursor — real
 // attraction + tangential "orbit" force (not just particles snapping to a
@@ -18,16 +16,29 @@ const RESPAWN_RADIUS = 9;
 export function EnvironmentGravity({ color }: { color: string }) {
   const points = useRef<THREE.Points>(null);
   const matRef = useRef<THREE.ShaderMaterial>(null);
-  const { camera } = useThree();
+  const { camera, viewport } = useThree();
   const mouseTarget = useRef(new THREE.Vector2(0, 0));
   const well = useRef(new THREE.Vector3(0, 0, 0));
+
+  // Well-follow range and orbit shell scale with the actual canvas viewport so
+  // the swarm always occupies a consistent fraction of the frame, at any
+  // container aspect ratio, instead of a fixed world-space size.
+  const bounds = useMemo(() => {
+    const minDim = Math.min(viewport.width, viewport.height);
+    return {
+      maxRange: Math.max(12, minDim * 0.85),
+      respawnRadius: Math.max(6, minDim * 0.5),
+      wellRangeX: viewport.width * 0.4,
+      wellRangeY: viewport.height * 0.4,
+    };
+  }, [viewport.width, viewport.height]);
 
   const { positions, velocities, speeds } = useMemo(() => {
     const pos = new Float32Array(COUNT * 3);
     const vel = new Float32Array(COUNT * 3);
     const spd = new Float32Array(COUNT);
     for (let i = 0; i < COUNT; i++) {
-      const r = RESPAWN_RADIUS * (0.4 + Math.random() * 0.6);
+      const r = bounds.respawnRadius * (0.4 + Math.random() * 0.6);
       const theta = Math.random() * Math.PI * 2;
       pos[i * 3] = Math.cos(theta) * r;
       pos[i * 3 + 1] = Math.sin(theta) * r * 0.6;
@@ -39,7 +50,7 @@ export function EnvironmentGravity({ color }: { color: string }) {
       spd[i] = 0;
     }
     return { positions: pos, velocities: vel, speeds: spd };
-  }, []);
+  }, [bounds]);
 
   const uniforms = useMemo(
     () => ({
@@ -74,8 +85,8 @@ export function EnvironmentGravity({ color }: { color: string }) {
 
     // The well drifts toward the cursor rather than snapping — gives the
     // whole swarm a lagging, fluid feel as you move.
-    well.current.x = THREE.MathUtils.lerp(well.current.x, mouseTarget.current.x * 7, 0.05);
-    well.current.y = THREE.MathUtils.lerp(well.current.y, mouseTarget.current.y * 4.5, 0.05);
+    well.current.x = THREE.MathUtils.lerp(well.current.x, mouseTarget.current.x * bounds.wellRangeX, 0.05);
+    well.current.y = THREE.MathUtils.lerp(well.current.y, mouseTarget.current.y * bounds.wellRangeY, 0.05);
 
     const geom = points.current?.geometry;
     const posAttr = geom?.attributes.position as THREE.BufferAttribute | undefined;
@@ -98,10 +109,10 @@ export function EnvironmentGravity({ color }: { color: string }) {
       const distSq = dx * dx + dy * dy + dz * dz;
       const dist = Math.sqrt(distSq);
 
-      if (dist > MAX_RANGE) {
+      if (dist > bounds.maxRange) {
         // Respawn on a shell around the well with a fresh tangential kick.
         const theta = Math.random() * Math.PI * 2;
-        const r = RESPAWN_RADIUS * (0.4 + Math.random() * 0.6);
+        const r = bounds.respawnRadius * (0.4 + Math.random() * 0.6);
         posAttr.setXYZ(i, well.current.x + Math.cos(theta) * r, well.current.y + Math.sin(theta) * r * 0.6, (Math.random() - 0.5) * 6);
         velocities[ix] = -Math.sin(theta) * 0.6;
         velocities[ix + 1] = Math.cos(theta) * 0.6;

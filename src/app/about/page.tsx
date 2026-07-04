@@ -45,10 +45,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [profile, settings, skills] = await Promise.all([
+  const [profile, settings, skills, footer, navLinks] = await Promise.all([
     prisma.profile.findUnique({ where: { id: "singleton" } }),
     prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
     prisma.skill.findMany({ orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
+    prisma.footer.findUnique({ where: { id: "singleton" } }),
+    prisma.navLink.findMany({ orderBy: { order: "asc" } }),
   ]);
 
   // Fallback defaults if DB is empty
@@ -113,7 +115,7 @@ export default async function AboutPage() {
       />
 
       <div className="relative min-h-screen overflow-hidden bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
-        <Navbar />
+        <Navbar navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} />
 
         {/* Decorative background gradients */}
         <div className="pointer-events-none absolute top-0 left-1/4 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
@@ -352,7 +354,7 @@ export default async function AboutPage() {
           </div>
         </main>
 
-        <Footer profile={profile} footerText={settings?.footerText} />
+        <Footer profile={profile} footer={footer} navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} />
       </div>
     </AppearanceColorScope>
   );

@@ -1,6 +1,10 @@
 export interface HeroBannerData {
+  headline?: string;
+  subtitle?: string;
   description: string;
   chips: string[];
+  ctaLabel?: string;
+  ctaHref?: string;
   backgroundTemplate?: string | null;
   layoutTemplate?: string | null;
   animationTemplate?: string | null;
@@ -8,11 +12,10 @@ export interface HeroBannerData {
   backgroundAlt?: string | null;
   heroImage?: string | null;
   heroImageAlt?: string | null;
+  showcaseImageSide?: string | null;
 }
 
 export interface HeroProfileData {
-  name: string;
-  designation: string;
   github?: string | null;
   linkedin?: string | null;
   facebook?: string | null;

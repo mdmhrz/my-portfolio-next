@@ -14,24 +14,27 @@ import fragmentShader from './shaders/wave.frag';
 export function EnvironmentWave({ color }: { color: string }) {
   const group = useRef<THREE.Group>(null);
   const matRef = useRef<THREE.ShaderMaterial>(null);
-  const { camera } = useThree();
+  const { camera, viewport } = useThree();
   const target = useRef(new THREE.Vector2(0, 0));
 
+  // Horizontal extent scales with the actual canvas viewport (in world units
+  // at z=0) so the floor always reaches the left/right edges, at any aspect ratio.
   const { positions, offsets } = useMemo(() => {
     const cols = 90;
     const rows = 50;
+    const spreadX = viewport.width * 1.5;
     const pos: number[] = [];
     const off: number[] = [];
     for (let z = 0; z < rows; z++) {
       for (let x = 0; x < cols; x++) {
-        const px = (x / (cols - 1) - 0.5) * 34;
+        const px = (x / (cols - 1) - 0.5) * spreadX;
         const pz = (z / (rows - 1)) * -30 - 2; // recedes away from the camera
         pos.push(px, 0, pz);
         off.push(Math.random(), Math.random(), Math.random());
       }
     }
     return { positions: new Float32Array(pos), offsets: new Float32Array(off) };
-  }, []);
+  }, [viewport.width]);
 
   const uniforms = useMemo(
     () => ({

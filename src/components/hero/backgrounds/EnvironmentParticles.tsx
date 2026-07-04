@@ -12,25 +12,31 @@ import fragmentShader from './shaders/particles.frag';
 // Wave (directional rolling horizon): this one is ambient and atmospheric.
 export function EnvironmentParticles({ color }: { color: string }) {
   const matRef = useRef<THREE.ShaderMaterial>(null);
-  const { camera } = useThree();
+  const { camera, viewport } = useThree();
   const target = useRef(new THREE.Vector2(0, 0));
 
+  // Spread scales with the actual canvas viewport (in world units at z=0) so the
+  // field always reaches the edges, regardless of the container's aspect ratio —
+  // a fixed spread only looked right at one specific aspect ratio.
   const { positions, speeds, offsets } = useMemo(() => {
     const count = 900;
+    const spreadX = viewport.width * 1.15;
+    const spreadY = viewport.height * 1.15;
+    const spreadZ = 14;
     const pos = new Float32Array(count * 3);
     const spd = new Float32Array(count);
     const off = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 26;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 18;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 14;
+      pos[i * 3] = (Math.random() - 0.5) * spreadX;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * spreadY;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * spreadZ;
       spd[i] = 0.15 + Math.random() * 0.35;
       off[i * 3] = Math.random();
       off[i * 3 + 1] = Math.random();
       off[i * 3 + 2] = Math.random();
     }
     return { positions: pos, speeds: spd, offsets: off };
-  }, []);
+  }, [viewport.width, viewport.height]);
 
   const uniforms = useMemo(
     () => ({

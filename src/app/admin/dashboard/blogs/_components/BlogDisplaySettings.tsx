@@ -8,7 +8,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { PageHeader } from "@/components/admin/PageHeader";
@@ -48,7 +47,6 @@ const PLACEHOLDER_BLOG: BlogListItem = {
 };
 
 interface FormState {
-  homepageBlogVisible: boolean;
   homepageBlogTitle: string;
   homepageBlogSubtitle: string;
   homepageBlogTemplate: BlogCardTemplateId;
@@ -59,7 +57,6 @@ export function BlogDisplaySettings({ sampleBlog }: BlogDisplaySettingsProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<FormState>({
-    homepageBlogVisible: true,
     homepageBlogTitle: "",
     homepageBlogSubtitle: "",
     homepageBlogTemplate: "standard",
@@ -72,7 +69,6 @@ export function BlogDisplaySettings({ sampleBlog }: BlogDisplaySettingsProps) {
   useEffect(() => {
     if (settings) {
       setForm({
-        homepageBlogVisible: settings.homepageBlogVisible !== false,
         homepageBlogTitle: settings.homepageBlogTitle ?? "",
         homepageBlogSubtitle: settings.homepageBlogSubtitle ?? "",
         homepageBlogTemplate: normalizeTemplate(settings.homepageBlogTemplate),
@@ -85,7 +81,6 @@ export function BlogDisplaySettings({ sampleBlog }: BlogDisplaySettingsProps) {
     setLoading(true);
     try {
       await updateSettings({
-        homepageBlogVisible: form.homepageBlogVisible,
         homepageBlogTitle: form.homepageBlogTitle.trim() || null,
         homepageBlogSubtitle: form.homepageBlogSubtitle.trim() || null,
         homepageBlogTemplate: form.homepageBlogTemplate,
@@ -122,26 +117,14 @@ export function BlogDisplaySettings({ sampleBlog }: BlogDisplaySettingsProps) {
               <Link href="/admin/dashboard/blogs" className="underline underline-offset-4 hover:text-primary">
                 Featured
               </Link>
+              . To show or hide this section (or reorder it), use{" "}
+              <Link href="/admin/dashboard/settings" className="underline underline-offset-4 hover:text-primary">
+                Site Settings
+              </Link>
               .
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center justify-between gap-4 rounded-lg border border-border p-4">
-              <div className="space-y-0.5">
-                <Label htmlFor="homepageBlogVisible" className="text-sm font-semibold">
-                  Show blog section on homepage
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  Hidden automatically when no featured posts exist.
-                </p>
-              </div>
-              <Switch
-                id="homepageBlogVisible"
-                checked={form.homepageBlogVisible}
-                onCheckedChange={(v) => setForm({ ...form, homepageBlogVisible: v })}
-              />
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="homepageBlogTitle" className="text-xs font-semibold">
                 Section title

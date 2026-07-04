@@ -355,20 +355,69 @@ async function main() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
   if (!settings) {
     await prisma.siteSettings.create({
-      data: {
-        id: "singleton",
-        ctaHeadline: "Let's build something solid.",
-        ctaSubtext:
-          "Frontend & full-stack engineering — from Next.js interfaces to Node & Go services. Open to freelance work, consulting, and full-time roles.",
-        footerText: "© Mobarak Hossain Razu",
-      },
+      data: { id: "singleton" },
     });
     console.log("✅ Default SiteSettings singleton seeded");
   } else {
     console.log("✅ SiteSettings already exists — skipped");
   }
 
-  // 8. Starter skills — seed only if the table is empty (never duplicates).
+  // 8. Cta singleton — create with defaults only if missing (never overwrites).
+  const cta = await prisma.cta.findUnique({ where: { id: "singleton" } });
+  if (!cta) {
+    await prisma.cta.create({ data: { id: "singleton" } });
+    console.log("✅ Default Cta singleton seeded");
+  } else {
+    console.log("✅ Cta already exists — skipped");
+  }
+
+  // 9. Footer singleton — create with defaults only if missing (never overwrites).
+  const footer = await prisma.footer.findUnique({ where: { id: "singleton" } });
+  if (!footer) {
+    await prisma.footer.create({ data: { id: "singleton" } });
+    console.log("✅ Default Footer singleton seeded");
+  } else {
+    console.log("✅ Footer already exists — skipped");
+  }
+
+  // 10. Nav links — seed only if the table is empty (never duplicates).
+  const navLinkCount = await prisma.navLink.count();
+  if (navLinkCount === 0) {
+    const starterNavLinks = [
+      { label: "Journey", href: "/#journey", order: 0 },
+      { label: "Experience", href: "/#experience", order: 1 },
+      { label: "Skills", href: "/#skills", order: 2 },
+      { label: "Work", href: "/#work", order: 3 },
+      { label: "Blog", href: "/#blog", order: 4 },
+      { label: "Contact", href: "/contact", order: 5 },
+      { label: "About", href: "/about", order: 6 },
+    ];
+    await prisma.navLink.createMany({ data: starterNavLinks });
+    console.log(`✅ ${starterNavLinks.length} starter nav links seeded`);
+  } else {
+    console.log(`✅ Nav links already present (${navLinkCount}) — skipped`);
+  }
+
+  // 11. Section config — seed only if the table is empty (never duplicates).
+  const sectionConfigCount = await prisma.sectionConfig.count();
+  if (sectionConfigCount === 0) {
+    const starterSections = [
+      { key: "techMarquee", order: 0 },
+      { key: "journey", order: 1 },
+      { key: "experience", order: 2 },
+      { key: "tools", order: 3 },
+      { key: "caseStudies", order: 4 },
+      { key: "homepageBlogs", order: 5 },
+      { key: "cta", order: 6 },
+      { key: "contact", order: 7 },
+    ];
+    await prisma.sectionConfig.createMany({ data: starterSections });
+    console.log(`✅ ${starterSections.length} starter section configs seeded`);
+  } else {
+    console.log(`✅ Section configs already present (${sectionConfigCount}) — skipped`);
+  }
+
+  // 12. Starter skills — seed only if the table is empty (never duplicates).
   const skillCount = await prisma.skill.count();
   if (skillCount === 0) {
     const starterSkills = [

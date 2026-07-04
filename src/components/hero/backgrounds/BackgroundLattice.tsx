@@ -1,17 +1,17 @@
 'use client';
 
-import { Suspense, useEffect, useState, type CSSProperties } from 'react';
+import { Suspense, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useTheme } from 'next-themes';
 import { EnvironmentLattice } from './EnvironmentLattice';
 
 // Resolve a CSS custom property to an rgb() string Three.Color can parse.
-function cssColor(name: string, fallback: string) {
+function cssColor(name: string, fallback: string, root?: HTMLElement | null) {
   if (typeof window === 'undefined') return fallback;
   const el = document.createElement('span');
   el.style.color = `var(${name})`;
   el.style.display = 'none';
-  document.body.appendChild(el);
+  (root ?? document.body).appendChild(el);
   const computed = getComputedStyle(el).color;
   el.remove();
   try {
@@ -42,15 +42,16 @@ function checkWebGLSupport(): boolean {
 
 export function BackgroundLattice({ reduced }: { reduced: boolean }) {
   const { resolvedTheme } = useTheme();
-  const [color, setColor] = useState(() => cssColor('--foreground', '#ffffff'));
-  const [bgColor, setBgColor] = useState(() => cssColor('--background', '#000000'));
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [color, setColor] = useState('#ffffff');
+  const [bgColor, setBgColor] = useState('#000000');
   const [webglSupported] = useState(() => checkWebGLSupport());
 
   useEffect(() => {
     // Small delay to allow CSS variables to update after theme switch
     const timeout = setTimeout(() => {
-      setColor(cssColor('--foreground', '#ffffff'));
-      setBgColor(cssColor('--background', '#000000'));
+      setColor(cssColor('--foreground', '#ffffff', containerRef.current));
+      setBgColor(cssColor('--background', '#000000', containerRef.current));
     }, 50);
     return () => clearTimeout(timeout);
   }, [resolvedTheme]);
@@ -60,10 +61,11 @@ export function BackgroundLattice({ reduced }: { reduced: boolean }) {
   }
 
   return (
-    <div aria-hidden className="absolute inset-0" style={{ pointerEvents: 'none' } as CSSProperties}>
+    <div ref={containerRef} aria-hidden className="absolute inset-0" style={{ pointerEvents: 'none' } as CSSProperties}>
       <Canvas
         camera={{ position: [0, 0, 8], fov: 60 }}
         dpr={[1, 2]}
+        resize={{ offsetSize: true }}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
       >
         <color attach="background" args={[bgColor]} />

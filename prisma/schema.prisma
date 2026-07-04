@@ -69,13 +69,19 @@ model Verification {
 
 // --- CMS Portfolio Models ---
 
-// Hero-section presentation only. Identity & contact facts live on Profile.
+// All hero-facing text lives here. Contact info (email/social links) still
+// comes from Profile — Profile's own name/designation remain in use elsewhere
+// (About page, Contact page JSON-LD, Footer) so they aren't removed there.
 model Banner {
   id            String   @id @default("singleton")
+  headline      String   @default("") // Hero headline (person's name/title as shown in the hero)
+  subtitle      String   @default("") // Hero eyebrow/subtitle (job title as shown in the hero)
   description   String   // Hero tagline/pitch
   backgroundImg String?  // Static image shown when backgroundTemplate = "none" (falls back to solid color)
   backgroundAlt String?  // Alt text for background image
   chips         String[] // e.g., ["Frontend Dev @ Xgenious", "Docker · AWS"]
+  ctaLabel      String   @default("View work")
+  ctaHref       String   @default("#work")
 
   // Template system — three independent axes, freely mixable.
   backgroundTemplate String  @default("none")      // "none" | "lattice" | "particles" | "wave"
@@ -83,6 +89,7 @@ model Banner {
   animationTemplate  String  @default("signature") // "signature" | "fade"
   heroImage          String? // Optional showcase image some layouts use instead of the code card
   heroImageAlt       String?
+  showcaseImageSide  String  @default("left") // "left" | "right" — which side the showcase image sits on (desktop)
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -137,6 +144,52 @@ model Project {
   updatedAt         DateTime    @updatedAt
 
   @@map("project")
+}
+
+model Cta {
+  id          String   @id @default("singleton")
+  headline    String   @default("Let's build something solid.")
+  subtext     String   @default("Frontend & full-stack engineering — from Next.js interfaces to Node & Go services. Open to freelance work, consulting, and full-time roles.")
+  buttonLabel String   @default("Get in touch")
+  buttonHref  String   @default("#contact")
+  updatedAt   DateTime @updatedAt
+
+  @@map("cta")
+}
+
+model Footer {
+  id                String   @id @default("singleton")
+  bio               String?  // null = fall back to Profile.bio
+  availabilityBadge String   @default("Open for roles")
+  availabilityText  String   @default("Currently accepting freelance contracts, SaaS consulting, and full-time frontend/full-stack engineering roles.")
+  location          String   @default("Remote / UTC+6")
+  primaryStack      String   @default("React, Next.js, Go")
+  copyrightName     String   @default("MHR.DEV")
+  updatedAt         DateTime @updatedAt
+
+  @@map("footer")
+}
+
+model NavLink {
+  id           String   @id @default(uuid())
+  label        String
+  href         String
+  order        Int      @default(0)
+  showInNav    Boolean  @default(true)
+  showInFooter Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("nav_link")
+}
+
+model SectionConfig {
+  id      String  @id @default(uuid())
+  key     String  @unique // "hero" | "techMarquee" | "journey" | "experience" | "tools" | "caseStudies" | "homepageBlogs" | "cta" | "contact"
+  visible Boolean @default(true)
+  order   Int     @default(0)
+
+  @@map("section_config")
 }
 
 model Message {
@@ -203,10 +256,9 @@ model Profile {
 model SiteSettings {
   id              String   @id @default("singleton")
 
-  // CTA & Footer
-  ctaHeadline     String?
-  ctaSubtext      String?
-  footerText      String?
+  // SITE LOGO
+  logoUrl         String?
+  logoAlt         String?
 
   // FONTS
   fontType        String?   @default("default")      // "default" | "google" | "custom"
@@ -226,7 +278,7 @@ model SiteSettings {
   customPalette   Json?
 
   // HOMEPAGE BLOG SECTION — controls the "Featured Articles" slider on the landing page
-  homepageBlogVisible   Boolean  @default(true)      // show/hide the section
+  // Visibility now lives in SectionConfig (key="homepageBlogs") alongside every other section.
   homepageBlogTitle     String?                        // custom heading; null = default
   homepageBlogSubtitle  String?                        // custom subheading; null = default
   homepageBlogTemplate  String   @default("standard")  // "standard" | "overlay" | "minimal"

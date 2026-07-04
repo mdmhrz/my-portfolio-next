@@ -21,16 +21,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    // Settings (CTA/footer) and Blog Display Settings save to this same endpoint
+    // Site logo, Blog Display Settings, and other settings save to this same endpoint
     // independently — only touch fields actually present in the request body,
     // or saving one silently wipes the other's fields back to null/default.
     const data: Record<string, unknown> = {};
 
-    if ("ctaHeadline" in body) data.ctaHeadline = body.ctaHeadline || null;
-    if ("ctaSubtext" in body) data.ctaSubtext = body.ctaSubtext || null;
-    if ("footerText" in body) data.footerText = body.footerText || null;
-    // Homepage blog section
-    if ("homepageBlogVisible" in body) data.homepageBlogVisible = body.homepageBlogVisible ?? true;
+    if ("logoUrl" in body) data.logoUrl = body.logoUrl || null;
+    if ("logoAlt" in body) data.logoAlt = body.logoAlt || null;
+    // Homepage blog section (visibility now lives in SectionConfig, key="homepageBlogs")
     if ("homepageBlogTitle" in body) data.homepageBlogTitle = body.homepageBlogTitle || null;
     if ("homepageBlogSubtitle" in body) data.homepageBlogSubtitle = body.homepageBlogSubtitle || null;
     if ("homepageBlogTemplate" in body) data.homepageBlogTemplate = body.homepageBlogTemplate || "standard";
@@ -42,6 +40,8 @@ export async function POST(request: Request) {
     });
 
     revalidatePath("/");
+    revalidatePath("/about");
+    revalidatePath("/contact");
     return NextResponse.json({ success: true, data: settings });
   } catch (error) {
     console.error("POST settings error:", error);

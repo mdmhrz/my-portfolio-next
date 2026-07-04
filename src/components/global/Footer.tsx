@@ -30,26 +30,35 @@ interface FooterProfile {
   email?: string | null;
 }
 
-const nav = [
-  { label: "Journey", href: "/#journey" },
-  { label: "Experience", href: "/#experience" },
-  { label: "Skills", href: "/#skills" },
-  { label: "Work", href: "/#work" },
-  { label: "Blog", href: "/blogs" },
-  { label: "Contact", href: "/contact" },
-  { label: "About", href: "/about" },
-];
+interface FooterNavLink {
+  label: string;
+  href: string;
+  showInFooter: boolean;
+}
+
+interface FooterData {
+  bio?: string | null;
+  availabilityBadge?: string | null;
+  availabilityText?: string | null;
+  location?: string | null;
+  primaryStack?: string | null;
+  copyrightName?: string | null;
+}
 
 const NAV_OFFSET = 96;
 
 interface FooterProps {
   profile?: FooterProfile | null;
-  footerText?: string | null;
+  footer?: FooterData | null;
+  navLinks?: FooterNavLink[];
+  logoUrl?: string | null;
+  logoAlt?: string | null;
 }
 
-export function Footer({ profile, footerText }: FooterProps = {}) {
+export function Footer({ profile, footer, navLinks, logoUrl, logoAlt }: FooterProps = {}) {
   const pathname = usePathname();
   const name = profile?.name || DEFAULT_NAME;
+  const nav = (navLinks ?? []).filter((l) => l.showInFooter);
   const socials = [
     { name: "GitHub", Icon: GithubLogo, href: profile?.github || DEFAULT_GITHUB },
     { name: "LinkedIn", Icon: LinkedinLogo, href: profile?.linkedin || DEFAULT_LINKEDIN },
@@ -120,10 +129,10 @@ export function Footer({ profile, footerText }: FooterProps = {}) {
           {/* Brand Column */}
           <div className="space-y-5 md:col-span-5">
             <a href="/" onClick={(e) => handleNavClick(e, "/#home")} aria-label="Home" className="inline-block">
-              <Logo className="h-8 w-auto" />
+              <Logo className="h-8 w-auto" src={logoUrl} alt={logoAlt} />
             </a>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-              {footerText || profile?.bio || DEFAULT_BIO}
+              {footer?.bio || profile?.bio || DEFAULT_BIO}
             </p>
             <div className="flex items-center gap-3">
               {socials.map(({ name, Icon, href }) => (
@@ -176,7 +185,7 @@ export function Footer({ profile, footerText }: FooterProps = {}) {
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                   </span>
                   <span className="text-[10px] font-sans font-bold uppercase tracking-[0.15em] text-foreground">
-                    Open for roles
+                    {footer?.availabilityBadge || "Open for roles"}
                   </span>
                 </div>
                 <span className="text-[9px] font-sans uppercase text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
@@ -185,17 +194,17 @@ export function Footer({ profile, footerText }: FooterProps = {}) {
               </div>
 
               <p className="text-xs leading-relaxed text-muted-foreground">
-                Currently accepting freelance contracts, SaaS consulting, and full-time frontend/full-stack engineering roles.
+                {footer?.availabilityText || "Currently accepting freelance contracts, SaaS consulting, and full-time frontend/full-stack engineering roles."}
               </p>
 
               <div className="space-y-2 text-[10px] font-sans text-muted-foreground pt-1 border-t border-border/50">
                 <div className="flex items-center justify-between">
                   <span>Location</span>
-                  <span className="text-foreground font-medium">Remote / UTC+6</span>
+                  <span className="text-foreground font-medium">{footer?.location || "Remote / UTC+6"}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Primary Stack</span>
-                  <span className="text-foreground font-medium">React, Next.js, Go</span>
+                  <span className="text-foreground font-medium">{footer?.primaryStack || "React, Next.js, Go"}</span>
                 </div>
               </div>
 
@@ -237,7 +246,7 @@ export function Footer({ profile, footerText }: FooterProps = {}) {
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-6 border-t border-border py-8 md:flex-row">
           <div className="flex items-center gap-4 text-[10px] font-sans font-medium uppercase tracking-[0.3em] text-muted-foreground">
-            <span>© {currentYear} MHR.DEV</span>
+            <span>© {currentYear} {footer?.copyrightName || "MHR.DEV"}</span>
             <span className="hidden h-3 w-px bg-border md:block" />
             <span>
               {mounted ? `Dhaka, BD — ${timeString}` : "Dhaka, Bangladesh"}

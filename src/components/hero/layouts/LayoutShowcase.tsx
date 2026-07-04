@@ -17,10 +17,13 @@ interface LayoutShowcaseProps {
 }
 
 export function LayoutShowcase({ fullHeight = true, banner, profile }: LayoutShowcaseProps) {
-  const name = profile?.name || 'Mobarak Hossain Razu';
-  const title = profile?.designation || 'Full-Stack Developer';
+  const name = banner?.headline || 'Mobarak Hossain Razu';
+  const title = banner?.subtitle || 'Full-Stack Developer';
   const description = banner?.description || "I build production SaaS, CRM, and full-stack web apps — from Next.js interfaces to Node.js & Go APIs, PostgreSQL, and Docker-on-AWS deployments.";
   const chips = banner?.chips?.length ? banner.chips : CHIPS;
+  const ctaLabel = banner?.ctaLabel || 'View work';
+  const ctaHref = banner?.ctaHref || '#work';
+  const imageOnRight = banner?.showcaseImageSide === 'right';
 
   const socialsList = [
     profile?.github && { Icon: GithubLogo, href: profile.github, label: 'GitHub' },
@@ -32,8 +35,11 @@ export function LayoutShowcase({ fullHeight = true, banner, profile }: LayoutSho
   return (
     <div className={`container relative z-10 mx-auto flex ${fullHeight ? 'min-h-[100svh]' : 'h-full'} max-w-7xl flex-col justify-center px-6 pt-24 pb-16 md:pb-0`}>
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-        {/* Left: showcase image */}
-        <div className="hero-reveal hero-tilt-target order-2 flex justify-center lg:order-1 lg:justify-start" style={{ transformStyle: 'preserve-3d' }}>
+        {/* Showcase image */}
+        <div
+          className={`hero-reveal hero-tilt-target order-2 flex justify-center ${imageOnRight ? 'lg:order-2 lg:justify-end' : 'lg:order-1 lg:justify-start'}`}
+          style={{ transformStyle: 'preserve-3d' }}
+        >
           <div className="relative aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl border border-border bg-card shadow-xl">
             {banner?.heroImage ? (
               <Image
@@ -52,8 +58,8 @@ export function LayoutShowcase({ fullHeight = true, banner, profile }: LayoutSho
           </div>
         </div>
 
-        {/* Right: identity */}
-        <div className="order-1 max-w-xl lg:order-2">
+        {/* Identity */}
+        <div className={`order-1 max-w-xl ${imageOnRight ? 'lg:order-1' : 'lg:order-2'}`}>
           <p className="hero-reveal mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-primary">
             {title}
           </p>
@@ -80,10 +86,10 @@ export function LayoutShowcase({ fullHeight = true, banner, profile }: LayoutSho
           <div className="hero-reveal mt-10 flex items-center gap-6">
             <Magnetic>
               <a
-                href="#work"
+                href={ctaHref}
                 className="hero-cta group inline-flex h-12 items-center gap-2 rounded-full bg-primary hover:bg-primary/90 px-7 text-sm font-medium text-primary-foreground transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_color-mix(in_oklch,var(--primary)_25%,transparent)]"
               >
-                View work
+                {ctaLabel}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
             </Magnetic>

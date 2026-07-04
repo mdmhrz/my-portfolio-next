@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment, type ReactNode } from "react";
 import { IntroLoader } from "@/components/global/IntroLoader";
 import { Navbar } from "@/components/global/Navbar";
 import { Hero } from "./Hero";
@@ -16,6 +16,12 @@ import { MouseFollower } from "@/components/global/MouseFollower";
 import { HomepageBlogs } from "./HomepageBlogs";
 import type { BlogListItem } from "@/components/blog";
 
+interface SectionConfigItem {
+  key: string;
+  visible: boolean;
+  order: number;
+}
+
 interface PortfolioHomeProps {
   banner: any;
   experiences: any[];
@@ -24,9 +30,25 @@ interface PortfolioHomeProps {
   settings?: any;
   skills?: any[];
   homepageBlogs?: BlogListItem[];
+  cta?: any;
+  footer?: any;
+  navLinks?: any[];
+  sections?: SectionConfigItem[];
 }
 
-export function PortfolioHome({ banner, experiences, projects, profile, settings, skills, homepageBlogs }: PortfolioHomeProps) {
+export function PortfolioHome({
+  banner,
+  experiences,
+  projects,
+  profile,
+  settings,
+  skills,
+  homepageBlogs,
+  cta,
+  footer,
+  navLinks,
+  sections,
+}: PortfolioHomeProps) {
   const [introDone, setIntroDone] = useState(false);
   const [reduced, setReduced] = useState(false);
 
@@ -34,23 +56,37 @@ export function PortfolioHome({ banner, experiences, projects, profile, settings
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
+  // Every homepage content section lives here, keyed by SectionConfig.key. Hero and
+  // Footer are permanent chrome (not hideable/reorderable) and stay outside this map —
+  // adding a new hideable section requires both a registry entry here and a matching
+  // SectionConfig row (seeded via a migration).
+  const SECTION_REGISTRY: Record<string, () => ReactNode> = {
+    techMarquee: () => <TechMarquee />,
+    journey: () => <Journey profile={profile} />,
+    experience: () => <Experience experiences={experiences} />,
+    tools: () => <Tools skills={skills} />,
+    caseStudies: () => <CaseStudies projects={projects} />,
+    homepageBlogs: () => <HomepageBlogs posts={homepageBlogs ?? []} settings={settings} />,
+    cta: () => <CTA cta={cta} profile={profile} />,
+    contact: () => <Contact profile={profile} />,
+  };
+
+  const orderedSections = (sections ?? [])
+    .filter((s) => s.visible)
+    .sort((a, b) => a.order - b.order);
+
   return (
     <div className="relative min-h-screen selection:bg-primary selection:text-primary-foreground bg-background">
       <IntroLoader onDone={() => setIntroDone(true)} />
-      <Navbar />
+      <Navbar navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} />
 
       <main className="relative z-10 w-full">
         <MouseFollower />
         <Hero start={introDone} reduced={reduced} banner={banner} profile={profile} />
-        <TechMarquee />
-        <Journey profile={profile} />
-        <Experience experiences={experiences} />
-        <Tools skills={skills} />
-        <CaseStudies projects={projects} />
-        <HomepageBlogs posts={homepageBlogs ?? []} settings={settings} />
-        <CTA settings={settings} profile={profile} />
-        <Contact profile={profile} />
-        <Footer profile={profile} footerText={settings?.footerText} />
+        {orderedSections.map((section) => (
+          <Fragment key={section.key}>{SECTION_REGISTRY[section.key]?.()}</Fragment>
+        ))}
+        <Footer profile={profile} footer={footer} navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} />
       </main>
     </div>
   );

@@ -3,7 +3,6 @@ import {
   UserCircle,
   Gauge,
   LayoutDashboard,
-  Wand2,
   Briefcase,
   FolderKanban,
   BookOpen,
@@ -12,17 +11,22 @@ import {
   Wrench,
   Settings,
   Palette,
+  MousePointerClick,
+  PanelBottom,
+  Link2,
 } from "lucide-react";
 
 export type TabValue =
   | "overview"
   | "profile"
   | "banner"
-  | "banner-template"
   | "experience"
   | "projects"
   | "skills"
   | "appearance"
+  | "cta"
+  | "footer"
+  | "nav-links"
   | "settings"
   | "blogs"
   | "blogs-display-settings"
@@ -58,10 +62,12 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Site Content",
     items: [
       { value: "banner", label: "Hero Banner", href: "/admin/dashboard/banner", icon: LayoutDashboard },
-      { value: "banner-template", label: "Hero Template", href: "/admin/dashboard/banner/template", icon: Wand2 },
       { value: "experience", label: "Experience", href: "/admin/dashboard/experience", icon: Briefcase },
       { value: "projects", label: "Projects", href: "/admin/dashboard/projects", icon: FolderKanban },
       { value: "skills", label: "Skills", href: "/admin/dashboard/skills", icon: Wrench },
+      { value: "cta", label: "Call to Action", href: "/admin/dashboard/cta", icon: MousePointerClick },
+      { value: "footer", label: "Footer", href: "/admin/dashboard/footer", icon: PanelBottom },
+      { value: "nav-links", label: "Navigation Links", href: "/admin/dashboard/nav-links", icon: Link2 },
       { value: "appearance", label: "Appearance", href: "/admin/dashboard/appearance", icon: Palette },
       { value: "settings", label: "Site Settings", href: "/admin/dashboard/settings", icon: Settings },
     ],

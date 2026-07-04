@@ -9,7 +9,7 @@ interface StatCardProps {
 
 export function StatCard({ label, value, sublabel, icon: Icon }: StatCardProps) {
   return (
-    <Card>
+    <Card className="pt-0">
       <CardContent className="flex items-start justify-between gap-4 pt-6">
         <div className="space-y-1">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">

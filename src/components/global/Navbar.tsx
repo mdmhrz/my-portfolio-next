@@ -18,7 +18,9 @@ import {
 
 import { Magnetic } from "@/components/global/Magnetic";
 
-const NavLinks = [
+// Resilience fallback — used only if navLinks isn't provided or the fetch returned none,
+// so the header is never blank while the DB source of truth is unreachable.
+const FALLBACK_NAV_LINKS = [
   { name: "Journey", href: "/#journey" },
   { name: "Experience", href: "/#experience" },
   { name: "Skills", href: "/#skills" },
@@ -39,7 +41,23 @@ const RESUME_URL =
 
 const NAV_OFFSET = 96;
 
-export function Navbar() {
+interface NavLinkItem {
+  label: string;
+  href: string;
+  showInNav: boolean;
+}
+
+interface NavbarProps {
+  navLinks?: NavLinkItem[];
+  logoUrl?: string | null;
+  logoAlt?: string | null;
+}
+
+export function Navbar({ navLinks, logoUrl, logoAlt }: NavbarProps = {}) {
+  const filtered = navLinks?.filter((l) => l.showInNav) ?? [];
+  const links = filtered.length > 0
+    ? filtered.map((l) => ({ name: l.label, href: l.href }))
+    : FALLBACK_NAV_LINKS;
   const pathname = usePathname();
   const [activeId, setActiveId] = useState<string>("");
   // Radix Sheet portals to <body> by default, which escapes AppearanceColorScope
@@ -72,7 +90,7 @@ export function Navbar() {
   useEffect(() => {
     if (pathname !== "/") return;
 
-    const ids = ["home", ...NavLinks.map((l) => l.href.includes("#") ? l.href.split("#")[1] : "").filter(Boolean)];
+    const ids = ["home", ...links.map((l) => l.href.includes("#") ? l.href.split("#")[1] : "").filter(Boolean)];
     const sections = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
@@ -96,7 +114,7 @@ export function Navbar() {
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, [pathname]);
+  }, [pathname, links]);
 
   return (
     <motion.header
@@ -111,12 +129,12 @@ export function Navbar() {
           onClick={(e) => handleNavClick(e, "/#home")}
           aria-label="Home"
         >
-          <Logo />
+          <Logo src={logoUrl} alt={logoAlt} />
         </a>
 
         {/* Desktop links */}
         <div className="hidden items-center gap-8 lg:flex">
-          {NavLinks.map((link) => {
+          {links.map((link) => {
             const linkAnchor = link.href.includes("#") ? link.href.split("#")[1] : "";
             const isActive = link.href === pathname || (pathname === "/" && linkAnchor && activeId === linkAnchor);
             return (
@@ -163,14 +181,14 @@ export function Navbar() {
                 <SheetHeader className="flex flex-row items-center justify-between border-b border-border p-6">
                   <SheetTitle asChild>
                     <a href="/" aria-label="Home">
-                      <Logo />
+                      <Logo src={logoUrl} alt={logoAlt} />
                     </a>
                   </SheetTitle>
                   <ThemeToggle />
                 </SheetHeader>
 
                 <nav className="flex flex-col gap-2 p-6">
-                  {NavLinks.map((link) => {
+                  {links.map((link) => {
                     const linkAnchor = link.href.includes("#") ? link.href.split("#")[1] : "";
                     const isActive = link.href === pathname || (pathname === "/" && linkAnchor && activeId === linkAnchor);
                     return (

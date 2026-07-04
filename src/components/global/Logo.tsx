@@ -1,6 +1,26 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-export function Logo({ className }: { className?: string }) {
+interface LogoProps {
+  className?: string;
+  src?: string | null;
+  alt?: string | null;
+}
+
+export function Logo({ className, src, alt }: LogoProps) {
+  if (src) {
+    return (
+      <Image
+        src={src}
+        alt={alt || "Site logo"}
+        width={112}
+        height={28}
+        className={cn("h-7 w-auto object-contain", className)}
+        unoptimized
+      />
+    );
+  }
+
   return (
     <svg
       viewBox="0 0 205 165.4"

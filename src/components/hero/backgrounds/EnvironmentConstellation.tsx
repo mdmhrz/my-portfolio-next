@@ -7,7 +7,6 @@ import vertexShader from './shaders/constellation.vert';
 import fragmentShader from './shaders/constellation.frag';
 
 const COUNT = 85;
-const BOUNDS = { x: 14, y: 8, z: 4 };
 const LINK_DISTANCE = 4.2;
 const MAX_LINE_VERTICES = 900 * 2; // generous cap; excess pairs in a frame are simply skipped
 
@@ -20,22 +19,34 @@ export function EnvironmentConstellation({ color }: { color: string }) {
   const nodesRef = useRef<THREE.Points>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
   const nodeMatRef = useRef<THREE.ShaderMaterial>(null);
-  const { camera } = useThree();
+  const { camera, viewport } = useThree();
   const target = useRef(new THREE.Vector2(0, 0));
+
+  // The node volume scales with the actual canvas viewport so the network
+  // always occupies a consistent fraction of the frame, at any aspect ratio,
+  // instead of a fixed world-space box.
+  const bounds = useMemo(
+    () => ({
+      x: Math.max(6, viewport.width * 0.55),
+      y: Math.max(4, viewport.height * 0.55),
+      z: 4,
+    }),
+    [viewport.width, viewport.height],
+  );
 
   const { positions, velocities } = useMemo(() => {
     const pos = new Float32Array(COUNT * 3);
     const vel = new Float32Array(COUNT * 3);
     for (let i = 0; i < COUNT; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 2 * BOUNDS.x;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 2 * BOUNDS.y;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 2 * BOUNDS.z;
+      pos[i * 3] = (Math.random() - 0.5) * 2 * bounds.x;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 2 * bounds.y;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 2 * bounds.z;
       vel[i * 3] = (Math.random() - 0.5) * 0.5;
       vel[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
       vel[i * 3 + 2] = (Math.random() - 0.5) * 0.3;
     }
     return { positions: pos, velocities: vel };
-  }, []);
+  }, [bounds]);
 
   const linePositions = useMemo(() => new Float32Array(MAX_LINE_VERTICES * 3), []);
   const lineColors = useMemo(() => new Float32Array(MAX_LINE_VERTICES * 3), []);
@@ -95,13 +106,13 @@ export function EnvironmentConstellation({ color }: { color: string }) {
       let y = posAttr.getY(i) + velocities[ix + 1] * dt;
       let z = posAttr.getZ(i) + velocities[ix + 2] * dt;
 
-      if (x > BOUNDS.x || x < -BOUNDS.x) velocities[ix] *= -1;
-      if (y > BOUNDS.y || y < -BOUNDS.y) velocities[ix + 1] *= -1;
-      if (z > BOUNDS.z || z < -BOUNDS.z) velocities[ix + 2] *= -1;
+      if (x > bounds.x || x < -bounds.x) velocities[ix] *= -1;
+      if (y > bounds.y || y < -bounds.y) velocities[ix + 1] *= -1;
+      if (z > bounds.z || z < -bounds.z) velocities[ix + 2] *= -1;
 
-      x = THREE.MathUtils.clamp(x, -BOUNDS.x, BOUNDS.x);
-      y = THREE.MathUtils.clamp(y, -BOUNDS.y, BOUNDS.y);
-      z = THREE.MathUtils.clamp(z, -BOUNDS.z, BOUNDS.z);
+      x = THREE.MathUtils.clamp(x, -bounds.x, bounds.x);
+      y = THREE.MathUtils.clamp(y, -bounds.y, bounds.y);
+      z = THREE.MathUtils.clamp(z, -bounds.z, bounds.z);
 
       posAttr.setXYZ(i, x, y, z);
     }

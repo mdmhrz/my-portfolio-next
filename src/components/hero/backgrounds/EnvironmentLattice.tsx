@@ -12,22 +12,26 @@ import fragmentShader from './shaders/env.frag';
 export function EnvironmentLattice({ color }: { color: string }) {
   const group = useRef<THREE.Group>(null);
   const matRef = useRef<THREE.ShaderMaterial>(null);
-  const { camera } = useThree();
+  const { camera, viewport } = useThree();
 
   const target = useRef(new THREE.Vector2(0, 0));
 
-  // Volumetric grid of points with a little jitter for an organic feel.
+  // Volumetric grid of points with a little jitter for an organic feel. The
+  // grid's x/y extent scales with the actual canvas viewport (in world units
+  // at z=0) so it always reaches the edges, at any container aspect ratio.
   const { positions, offsets, count } = useMemo(() => {
     const cols = 48;
     const rows = 26;
     const layers = 3;
+    const spreadX = viewport.width * 1.15;
+    const spreadY = viewport.height * 1.15;
     const pos: number[] = [];
     const off: number[] = [];
     for (let z = 0; z < layers; z++) {
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
-          const px = (x / (cols - 1) - 0.5) * 30;
-          const py = (y / (rows - 1) - 0.5) * 16;
+          const px = (x / (cols - 1) - 0.5) * spreadX;
+          const py = (y / (rows - 1) - 0.5) * spreadY;
           const pz = (z / (layers - 1) - 0.5) * 8;
           const j = 0.5;
           pos.push(px + (Math.random() - 0.5) * j, py + (Math.random() - 0.5) * j, pz);
@@ -40,7 +44,7 @@ export function EnvironmentLattice({ color }: { color: string }) {
       offsets: new Float32Array(off),
       count: cols * rows * layers,
     };
-  }, []);
+  }, [viewport.width, viewport.height]);
 
   const uniforms = useMemo(
     () => ({

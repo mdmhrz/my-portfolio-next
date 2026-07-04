@@ -1,15 +1,17 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useTheme } from "next-themes";
 import { toast } from "sonner";
-import { Save, Loader2, RotateCcw, Sparkles, Check } from "lucide-react";
+import { Save, Loader2, RotateCcw, Sparkles, Check, PanelLeft, PanelRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PageHeader } from "@/components/admin/PageHeader";
 import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 import { usePortfolioStore, type BannerData } from "@/store/usePortfolioStore";
-import { ImageUpload } from "../../../_components/ImageUpload";
+import { useAppearanceStore } from "@/store/useAppearanceStore";
+import { resolveTokens } from "@/lib/appearanceInjector";
+import { ImageUpload } from "../../_components/ImageUpload";
 import { Hero } from "@/app/_components/Hero";
 import { ScaledPreview } from "./ScaledPreview";
 import {
@@ -33,10 +35,13 @@ interface DraftState {
   backgroundAlt: string;
   heroImage: string;
   heroImageAlt: string;
+  showcaseImageSide: "left" | "right";
 }
 
-export function BannerTemplatePicker() {
+export function TemplateTab() {
   const { banner, profile, fetchBanner, fetchProfile, updateBanner } = usePortfolioStore();
+  const { publicColors, fetchAppearance } = useAppearanceStore();
+  const { resolvedTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -48,11 +53,12 @@ export function BannerTemplatePicker() {
     backgroundAlt: "",
     heroImage: "",
     heroImageAlt: "",
+    showcaseImageSide: "left",
   });
 
   useEffect(() => {
-    Promise.all([fetchBanner(), fetchProfile()]).finally(() => setIsLoading(false));
-  }, [fetchBanner, fetchProfile]);
+    Promise.all([fetchBanner(), fetchProfile(), fetchAppearance()]).finally(() => setIsLoading(false));
+  }, [fetchBanner, fetchProfile, fetchAppearance]);
 
   useEffect(() => {
     if (banner) {
@@ -64,9 +70,20 @@ export function BannerTemplatePicker() {
         backgroundAlt: banner.backgroundAlt || "",
         heroImage: banner.heroImage || "",
         heroImageAlt: banner.heroImageAlt || "",
+        showcaseImageSide: banner.showcaseImageSide === "right" ? "right" : "left",
       });
     }
   }, [banner]);
+
+  // Preview colors match the SAVED public site palette (not the admin dashboard's),
+  // so the preview doesn't visually diverge from what actually publishes.
+  const previewMode = resolvedTheme === "dark" ? "dark" : "light";
+  const previewTokens = useMemo(() => resolveTokens(publicColors, previewMode), [publicColors, previewMode]);
+  const previewStyle = useMemo(() => {
+    const s: Record<string, string> = {};
+    for (const [k, v] of Object.entries(previewTokens)) s[`--${k}`] = v;
+    return s as React.CSSProperties;
+  }, [previewTokens]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -79,6 +96,7 @@ export function BannerTemplatePicker() {
         backgroundAlt: draft.backgroundAlt || null,
         heroImage: draft.heroImage || null,
         heroImageAlt: draft.heroImageAlt || null,
+        showcaseImageSide: draft.showcaseImageSide,
       } as BannerData);
       toast.success("Hero template saved!");
     } catch {
@@ -104,8 +122,12 @@ export function BannerTemplatePicker() {
   }
 
   const previewBanner = {
+    headline: banner?.headline || "",
+    subtitle: banner?.subtitle || "",
     description: banner?.description || "",
     chips: banner?.chips || [],
+    ctaLabel: banner?.ctaLabel || "",
+    ctaHref: banner?.ctaHref || "",
     backgroundTemplate: draft.backgroundTemplate,
     layoutTemplate: draft.layoutTemplate,
     animationTemplate: draft.animationTemplate,
@@ -113,6 +135,7 @@ export function BannerTemplatePicker() {
     backgroundAlt: draft.backgroundAlt || null,
     heroImage: draft.heroImage || null,
     heroImageAlt: draft.heroImageAlt || null,
+    showcaseImageSide: draft.showcaseImageSide,
   };
 
   const activePremadeId = PREMADE_TEMPLATES.find(
@@ -121,31 +144,27 @@ export function BannerTemplatePicker() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Hero Template"
-        description="Mix and match a 3D background, content layout, and animation style — independently. The preview updates live before you save."
-        action={
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4" />
-              Reset to Default
-            </Button>
-            <Button onClick={handleSave} disabled={saving}>
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              Save Changes
-            </Button>
-          </div>
-        }
-      />
+      <div className="flex justify-end gap-2">
+        <Button variant="outline" onClick={handleReset}>
+          <RotateCcw className="h-4 w-4" />
+          Reset to Default
+        </Button>
+        <Button onClick={handleSave} disabled={saving}>
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          Save Changes
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
         {/* Preview — sticky on desktop so it stays visible while you tune controls */}
         <div className="space-y-2 lg:sticky lg:top-6">
-          <ScaledPreview>
-            <Hero start reduced={false} fullHeight={false} banner={previewBanner} profile={profile} />
-          </ScaledPreview>
+          <div style={previewStyle}>
+            <ScaledPreview>
+              <Hero start reduced={false} fullHeight={false} banner={previewBanner} profile={profile} />
+            </ScaledPreview>
+          </div>
           <p className="text-xs text-muted-foreground">
-            Live preview, scaled to fit — reflects your selections on the right. Save to publish to the live site.
+            Live preview, scaled to fit, using your saved public site colors — reflects your selections on the right. Save to publish to the live site.
           </p>
         </div>
 
@@ -219,18 +238,56 @@ export function BannerTemplatePicker() {
                 ))}
 
                 {draft.layoutTemplate === "showcase" && (
-                  <div className="pt-3">
-                    <p className="mb-2 text-xs font-semibold text-muted-foreground">
-                      Showcase image (replaces the code card)
-                    </p>
-                    <ImageUpload
-                      label="Showcase Image"
-                      folder="banner"
-                      value={draft.heroImage}
-                      onChange={(url) => setDraft((d) => ({ ...d, heroImage: url }))}
-                      alt={draft.heroImageAlt}
-                      onAltChange={(alt) => setDraft((d) => ({ ...d, heroImageAlt: alt }))}
-                    />
+                  <div className="space-y-4 pt-3">
+                    <div>
+                      <p className="mb-2 text-xs font-semibold text-muted-foreground">
+                        Showcase image side
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setDraft((d) => ({ ...d, showcaseImageSide: "left" }))}
+                          aria-pressed={draft.showcaseImageSide === "left"}
+                          className={[
+                            "flex items-center justify-center gap-2 rounded-xl border p-3 text-sm font-medium transition-colors",
+                            draft.showcaseImageSide === "left"
+                              ? "border-primary bg-primary/[0.04] text-foreground"
+                              : "border-border text-muted-foreground hover:border-foreground/25",
+                          ].join(" ")}
+                        >
+                          <PanelLeft className="h-4 w-4" />
+                          Image Left
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDraft((d) => ({ ...d, showcaseImageSide: "right" }))}
+                          aria-pressed={draft.showcaseImageSide === "right"}
+                          className={[
+                            "flex items-center justify-center gap-2 rounded-xl border p-3 text-sm font-medium transition-colors",
+                            draft.showcaseImageSide === "right"
+                              ? "border-primary bg-primary/[0.04] text-foreground"
+                              : "border-border text-muted-foreground hover:border-foreground/25",
+                          ].join(" ")}
+                        >
+                          Image Right
+                          <PanelRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="mb-2 text-xs font-semibold text-muted-foreground">
+                        Showcase image (replaces the code card)
+                      </p>
+                      <ImageUpload
+                        label="Showcase Image"
+                        folder="banner"
+                        value={draft.heroImage}
+                        onChange={(url) => setDraft((d) => ({ ...d, heroImage: url }))}
+                        alt={draft.heroImageAlt}
+                        onAltChange={(alt) => setDraft((d) => ({ ...d, heroImageAlt: alt }))}
+                      />
+                    </div>
                   </div>
                 )}
               </TabsContent>

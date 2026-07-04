@@ -1,109 +1,126 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Save, Loader2 } from "lucide-react";
+import { Reorder } from "motion/react";
+import { GripVertical } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
-import { usePortfolioStore } from "@/store/usePortfolioStore";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePortfolioStore, type SectionConfigData } from "@/store/usePortfolioStore";
 import { PageHeader } from "@/components/admin/PageHeader";
-import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
+import { ImageUpload } from "@/app/admin/dashboard/_components/ImageUpload";
+
+const SECTION_LABELS: Record<string, string> = {
+  techMarquee: "Tech Marquee",
+  journey: "Journey",
+  experience: "Experience",
+  tools: "Skills / Tools",
+  caseStudies: "Case Studies",
+  homepageBlogs: "Featured Articles",
+  cta: "Call to Action",
+  contact: "Contact Form",
+};
 
 export function SettingsPageContents() {
-  const { settings, fetchSettings, updateSettings } = usePortfolioStore();
+  const { settings, fetchSettings, updateSettings, sections, fetchSections, updateSections } = usePortfolioStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    ctaHeadline: "",
-    ctaSubtext: "",
-    footerText: "",
-  });
+  const [items, setItems] = useState<SectionConfigData[]>([]);
 
   useEffect(() => {
-    fetchSettings().finally(() => setIsLoading(false));
-  }, [fetchSettings]);
+    Promise.all([fetchSettings(), fetchSections()]).finally(() => setIsLoading(false));
+  }, [fetchSettings, fetchSections]);
 
   useEffect(() => {
-    if (settings) {
-      setFormData({
-        ctaHeadline: settings.ctaHeadline || "",
-        ctaSubtext: settings.ctaSubtext || "",
-        footerText: settings.footerText || "",
-      });
-    }
-  }, [settings]);
+    setItems(sections);
+  }, [sections]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleReorder = (newOrder: SectionConfigData[]) => {
+    setItems(newOrder);
+    updateSections(newOrder).catch(() => toast.error("Failed to save new order."));
+  };
+
+  const toggleVisible = (key: string) => {
+    const newItems = items.map((s) => (s.key === key ? { ...s, visible: !s.visible } : s));
+    setItems(newItems);
+    updateSections(newItems).catch(() => toast.error("Failed to save."));
+  };
+
+  const handleLogoChange = async (url: string) => {
     try {
-      await updateSettings({
-        ctaHeadline: formData.ctaHeadline || null,
-        ctaSubtext: formData.ctaSubtext || null,
-        footerText: formData.footerText || null,
-      });
-      toast.success("Settings saved!");
+      await updateSettings({ logoUrl: url });
+      toast.success(url ? "Logo updated!" : "Logo removed.");
     } catch {
-      toast.error("Failed to save settings.");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to update logo.");
     }
   };
 
-  if (isLoading) {
-    return <FormPageSkeleton fields={3} hasGridRow={false} />;
-  }
+  const handleLogoAltChange = async (alt: string) => {
+    try {
+      await updateSettings({ logoAlt: alt });
+    } catch {
+      toast.error("Failed to update alt text.");
+    }
+  };
 
   return (
     <div className="max-w-3xl space-y-6">
       <PageHeader
         title="Site Settings"
-        description="Call-to-action headline, subtext, and footer copy."
+        description="Site logo, plus which landing page sections are shown and in what order."
       />
 
       <Card>
-        <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="ctaHeadline" className="text-xs font-semibold">CTA Headline</Label>
-              <Input
-                id="ctaHeadline"
-                type="text"
-                value={formData.ctaHeadline}
-                onChange={(e) => setFormData({ ...formData, ctaHeadline: e.target.value })}
-              />
-            </div>
+        <CardHeader>
+          <CardTitle className="text-base">Site Logo</CardTitle>
+          <CardDescription>Shown in the navbar. Leave empty to use the default mark.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <Skeleton className="h-40 w-full rounded-xl" />
+          ) : (
+            <ImageUpload
+              value={settings?.logoUrl || ""}
+              onChange={handleLogoChange}
+              alt={settings?.logoAlt || ""}
+              onAltChange={handleLogoAltChange}
+              folder="branding"
+            />
+          )}
+        </CardContent>
+      </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Landing Page Sections</CardTitle>
+          <CardDescription>
+            Toggle sections on or off, and drag to reorder how they appear on the homepage.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
             <div className="space-y-2">
-              <Label htmlFor="ctaSubtext" className="text-xs font-semibold">CTA Subtext</Label>
-              <Textarea
-                id="ctaSubtext"
-                rows={3}
-                value={formData.ctaSubtext}
-                onChange={(e) => setFormData({ ...formData, ctaSubtext: e.target.value })}
-              />
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-14 w-full rounded-xl" />
+              ))}
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="footerText" className="text-xs font-semibold">Footer Text</Label>
-              <Input
-                id="footerText"
-                type="text"
-                value={formData.footerText}
-                onChange={(e) => setFormData({ ...formData, footerText: e.target.value })}
-              />
-            </div>
-
-            <div className="flex justify-end">
-              <Button type="submit" disabled={loading}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                Save Changes
-              </Button>
-            </div>
-          </form>
+          ) : (
+            <Reorder.Group axis="y" values={items} onReorder={handleReorder} className="space-y-2">
+              {items.map((section) => (
+                <Reorder.Item
+                  key={section.key}
+                  value={section}
+                  className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-sm cursor-grab active:cursor-grabbing"
+                >
+                  <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <p className="flex-1 text-sm font-semibold text-foreground">
+                    {SECTION_LABELS[section.key] || section.key}
+                  </p>
+                  <Switch checked={section.visible} onCheckedChange={() => toggleVisible(section.key)} />
+                </Reorder.Item>
+              ))}
+            </Reorder.Group>
+          )}
         </CardContent>
       </Card>
     </div>

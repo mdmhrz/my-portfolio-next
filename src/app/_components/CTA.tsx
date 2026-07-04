@@ -7,12 +7,14 @@ import { motion } from "motion/react";
 
 import { Magnetic } from "@/components/global/Magnetic";
 
-export function CTA({ settings, profile }: { settings?: any; profile?: any }) {
+export function CTA({ cta, profile }: { cta?: any; profile?: any }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
-  const headline = settings?.ctaHeadline || "Let's build something solid.";
-  const subtext = settings?.ctaSubtext || "Frontend & full-stack engineering — from Next.js interfaces to Node & Go services. Open to freelance work, consulting, and full-time roles.";
+  const headline = cta?.headline || "Let's build something solid.";
+  const subtext = cta?.subtext || "Frontend & full-stack engineering — from Next.js interfaces to Node & Go services. Open to freelance work, consulting, and full-time roles.";
+  const buttonLabel = cta?.buttonLabel || "Get in touch";
+  const buttonHref = cta?.buttonHref || "#contact";
   const availability = profile?.availability || "Available for projects & roles";
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -69,11 +71,11 @@ export function CTA({ settings, profile }: { settings?: any; profile?: any }) {
               {/* Next-level Interactive Button */}
               <Magnetic>
                 <a
-                  href="#contact"
+                  href={buttonHref}
                   className="group relative mt-10 inline-flex h-12 items-center gap-2.5 overflow-hidden rounded-full bg-primary hover:bg-primary/90 px-8 text-sm font-medium text-primary-foreground transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_color-mix(in_oklch,var(--primary)_25%,transparent)]"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    Get in touch
+                    {buttonLabel}
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
                 </a>

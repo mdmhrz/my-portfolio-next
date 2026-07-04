@@ -19,7 +19,6 @@ import "swiper/css/navigation";
 interface HomepageBlogsProps {
   posts: BlogListItem[];
   settings?: {
-    homepageBlogVisible?: boolean | null;
     homepageBlogTitle?: string | null;
     homepageBlogSubtitle?: string | null;
     homepageBlogTemplate?: string | null;
@@ -30,11 +29,11 @@ const DEFAULT_TITLE = "Featured Articles";
 const DEFAULT_SUBTITLE = "Notes, deep dives, and lessons from building things on the web.";
 
 export function HomepageBlogs({ posts, settings }: HomepageBlogsProps) {
-  const visible = settings?.homepageBlogVisible !== false;
   const template = normalizeTemplate(settings?.homepageBlogTemplate);
 
-  // Hide the section entirely when disabled or when there are no featured posts.
-  if (!visible || posts.length === 0) return null;
+  // Section-level show/hide is handled by SectionConfig (key="homepageBlogs") in
+  // PortfolioHome's registry — this only guards against an empty post list.
+  if (posts.length === 0) return null;
 
   const title = settings?.homepageBlogTitle?.trim() || DEFAULT_TITLE;
   const subtitle = settings?.homepageBlogSubtitle?.trim() || DEFAULT_SUBTITLE;
