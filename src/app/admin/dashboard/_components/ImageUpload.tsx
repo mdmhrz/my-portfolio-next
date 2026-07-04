@@ -22,6 +22,8 @@ interface ImageUploadProps {
   hideAlt?: boolean;
   /** object-fit for the preview image. Use "contain" for logos/icons, "cover" (default) for photos. */
   objectFit?: "cover" | "contain";
+  /** Caps the width of the drop zone / preview box (e.g. "max-w-xs") so it doesn't stretch to fill a wide parent. */
+  containerClassName?: string;
 }
 
 const ALLOWED_FORMATS = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
@@ -49,6 +51,7 @@ export function ImageUpload({
   previewClassName = "aspect-video",
   hideAlt = false,
   objectFit = "cover",
+  containerClassName,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -196,7 +199,8 @@ export function ImageUpload({
               ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.005]"
               : uploading
               ? "border-border bg-muted/20 cursor-wait"
-              : "border-border bg-muted/20 hover:border-foreground/30 hover:bg-muted/30 cursor-pointer"
+              : "border-border bg-muted/20 hover:border-foreground/30 hover:bg-muted/30 cursor-pointer",
+            containerClassName
           )}
         >
           {uploading ? (
@@ -244,7 +248,7 @@ export function ImageUpload({
         </div>
       ) : (
         /* ── Image preview ─────────────────────────────────────── */
-        <div className="space-y-3">
+        <div className={cn("space-y-3", containerClassName)}>
           <div className={cn("group relative w-full overflow-hidden rounded-xl border border-border bg-muted/30", previewClassName)}>
             <Image
               src={value}

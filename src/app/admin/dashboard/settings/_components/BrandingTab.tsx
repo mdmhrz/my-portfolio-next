@@ -46,7 +46,7 @@ export function BrandingTab() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2">
             <div className="space-y-3">
               <p className="text-xs font-semibold text-foreground">For light backgrounds</p>
               <ImageUpload
@@ -56,6 +56,7 @@ export function BrandingTab() {
                 onAltChange={(alt) => save({ logoAlt: alt || null }, "Alt text saved.")}
                 folder="branding"
                 previewClassName="aspect-[3/1]"
+                containerClassName="max-w-xs"
                 objectFit="contain"
               />
             </div>
@@ -68,19 +69,20 @@ export function BrandingTab() {
                 onAltChange={(alt) => save({ logoAltDark: alt || null }, "Alt text saved.")}
                 folder="branding"
                 previewClassName="aspect-[3/1]"
+                containerClassName="max-w-xs"
                 objectFit="contain"
               />
             </div>
           </div>
 
           {/* Contrast preview — proves both variants read clearly before they ship. */}
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-foreground">Preview</p>
+          <div className="space-y-2 border-t border-border pt-6">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Preview</p>
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="flex h-20 items-center justify-center rounded-xl border border-border bg-white">
+              <div className="flex h-20 max-w-xs items-center justify-center rounded-xl border border-border bg-white">
                 <Logo src={settings?.logoUrl} alt={settings?.logoAlt} className="h-8 w-auto text-black" />
               </div>
-              <div className="flex h-20 items-center justify-center rounded-xl border border-border bg-neutral-950">
+              <div className="flex h-20 max-w-xs items-center justify-center rounded-xl border border-border bg-neutral-950">
                 <Logo
                   src={settings?.logoUrlDark || settings?.logoUrl}
                   alt={settings?.logoAltDark || settings?.logoAlt}
@@ -98,16 +100,15 @@ export function BrandingTab() {
           <CardDescription>The icon shown in browser tabs and bookmarks. Square images work best.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="max-w-[180px]">
-            <ImageUpload
-              value={settings?.faviconUrl || ""}
-              onChange={(url) => save({ faviconUrl: url || null }, url ? "Favicon updated!" : "Favicon removed.")}
-              folder="branding"
-              previewClassName="aspect-square"
-              objectFit="contain"
-              hideAlt
-            />
-          </div>
+          <ImageUpload
+            value={settings?.faviconUrl || ""}
+            onChange={(url) => save({ faviconUrl: url || null }, url ? "Favicon updated!" : "Favicon removed.")}
+            folder="branding"
+            previewClassName="aspect-square"
+            containerClassName="max-w-[180px]"
+            objectFit="contain"
+            hideAlt
+          />
         </CardContent>
       </Card>
     </div>
