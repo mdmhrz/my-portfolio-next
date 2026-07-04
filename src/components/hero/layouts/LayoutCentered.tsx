@@ -3,22 +3,10 @@
 import { ArrowUpRight } from 'lucide-react';
 import { GithubLogo, LinkedinLogo, FacebookLogo, EnvelopeSimple } from '@phosphor-icons/react';
 import { Magnetic } from '@/components/global/Magnetic';
+import { splitWords } from '../splitWords';
 import type { HeroBannerData, HeroProfileData } from '../types';
 
 const CHIPS = ['Frontend Dev @ Xgenious', 'SaaS · CRM · Shopify Apps', 'Docker · AWS · CI/CD'];
-
-// Character-level spans so `.hero-char`-driven animations (e.g. Signature) still work.
-const splitText = (text: string) => {
-  return text.split('').map((char, index) => (
-    <span
-      key={index}
-      className="inline-block hero-char"
-      style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
-    >
-      {char === ' ' ? ' ' : char}
-    </span>
-  ));
-};
 
 interface LayoutCenteredProps {
   start: boolean;
@@ -48,8 +36,8 @@ export function LayoutCentered({ fullHeight = true, banner, profile }: LayoutCen
         {name}
       </p>
 
-      <h1 className="hero-reveal hero-reveal-heading text-5xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-8xl">
-        {splitText(title)}
+      <h1 className="hero-reveal hero-reveal-heading text-4xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+        {splitWords(title)}
       </h1>
 
       <p className="hero-reveal mt-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">

@@ -2,14 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Save, Loader2, RotateCcw, Sparkles } from "lucide-react";
+import { Save, Loader2, RotateCcw, Sparkles, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 import { usePortfolioStore, type BannerData } from "@/store/usePortfolioStore";
 import { ImageUpload } from "../../../_components/ImageUpload";
 import { Hero } from "@/app/_components/Hero";
+import { ScaledPreview } from "./ScaledPreview";
 import {
   BACKGROUND_TEMPLATES,
   LAYOUT_TEMPLATES,
@@ -113,11 +115,15 @@ export function BannerTemplatePicker() {
     heroImageAlt: draft.heroImageAlt || null,
   };
 
+  const activePremadeId = PREMADE_TEMPLATES.find(
+    (p) => p.background === draft.backgroundTemplate && p.layout === draft.layoutTemplate && p.animation === draft.animationTemplate,
+  )?.id;
+
   return (
-    <div className="max-w-6xl space-y-6">
+    <div className="space-y-6">
       <PageHeader
         title="Hero Template"
-        description="Mix and match a 3D background, content layout, and animation style — independently of each other. The preview below updates live before you save."
+        description="Mix and match a 3D background, content layout, and animation style — independently. The preview updates live before you save."
         action={
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={handleReset}>
@@ -132,156 +138,155 @@ export function BannerTemplatePicker() {
         }
       />
 
-      {/* Live preview — the actual Hero component, real 3D + GSAP, reflecting the draft below */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Live Preview</CardTitle>
-          <CardDescription>Reflects your selections below in real time. Save to publish to the live site.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="relative h-[520px] w-full overflow-hidden rounded-2xl border border-border">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+        {/* Preview — sticky on desktop so it stays visible while you tune controls */}
+        <div className="space-y-2 lg:sticky lg:top-6">
+          <ScaledPreview>
             <Hero start reduced={false} fullHeight={false} banner={previewBanner} profile={profile} />
-          </div>
-        </CardContent>
-      </Card>
+          </ScaledPreview>
+          <p className="text-xs text-muted-foreground">
+            Live preview, scaled to fit — reflects your selections on the right. Save to publish to the live site.
+          </p>
+        </div>
 
-      {/* Premade templates */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4" />
-            Premade Templates
-          </CardTitle>
-          <CardDescription>One-click shortcuts that set all three selections below at once. Still requires Save.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-3">
-          {PREMADE_TEMPLATES.map((preset) => (
-            <button
-              key={preset.id}
-              type="button"
-              onClick={() => applyPremade(preset.id)}
-              className="max-w-xs rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors hover:border-primary/40 cursor-pointer"
-            >
-              <div className="text-sm font-semibold">{preset.label}</div>
-              <div className="mt-1 text-xs text-muted-foreground">{preset.description}</div>
-            </button>
-          ))}
-        </CardContent>
-      </Card>
+        {/* Controls */}
+        <Card className="lg:sticky lg:top-6">
+          <CardContent className="pt-6">
+            <Tabs defaultValue="templates">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="templates">Templates</TabsTrigger>
+                <TabsTrigger value="background">Background</TabsTrigger>
+                <TabsTrigger value="layout">Layout</TabsTrigger>
+                <TabsTrigger value="animation">Animation</TabsTrigger>
+              </TabsList>
 
-      {/* Background */}
-      <TemplateAxisPicker
-        title="Background"
-        description="The 3D environment behind your content."
-        options={BACKGROUND_TEMPLATES}
-        value={draft.backgroundTemplate}
-        onChange={(v) => setDraft((d) => ({ ...d, backgroundTemplate: v }))}
-      />
+              <TabsContent value="templates" className="mt-5 space-y-2">
+                <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  One-click presets
+                </div>
+                {PREMADE_TEMPLATES.map((preset) => (
+                  <OptionRow
+                    key={preset.id}
+                    label={preset.label}
+                    description={preset.description}
+                    isActive={activePremadeId === preset.id}
+                    onClick={() => applyPremade(preset.id)}
+                  />
+                ))}
+                <p className="pt-1 text-xs text-muted-foreground">
+                  Applies all three tabs at once. Still requires Save.
+                </p>
+              </TabsContent>
 
-      {draft.backgroundTemplate === "none" && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">Optional Background Image</CardTitle>
-            <CardDescription>Shown behind your content when Background is &ldquo;None&rdquo;. Leave empty for a solid color.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ImageUpload
-              label="Background Image"
-              folder="banner"
-              value={draft.backgroundImg}
-              onChange={(url) => setDraft((d) => ({ ...d, backgroundImg: url }))}
-              alt={draft.backgroundAlt}
-              onAltChange={(alt) => setDraft((d) => ({ ...d, backgroundAlt: alt }))}
-            />
+              <TabsContent value="background" className="mt-5 space-y-2">
+                {BACKGROUND_TEMPLATES.map((opt) => (
+                  <OptionRow
+                    key={opt.id}
+                    label={opt.label}
+                    description={opt.description}
+                    isActive={draft.backgroundTemplate === opt.id}
+                    onClick={() => setDraft((d) => ({ ...d, backgroundTemplate: opt.id }))}
+                  />
+                ))}
+
+                {draft.backgroundTemplate === "none" && (
+                  <div className="pt-3">
+                    <p className="mb-2 text-xs font-semibold text-muted-foreground">
+                      Optional background image
+                    </p>
+                    <ImageUpload
+                      label="Background Image"
+                      folder="banner"
+                      value={draft.backgroundImg}
+                      onChange={(url) => setDraft((d) => ({ ...d, backgroundImg: url }))}
+                      alt={draft.backgroundAlt}
+                      onAltChange={(alt) => setDraft((d) => ({ ...d, backgroundAlt: alt }))}
+                    />
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="layout" className="mt-5 space-y-2">
+                {LAYOUT_TEMPLATES.map((opt) => (
+                  <OptionRow
+                    key={opt.id}
+                    label={opt.label}
+                    description={opt.description}
+                    isActive={draft.layoutTemplate === opt.id}
+                    onClick={() => setDraft((d) => ({ ...d, layoutTemplate: opt.id }))}
+                  />
+                ))}
+
+                {draft.layoutTemplate === "showcase" && (
+                  <div className="pt-3">
+                    <p className="mb-2 text-xs font-semibold text-muted-foreground">
+                      Showcase image (replaces the code card)
+                    </p>
+                    <ImageUpload
+                      label="Showcase Image"
+                      folder="banner"
+                      value={draft.heroImage}
+                      onChange={(url) => setDraft((d) => ({ ...d, heroImage: url }))}
+                      alt={draft.heroImageAlt}
+                      onAltChange={(alt) => setDraft((d) => ({ ...d, heroImageAlt: alt }))}
+                    />
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="animation" className="mt-5 space-y-2">
+                {ANIMATION_TEMPLATES.map((opt) => (
+                  <OptionRow
+                    key={opt.id}
+                    label={opt.label}
+                    description={opt.description}
+                    isActive={draft.animationTemplate === opt.id}
+                    onClick={() => setDraft((d) => ({ ...d, animationTemplate: opt.id }))}
+                  />
+                ))}
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
-      )}
-
-      {/* Layout */}
-      <TemplateAxisPicker
-        title="Layout"
-        description="How your content is arranged, and what it shows."
-        options={LAYOUT_TEMPLATES}
-        value={draft.layoutTemplate}
-        onChange={(v) => setDraft((d) => ({ ...d, layoutTemplate: v }))}
-      />
-
-      {draft.layoutTemplate === "showcase" && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">Showcase Image</CardTitle>
-            <CardDescription>Shown instead of the code card in the Showcase layout.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ImageUpload
-              label="Showcase Image"
-              folder="banner"
-              value={draft.heroImage}
-              onChange={(url) => setDraft((d) => ({ ...d, heroImage: url }))}
-              alt={draft.heroImageAlt}
-              onAltChange={(alt) => setDraft((d) => ({ ...d, heroImageAlt: alt }))}
-            />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Animation */}
-      <TemplateAxisPicker
-        title="Animation"
-        description="How your content enters, and how it reacts to your cursor."
-        options={ANIMATION_TEMPLATES}
-        value={draft.animationTemplate}
-        onChange={(v) => setDraft((d) => ({ ...d, animationTemplate: v }))}
-      />
+      </div>
     </div>
   );
 }
 
-interface AxisOption<T extends string> {
-  id: T;
+function OptionRow({
+  label,
+  description,
+  isActive,
+  onClick,
+}: {
   label: string;
   description: string;
-}
-
-function TemplateAxisPicker<T extends string>({
-  title,
-  description,
-  options,
-  value,
-  onChange,
-}: {
-  title: string;
-  description: string;
-  options: AxisOption<T>[];
-  value: T;
-  onChange: (value: T) => void;
+  isActive: boolean;
+  onClick: () => void;
 }) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {options.map((opt) => {
-          const isActive = opt.id === value;
-          return (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => onChange(opt.id)}
-              aria-pressed={isActive}
-              className={[
-                "cursor-pointer rounded-xl border p-4 text-left transition-all",
-                isActive ? "border-primary ring-2 ring-primary" : "border-border hover:border-foreground/30",
-              ].join(" ")}
-            >
-              <div className="text-sm font-semibold">{opt.label}</div>
-              <div className="mt-1 text-xs text-muted-foreground">{opt.description}</div>
-            </button>
-          );
-        })}
-      </CardContent>
-    </Card>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={isActive}
+      className={[
+        "flex w-full cursor-pointer items-start justify-between gap-3 rounded-xl border p-3.5 text-left transition-colors",
+        isActive ? "border-primary bg-primary/[0.04]" : "border-border hover:border-foreground/25",
+      ].join(" ")}
+    >
+      <div className="min-w-0">
+        <div className="text-sm font-semibold text-foreground">{label}</div>
+        <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{description}</div>
+      </div>
+      <div
+        className={[
+          "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
+          isActive ? "border-primary bg-primary text-primary-foreground" : "border-border",
+        ].join(" ")}
+      >
+        {isActive && <Check className="h-3 w-3" />}
+      </div>
+    </button>
   );
 }

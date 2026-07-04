@@ -4,23 +4,10 @@ import Image from 'next/image';
 import { ArrowUpRight, ImageIcon } from 'lucide-react';
 import { GithubLogo, LinkedinLogo, FacebookLogo, EnvelopeSimple } from '@phosphor-icons/react';
 import { Magnetic } from '@/components/global/Magnetic';
+import { splitWords } from '../splitWords';
 import type { HeroBannerData, HeroProfileData } from '../types';
 
 const CHIPS = ['Frontend Dev @ Xgenious', 'SaaS · CRM · Shopify Apps', 'Docker · AWS · CI/CD'];
-
-// Character-level spans so any animation using `.hero-char` (e.g. Signature)
-// still works against this layout, even though its heading has no underline.
-const splitText = (text: string) => {
-  return text.split('').map((char, index) => (
-    <span
-      key={index}
-      className="inline-block hero-char"
-      style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
-    >
-      {char === ' ' ? ' ' : char}
-    </span>
-  ));
-};
 
 interface LayoutShowcaseProps {
   start: boolean;
@@ -72,7 +59,7 @@ export function LayoutShowcase({ fullHeight = true, banner, profile }: LayoutSho
           </p>
 
           <h1 className="hero-reveal hero-reveal-heading text-5xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
-            {splitText(name)}
+            {splitWords(name)}
           </h1>
 
           <p className="hero-reveal mt-6 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">

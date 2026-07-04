@@ -89,10 +89,10 @@ export function LayoutSignature({ start, fullHeight = true, banner, profile }: L
           </p>
 
           <h1 className="hero-reveal hero-reveal-heading text-5xl font-medium leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
-            <span className="word-wrapper inline-block">
+            <span className="word-wrapper inline-block whitespace-nowrap">
               {splitText(titleFirstWord)}
             </span>{' '}
-            <span className="word-wrapper relative inline-block">
+            <span className="word-wrapper relative inline-block whitespace-nowrap">
               {splitText(titleRemainingWords)}
               <svg
                 className="absolute -bottom-3.5 left-0 h-[10px] w-full pointer-events-none"
