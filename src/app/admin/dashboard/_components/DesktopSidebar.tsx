@@ -23,42 +23,40 @@ export function DesktopSidebar({
 }: DesktopSidebarProps) {
   return (
     <aside
-      className={`hidden md:flex flex-col justify-between border-r border-border bg-card transition-all duration-300 shrink-0 ${isCollapsed ? "w-20" : "w-64"
-        }`}
+      className={`hidden md:flex flex-col border-r border-border bg-card transition-all duration-300 shrink-0 h-full ${
+        isCollapsed ? "w-20" : "w-64"
+      }`}
     >
-      <div className="flex flex-col gap-6">
-        {/* Brand + collapse toggle */}
-        <div className="flex items-center justify-center h-16 border-b border-border relative px-4">
-          <Link
-            href="/"
-            className="flex items-center justify-center hover:opacity-80 transition-opacity"
-            title="Go to home"
-          >
-            <Logo className="h-8 w-auto" />
-          </Link>
-          <Button
-            onClick={onToggleCollapse}
-            variant="outline"
-            size="icon"
-            className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 h-6 w-6"
-            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-          >
-            {isCollapsed ? (
-              <ChevronRight className="h-3.5 w-3.5" />
-            ) : (
-              <ChevronLeft className="h-3.5 w-3.5" />
-            )}
-          </Button>
-        </div>
+      {/* Brand + collapse toggle */}
+      <div className="flex items-center justify-center h-16 border-b border-border relative px-4 shrink-0">
+        <Link
+          href="/"
+          className="flex items-center justify-center hover:opacity-80 transition-opacity"
+          title="Go to home"
+        >
+          <Logo className="h-8 w-auto" />
+        </Link>
+        <Button
+          onClick={onToggleCollapse}
+          variant="outline"
+          size="icon"
+          className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 h-6 w-6 z-10"
+          title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        >
+          {isCollapsed ? (
+            <ChevronRight className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronLeft className="h-3.5 w-3.5" />
+          )}
+        </Button>
+      </div>
 
-        <div className="px-4">
-          {/* Nav links */}
-          <SidebarNavLinks
-            unreadCount={unreadCount}
-            collapsed={isCollapsed}
-          />
-        </div>
-
+      {/* Nav links (scrollable container) */}
+      <div className="flex-1 overflow-y-auto py-6 px-4 min-h-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <SidebarNavLinks
+          unreadCount={unreadCount}
+          collapsed={isCollapsed}
+        />
       </div>
     </aside>
   );

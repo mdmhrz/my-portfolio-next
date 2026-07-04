@@ -138,10 +138,45 @@ export interface MessageData {
   id: string;
   name: string;
   email: string;
+  subject?: string | null;
   type: string;
   message: string;
   read: boolean;
   createdAt: string;
+}
+
+export interface AttachmentData {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  url: string;
+  size?: number | null;
+}
+
+export interface EmailMessageData {
+  id: string;
+  threadId: string;
+  gmailMessageId?: string | null;
+  direction: "inbound" | "outbound";
+  fromEmail: string;
+  toEmail: string;
+  subject?: string | null;
+  bodyHtml: string;
+  snippet?: string | null;
+  attachments: AttachmentData[];
+  sentAt: string;
+}
+
+export interface ThreadData {
+  id: string;
+  gmailThreadId?: string | null;
+  contactEmail: string;
+  contactName?: string | null;
+  subject?: string | null;
+  unread: boolean;
+  lastMessageAt: string;
+  message?: MessageData | null;
+  emails: EmailMessageData[];
 }
 
 export interface BlogData {
@@ -168,7 +203,9 @@ interface PortfolioStore {
   banner: BannerData | null;
   experiences: ExperienceData[];
   projects: ProjectData[];
-  messages: MessageData[];
+  threads: ThreadData[];
+  gmailConnected: boolean;
+  gmailEmail: string | null;
   blogs: BlogData[];
   profile: ProfileData | null;
   settings: SiteSettingsData | null;
@@ -207,9 +244,21 @@ interface PortfolioStore {
   updateProject: (id: string, data: Partial<ProjectData>) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
 
-  fetchMessages: () => Promise<void>;
-  markMessageRead: (id: string, read: boolean) => Promise<void>;
-  deleteMessage: (id: string) => Promise<void>;
+  fetchThreads: () => Promise<void>;
+  fetchThread: (id: string) => Promise<ThreadData | null>;
+  markThreadRead: (id: string, unread: boolean) => Promise<void>;
+  deleteThread: (id: string) => Promise<void>;
+  sendEmail: (data: {
+    threadId?: string;
+    to: string;
+    toName?: string;
+    subject: string;
+    bodyHtml: string;
+    attachments?: { url: string; fileName: string; mimeType: string }[];
+  }) => Promise<ThreadData["id"]>;
+  fetchGmailStatus: () => Promise<void>;
+  syncGmailNow: () => Promise<void>;
+  disconnectGmail: () => Promise<void>;
 
   fetchBlogs: () => Promise<void>;
   createBlog: (data: Omit<BlogData, "id" | "createdAt" | "updatedAt">) => Promise<void>;
@@ -230,7 +279,7 @@ interface PortfolioStore {
   setBanner: (banner: BannerData | null) => void;
   setExperiences: (experiences: ExperienceData[]) => void;
   setProjects: (projects: ProjectData[]) => void;
-  setMessages: (messages: MessageData[]) => void;
+  setThreads: (threads: ThreadData[]) => void;
   setBlogs: (blogs: BlogData[]) => void;
   setProfile: (profile: ProfileData | null) => void;
   setSettings: (settings: SiteSettingsData | null) => void;
@@ -241,7 +290,9 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   banner: null,
   experiences: [],
   projects: [],
-  messages: [],
+  threads: [],
+  gmailConnected: false,
+  gmailEmail: null,
   blogs: [],
   profile: null,
   settings: null,
@@ -255,7 +306,7 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   setBanner: (banner) => set({ banner }),
   setExperiences: (experiences) => set({ experiences }),
   setProjects: (projects) => set({ projects }),
-  setMessages: (messages) => set({ messages }),
+  setThreads: (threads) => set({ threads }),
   setBlogs: (blogs) => set({ blogs }),
   setProfile: (profile) => set({ profile }),
   setSettings: (settings) => set({ settings }),
@@ -475,32 +526,83 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
     }
   },
 
-  // Messages Actions
-  fetchMessages: async () => {
+  // Gmail Inbox Actions
+  fetchThreads: async () => {
     try {
-      const res = await api.get("/admin/messages");
-      set({ messages: res.data.data });
+      const res = await api.get("/admin/threads");
+      set({ threads: res.data.data });
     } catch (err) {
-      console.error("Error fetching messages:", err);
+      console.error("Error fetching threads:", err);
     }
   },
-  markMessageRead: async (id, read) => {
+  fetchThread: async (id) => {
     try {
-      const res = await api.put(`/admin/messages/${id}`, { read });
+      const res = await api.get(`/admin/threads/${id}`);
+      const thread: ThreadData = res.data.data;
       set((state) => ({
-        messages: state.messages.map((msg) => (msg.id === id ? res.data.data : msg)),
+        threads: state.threads.map((t) => (t.id === id ? thread : t)),
+      }));
+      return thread;
+    } catch (err) {
+      console.error("Error fetching thread:", err);
+      return null;
+    }
+  },
+  markThreadRead: async (id, unread) => {
+    try {
+      const res = await api.put(`/admin/threads/${id}`, { unread });
+      set((state) => ({
+        threads: state.threads.map((t) => (t.id === id ? { ...t, unread: res.data.data.unread } : t)),
       }));
     } catch (err) {
-      console.error("Error marking message as read:", err);
+      console.error("Error marking thread as read:", err);
       throw err;
     }
   },
-  deleteMessage: async (id) => {
+  deleteThread: async (id) => {
     try {
-      await api.delete(`/admin/messages/${id}`);
-      set((state) => ({ messages: state.messages.filter((msg) => msg.id !== id) }));
+      await api.delete(`/admin/threads/${id}`);
+      set((state) => ({ threads: state.threads.filter((t) => t.id !== id) }));
     } catch (err) {
-      console.error("Error deleting message:", err);
+      console.error("Error deleting thread:", err);
+      throw err;
+    }
+  },
+  sendEmail: async (data) => {
+    try {
+      const res = await api.post("/admin/gmail/send", data);
+      const threadId: string = res.data.data.threadId;
+      await get().fetchThreads();
+      await get().fetchThread(threadId);
+      return threadId;
+    } catch (err) {
+      console.error("Error sending email:", err);
+      throw err;
+    }
+  },
+  fetchGmailStatus: async () => {
+    try {
+      const res = await api.get("/admin/gmail/status");
+      set({ gmailConnected: res.data.connected, gmailEmail: res.data.email });
+    } catch (err) {
+      console.error("Error fetching Gmail status:", err);
+    }
+  },
+  syncGmailNow: async () => {
+    try {
+      await api.post("/admin/gmail/sync");
+      await get().fetchThreads();
+    } catch (err) {
+      console.error("Error syncing Gmail:", err);
+      throw err;
+    }
+  },
+  disconnectGmail: async () => {
+    try {
+      await api.delete("/admin/gmail/status");
+      set({ gmailConnected: false, gmailEmail: null });
+    } catch (err) {
+      console.error("Error disconnecting Gmail:", err);
       throw err;
     }
   },

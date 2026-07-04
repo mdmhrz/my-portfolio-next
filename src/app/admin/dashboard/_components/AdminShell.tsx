@@ -12,7 +12,7 @@ import { AdminTopbar } from "./AdminTopbar";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { messages, fetchMessages } = usePortfolioStore();
+  const { threads, fetchThreads } = usePortfolioStore();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -29,10 +29,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     localStorage.setItem("admin-sidebar-collapsed", String(next));
   };
 
-  // Hydrate messages once on mount (powers sidebar badge + topbar bell)
+  // Hydrate threads once on mount (powers sidebar badge + topbar bell)
   useEffect(() => {
-    fetchMessages();
-  }, [fetchMessages]);
+    fetchThreads();
+  }, [fetchThreads]);
 
   const handleLogout = async () => {
     toast.loading("Logging out...", { id: "logout" });
@@ -47,16 +47,16 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const unreadCount = messages.filter((m) => !m.read).length;
-  const recentMessages = messages
-    .filter((m) => !m.read)
+  const unreadCount = threads.filter((t) => t.unread).length;
+  const recentMessages = threads
+    .filter((t) => t.unread)
     .slice(0, 5)
-    .map((m) => ({
-      id: m.id,
-      name: m.name,
-      subject: null,
-      message: m.message,
-      createdAt: m.createdAt,
+    .map((t) => ({
+      id: t.id,
+      name: t.contactName || t.contactEmail,
+      subject: t.subject,
+      message: t.emails[0]?.snippet || t.message?.message || "",
+      createdAt: t.lastMessageAt,
     }));
 
   // Full-screen mode for blog editor — hides admin chrome so the editor owns the viewport
@@ -66,7 +66,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     /^\/admin\/dashboard\/blogs\/[^/]+\/edit$/.test(pathname);
 
   return (
-    <div className="flex flex-col md:flex-row h-dvh overflow-hidden bg-background text-foreground">
+    <div className="fixed inset-0 flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-background text-foreground">
       {/* Desktop collapsible sidebar — hidden in editor mode */}
       {!isEditorRoute && (
         <DesktopSidebar

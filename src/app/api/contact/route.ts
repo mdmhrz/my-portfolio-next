@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { isGmailConnected, getGmailClient, sendGmailMime } from "@/lib/gmail";
 import * as z from "zod";
+
+export const runtime = "nodejs";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -9,6 +12,17 @@ const contactSchema = z.object({
   type: z.enum(["Freelance project", "Full-time role", "Collaboration", "Other"]),
   message: z.string().min(1, "Message is required"),
 });
+
+function notificationHtml(validated: z.infer<typeof contactSchema>) {
+  return `
+    <p><strong>${validated.name}</strong> (${validated.email}) sent a message via your portfolio contact form.</p>
+    <p><strong>Type:</strong> ${validated.type}</p>
+    ${validated.subject ? `<p><strong>Subject:</strong> ${validated.subject}</p>` : ""}
+    <p><strong>Message:</strong></p>
+    <p>${validated.message.replace(/\n/g, "<br>")}</p>
+    <p style="color:#888;font-size:12px;">Reply to this email to respond directly to ${validated.name} — it'll also show up in your dashboard inbox.</p>
+  `;
+}
 
 export async function POST(request: Request) {
   try {
@@ -22,8 +36,38 @@ export async function POST(request: Request) {
         subject: validated.subject,
         type: validated.type,
         message: validated.message,
+        thread: {
+          create: {
+            contactEmail: validated.email,
+            contactName: validated.name,
+            subject: validated.subject,
+          },
+        },
       },
+      include: { thread: true },
     });
+
+    // Best-effort: forward the message into the admin's real Gmail inbox so it
+    // triggers a normal notification and can be replied to from either Gmail
+    // or the dashboard. Never let a Gmail failure block the contact form.
+    if (message.thread && (await isGmailConnected())) {
+      try {
+        const { gmail, account } = await getGmailClient();
+        const sent = await sendGmailMime(gmail, {
+          fromEmail: account.email,
+          to: account.email,
+          replyTo: validated.email,
+          subject: `New portfolio message${validated.subject ? `: ${validated.subject}` : ""}`,
+          bodyHtml: notificationHtml(validated),
+        });
+        await prisma.thread.update({
+          where: { id: message.thread.id },
+          data: { gmailThreadId: sent.threadId },
+        });
+      } catch (error) {
+        console.error("Failed to forward contact message to Gmail (message was still saved):", error);
+      }
+    }
 
     return NextResponse.json({ success: true, message: "Message saved", data: message });
   } catch (error) {

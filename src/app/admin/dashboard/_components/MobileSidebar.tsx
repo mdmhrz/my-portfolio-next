@@ -30,26 +30,25 @@ export function MobileSidebar({
         {/* Required by Radix Dialog for screen reader accessibility */}
         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
-        {/* Top: brand + nav links */}
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-center h-14 border-b border-border px-5">
-            <Link
-              href="/"
-              className="flex items-center justify-center hover:opacity-80 transition-opacity"
-              title="Go to home"
-              onClick={() => onOpenChange(false)}
-            >
-              <Logo className="h-8 w-auto" />
-            </Link>
-          </div>
-          <div className="px-5">
+        {/* Top: brand (fixed) */}
+        <div className="flex items-center justify-center h-14 border-b border-border px-5 shrink-0">
+          <Link
+            href="/"
+            className="flex items-center justify-center hover:opacity-80 transition-opacity"
+            title="Go to home"
+            onClick={() => onOpenChange(false)}
+          >
+            <Logo className="h-8 w-auto" />
+          </Link>
+        </div>
 
-            <SidebarNavLinks
-              unreadCount={unreadCount}
-              collapsed={false}
-              onNavigate={() => onOpenChange(false)}
-            />
-          </div>
+        {/* Scrollable links */}
+        <div className="flex-1 overflow-y-auto py-6 px-5 min-h-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <SidebarNavLinks
+            unreadCount={unreadCount}
+            collapsed={false}
+            onNavigate={() => onOpenChange(false)}
+          />
         </div>
       </SheetContent>
     </Sheet>

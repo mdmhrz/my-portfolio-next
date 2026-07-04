@@ -201,8 +201,79 @@ model Message {
   message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+  thread    Thread?
 
   @@map("message")
+}
+
+// --- Gmail Inbox Integration ---
+// Single-admin Gmail account connection used to send/receive real email
+// from the dashboard. Refresh token is encrypted at rest (see lib/crypto.ts).
+model GmailAccount {
+  id                   String    @id @default(uuid())
+  userId               String    @unique
+  email                String
+  accessToken          String    @db.Text
+  refreshTokenEnc      String    @db.Text
+  accessTokenExpiresAt DateTime
+  scope                String
+  historyId            String?
+  watchExpiration      DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@map("gmail_account")
+}
+
+// A conversation with one external contact — either started by a portfolio
+// contact-form submission (messageId set) or by the admin composing a new
+// email from the dashboard (messageId null).
+model Thread {
+  id            String         @id @default(uuid())
+  gmailThreadId String?        @unique
+  contactEmail  String
+  contactName   String?
+  subject       String?
+  messageId     String?        @unique
+  message       Message?       @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  unread        Boolean        @default(true)
+  lastMessageAt DateTime       @default(now())
+  emails        EmailMessage[]
+  createdAt     DateTime       @default(now())
+
+  @@map("thread")
+}
+
+// One actual email (sent or received) within a Thread.
+model EmailMessage {
+  id             String       @id @default(uuid())
+  threadId       String
+  thread         Thread       @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  gmailMessageId String?      @unique
+  rfcMessageId   String? // RFC822 Message-ID header, needed for correct In-Reply-To threading
+  direction      String // "inbound" | "outbound"
+  fromEmail      String
+  toEmail        String
+  subject        String?
+  bodyHtml       String       @db.Text
+  snippet        String?
+  attachments    Attachment[]
+  sentAt         DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+
+  @@map("email_message")
+}
+
+model Attachment {
+  id             String       @id @default(uuid())
+  emailMessageId String
+  emailMessage   EmailMessage @relation(fields: [emailMessageId], references: [id], onDelete: Cascade)
+  fileName       String
+  mimeType       String
+  url            String
+  size           Int?
+
+  @@map("attachment")
 }
 
 model Blog {

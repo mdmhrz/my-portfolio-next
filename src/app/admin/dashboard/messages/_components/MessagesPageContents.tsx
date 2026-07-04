@@ -1,224 +1,511 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { Mail, CheckCircle, XCircle, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import {
+  Mail,
+  Trash2,
+  PenSquare,
+  RefreshCw,
+  RotateCw,
+  Unlink,
+  CircleCheck,
+  Paperclip,
+  Loader2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { usePortfolioStore } from "@/store/usePortfolioStore";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { usePortfolioStore, ThreadData } from "@/store/usePortfolioStore";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DeleteDialog } from "@/components/admin/DeleteDialog";
 import { EmptyState } from "@/components/admin/EmptyState";
+import { EmailComposer, ComposerAttachment } from "./EmailComposer";
+import { EmailBodyFrame } from "./EmailBodyFrame";
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("");
+}
+
+function timeAgo(date: string) {
+  const diffMs = Date.now() - new Date(date).getTime();
+  const min = Math.floor(diffMs / 60000);
+  if (min < 1) return "just now";
+  if (min < 60) return `${min}m`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr}h`;
+  const day = Math.floor(hr / 24);
+  if (day < 7) return `${day}d`;
+  return new Date(date).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
 
 function MessagesSkeleton() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <Card className="lg:col-span-5 overflow-hidden flex flex-col max-h-[70vh] border border-border shadow-sm dark:shadow-none rounded-xl">
-        <CardHeader className="p-4 border-b border-border bg-muted/10">
-          <Skeleton className="h-3 w-40" />
-        </CardHeader>
+    <div className="flex-1 min-h-0 mt-5 flex flex-col lg:flex-row gap-5">
+      <Card className="lg:w-[330px] lg:shrink-0 overflow-hidden flex flex-col border border-border shadow-sm dark:shadow-none rounded-2xl">
+        <div className="p-4 border-b border-border">
+          <Skeleton className="h-3 w-32" />
+        </div>
         <div className="flex-1 divide-y divide-border/40">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="p-4 space-y-2">
-              <div className="flex justify-between">
-                <Skeleton className="h-3 w-24" />
-                <Skeleton className="h-3 w-12" />
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="p-4 flex gap-3">
+              <Skeleton className="h-9 w-9 rounded-full shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="flex justify-between">
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-3 w-8" />
+                </div>
+                <Skeleton className="h-3 w-full" />
               </div>
-              <Skeleton className="h-3 w-32" />
-              <Skeleton className="h-3 w-full" />
             </div>
           ))}
         </div>
       </Card>
-      <div className="lg:col-span-7">
-        <Card className="min-h-[450px] flex items-center justify-center border border-border shadow-sm dark:shadow-none rounded-xl">
-          <CardContent className="text-center flex flex-col items-center justify-center gap-3">
-            <Skeleton className="h-8 w-8 rounded-full" />
-            <Skeleton className="h-4 w-48" />
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="flex-1 flex items-center justify-center border border-border shadow-sm dark:shadow-none rounded-2xl">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </Card>
     </div>
   );
 }
 
 export function MessagesPageContents() {
-  const { messages, fetchMessages, markMessageRead, deleteMessage } = usePortfolioStore();
+  const {
+    threads,
+    fetchThreads,
+    fetchThread,
+    markThreadRead,
+    deleteThread,
+    sendEmail,
+    gmailConnected,
+    gmailEmail,
+    fetchGmailStatus,
+    syncGmailNow,
+    disconnectGmail,
+  } = usePortfolioStore();
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedMsg, setSelectedMsg] = useState<any>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
+  const [composeOpen, setComposeOpen] = useState(false);
+  const [composeTo, setComposeTo] = useState("");
+  const [composeToName, setComposeToName] = useState("");
+  const [composeSubject, setComposeSubject] = useState("");
 
   useEffect(() => {
-    fetchMessages().finally(() => setIsLoading(false));
-  }, [fetchMessages]);
+    Promise.all([fetchThreads(), fetchGmailStatus()]).finally(() => setIsLoading(false));
+  }, [fetchThreads, fetchGmailStatus]);
 
-  const handleToggleRead = async (msg: any) => {
-    try {
-      await markMessageRead(msg.id, !msg.read);
-      toast.success(msg.read ? "Marked as unread" : "Marked as read");
-      if (selectedMsg && selectedMsg.id === msg.id) {
-        setSelectedMsg({ ...selectedMsg, read: !msg.read });
-      }
-    } catch {
-      toast.error("Failed to update status.");
+  // Poll for new contact-form messages / replies so the inbox updates without
+  // a manual reload. fetchThreads() replaces the list with truncated entries,
+  // so re-fetch the open thread's full detail afterward if one is selected.
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      await fetchThreads();
+      if (selectedId) await fetchThread(selectedId);
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [fetchThreads, fetchThread, selectedId]);
+
+  useEffect(() => {
+    if (searchParams.get("connected") === "1") {
+      toast.success("Gmail connected successfully");
+      router.replace("/admin/dashboard/messages");
+    } else if (searchParams.get("gmail_error")) {
+      toast.error("Failed to connect Gmail. Please try again.");
+      router.replace("/admin/dashboard/messages");
     }
-  };
+  }, [searchParams, router]);
 
-  const handleDelete = async () => {
+  const selectedThread = useMemo(
+    () => threads.find((t) => t.id === selectedId) ?? null,
+    [threads, selectedId]
+  );
+
+  const unreadCount = threads.filter((t) => t.unread).length;
+
+  async function handleSelectThread(thread: ThreadData) {
+    setSelectedId(thread.id);
+    await fetchThread(thread.id);
+    if (thread.unread) {
+      await markThreadRead(thread.id, false);
+    }
+  }
+
+  async function handleDelete() {
     if (!deleteTarget) return;
     setDeleteLoading(true);
     try {
-      await deleteMessage(deleteTarget.id);
-      toast.success("Message deleted successfully!");
-      if (selectedMsg && selectedMsg.id === deleteTarget.id) setSelectedMsg(null);
+      await deleteThread(deleteTarget.id);
+      toast.success("Conversation deleted");
+      if (selectedId === deleteTarget.id) setSelectedId(null);
       setDeleteTarget(null);
     } catch {
-      toast.error("Failed to delete message.");
+      toast.error("Failed to delete conversation");
     } finally {
       setDeleteLoading(false);
     }
-  };
+  }
 
-  const unreadCount = messages.filter((m) => !m.read).length;
+  async function handleSync() {
+    setSyncing(true);
+    try {
+      await syncGmailNow();
+      toast.success("Inbox synced");
+    } catch {
+      // store already toasts the error
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  async function handleDisconnect() {
+    setDisconnecting(true);
+    try {
+      await disconnectGmail();
+      toast.success("Gmail disconnected");
+    } catch {
+      // store already toasts the error
+    } finally {
+      setDisconnecting(false);
+    }
+  }
+
+  async function handleReplySend(thread: ThreadData, payload: { bodyHtml: string; attachments: ComposerAttachment[] }) {
+    await sendEmail({
+      threadId: thread.id,
+      to: thread.contactEmail,
+      toName: thread.contactName ?? undefined,
+      subject: thread.subject ? `Re: ${thread.subject.replace(/^Re:\s*/i, "")}` : "Re: Your message",
+      bodyHtml: payload.bodyHtml,
+      attachments: payload.attachments,
+    });
+    toast.success("Reply sent");
+  }
+
+  async function handleComposeSend(payload: { bodyHtml: string; attachments: ComposerAttachment[] }) {
+    if (!composeTo) {
+      toast.error("Enter a recipient email");
+      throw new Error("missing recipient");
+    }
+    const threadId = await sendEmail({
+      to: composeTo,
+      toName: composeToName || undefined,
+      subject: composeSubject || "(No subject)",
+      bodyHtml: payload.bodyHtml,
+      attachments: payload.attachments,
+    });
+    toast.success("Email sent");
+    setComposeOpen(false);
+    setComposeTo("");
+    setComposeToName("");
+    setComposeSubject("");
+    setSelectedId(threadId);
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col h-full min-h-[600px]">
+      <div className="shrink-0 space-y-4">
       <PageHeader
-        title="Inbox Messages"
-        description={`${messages.length} total · ${unreadCount} unread`}
+        title="Inbox"
+        description={`${threads.length} conversations · ${unreadCount} unread`}
+        action={
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleSync} disabled={syncing || !gmailConnected} className="gap-1.5">
+              <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin" : ""}`} />
+              Sync now
+            </Button>
+            <Button size="sm" onClick={() => setComposeOpen(true)} disabled={!gmailConnected} className="gap-1.5">
+              <PenSquare className="h-3.5 w-3.5" />
+              Compose
+            </Button>
+          </div>
+        }
       />
+
+      {!gmailConnected && !isLoading && (
+        <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/20 px-4 py-3">
+          <div className="flex items-center gap-2 text-sm">
+            <Mail className="h-4 w-4 text-muted-foreground" />
+            <span>Connect Gmail to send replies and sync incoming mail directly from this inbox.</span>
+          </div>
+          <Button size="sm" asChild>
+            <a href="/api/admin/gmail/connect">Connect Gmail</a>
+          </Button>
+        </div>
+      )}
+      {gmailConnected && gmailEmail && (
+        <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/10 px-4 py-2.5">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <CircleCheck className="h-3.5 w-3.5 text-green-600" />
+            Connected as <span className="text-foreground font-medium">{gmailEmail}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground gap-1.5">
+              <a href="/api/admin/gmail/connect">
+                <RotateCw className="h-3.5 w-3.5" />
+                Reconnect
+              </a>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDisconnect}
+              disabled={disconnecting}
+              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 gap-1.5"
+            >
+              {disconnecting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Unlink className="h-3.5 w-3.5" />}
+              Disconnect
+            </Button>
+          </div>
+        </div>
+      )}
+      </div>
 
       {isLoading ? (
         <MessagesSkeleton />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <Card className="lg:col-span-5 overflow-hidden flex flex-col max-h-[70vh] border border-border shadow-sm dark:shadow-none rounded-xl">
-            <CardHeader className="p-4 border-b border-border bg-muted/10">
-              <span className="text-xs font-semibold text-muted-foreground">
-                Total Inbox Submissions ({messages.length})
-              </span>
-            </CardHeader>
-            <ScrollArea className="flex-1">
-              <div className="divide-y divide-border/40">
-                {messages.length === 0 ? (
-                  <div className="p-8 text-center text-muted-foreground text-xs font-sans">
-                    No messages yet.
-                  </div>
-                ) : (
-                  messages.map((msg: any) => {
-                    const formattedDate = new Date(msg.createdAt).toLocaleDateString(undefined, {
-                      month: "short",
-                      day: "numeric",
-                    });
+        <div className="flex-1 min-h-0 mt-5 flex flex-col lg:flex-row gap-5">
+          {/* Conversations pane — fixed width, scrolls internally */}
+          <Card className="lg:w-[330px] lg:shrink-0 overflow-hidden flex flex-col min-h-0 max-h-[38vh] lg:max-h-none border border-border shadow-sm dark:shadow-none rounded-2xl">
+            <div className="shrink-0 px-4 py-3.5 border-b border-border flex items-center justify-between gap-2">
+              <span className="text-sm font-semibold text-foreground">Conversations</span>
+              {unreadCount > 0 && (
+                <span className="text-[11px] font-medium text-primary-foreground bg-primary rounded-full px-2 py-0.5 tabular-nums">
+                  {unreadCount} new
+                </span>
+              )}
+            </div>
+            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hidden">
+              {threads.length === 0 ? (
+                <div className="p-8 text-center text-muted-foreground text-xs">
+                  No conversations yet.
+                </div>
+              ) : (
+                <div className="p-2 space-y-0.5">
+                  {threads.map((thread) => {
+                    const lastEmail = thread.emails[0];
+                    const preview = lastEmail?.snippet || thread.message?.message || "";
+                    const name = thread.contactName || thread.contactEmail;
+                    const active = selectedId === thread.id;
                     return (
                       <button
-                        key={msg.id}
-                        onClick={() => {
-                          setSelectedMsg(msg);
-                          if (!msg.read) markMessageRead(msg.id, true);
-                        }}
-                        className={`w-full text-left p-4 transition-colors flex justify-between gap-3 hover:bg-muted/30 cursor-pointer ${
-                          selectedMsg?.id === msg.id ? "bg-muted/50" : ""
-                        } ${!msg.read ? "border-l-2 border-primary pl-3.5" : "pl-4"}`}
+                        key={thread.id}
+                        onClick={() => handleSelectThread(thread)}
+                        className={`w-full text-left rounded-xl px-3 py-2.5 transition-colors flex gap-3 cursor-pointer ${
+                          active ? "bg-accent" : "hover:bg-muted/50"
+                        }`}
                       >
-                        <div className="truncate flex-1">
-                          <div className="flex justify-between items-baseline gap-2">
-                            <h4 className={`text-xs truncate ${!msg.read ? "font-bold text-foreground" : "text-foreground"}`}>
-                              {msg.name}
-                            </h4>
-                            <span className="text-[10px] text-muted-foreground font-sans shrink-0">{formattedDate}</span>
+                        <div className="relative shrink-0">
+                          <div
+                            className={`h-9 w-9 rounded-full flex items-center justify-center text-[11px] font-semibold ${
+                              active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            {initials(name) || "?"}
                           </div>
-                          <p className={`text-xs truncate mt-1 ${!msg.read ? "font-semibold text-foreground" : "text-muted-foreground"}`}>
-                            {msg.subject || "(No Subject)"}
+                          {thread.unread && (
+                            <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-card" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-baseline gap-2">
+                            <h4 className={`text-[13px] truncate ${thread.unread ? "font-bold text-foreground" : "font-medium text-foreground"}`}>
+                              {name}
+                            </h4>
+                            <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
+                              {timeAgo(thread.lastMessageAt)}
+                            </span>
+                          </div>
+                          <p className={`text-xs truncate mt-0.5 ${thread.unread ? "font-semibold text-foreground" : "text-muted-foreground"}`}>
+                            {thread.subject || "(No subject)"}
                           </p>
-                          <p className="text-[11px] text-muted-foreground truncate mt-1">{msg.message}</p>
+                          <p className="text-[11px] text-muted-foreground/80 truncate mt-0.5">{preview}</p>
                         </div>
                       </button>
                     );
-                  })
-                )}
-              </div>
-            </ScrollArea>
+                  })}
+                </div>
+              )}
+            </div>
           </Card>
 
-          <div className="lg:col-span-7">
-            {selectedMsg ? (
-              <Card className="flex flex-col justify-between min-h-[450px] border border-border shadow-sm dark:shadow-none rounded-xl">
-                <CardContent className="p-6 md:p-8 space-y-6">
-                  <div className="flex justify-between items-start border-b border-border pb-5 gap-4 flex-wrap">
-                    <div>
-                      <h3 className="text-lg font-medium text-foreground">{selectedMsg.name}</h3>
-                      <a
-                        href={`mailto:${selectedMsg.email}`}
-                        className="text-xs text-foreground hover:underline font-sans"
-                      >
-                        {selectedMsg.email}
-                      </a>
+          {/* Detail pane — header + scrolling thread + pinned reply */}
+          <Card className="flex-1 min-w-0 flex flex-col min-h-0 overflow-hidden border border-border shadow-sm dark:shadow-none rounded-2xl">
+            {selectedThread ? (
+              <>
+                <div className="shrink-0 flex justify-between items-start gap-4 px-5 py-4 border-b border-border">
+                  <div className="flex items-start gap-3 min-w-0">
+                    <div className="h-10 w-10 shrink-0 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground">
+                      {initials(selectedThread.contactName || selectedThread.contactEmail) || "?"}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button onClick={() => handleToggleRead(selectedMsg)} variant="outline" size="sm">
-                        {selectedMsg.read ? <XCircle className="h-3.5 w-3.5" /> : <CheckCircle className="h-3.5 w-3.5" />}
-                        {selectedMsg.read ? "Mark Unread" : "Mark Read"}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        onClick={() => setDeleteTarget({ id: selectedMsg.id, name: selectedMsg.name })}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    <div className="min-w-0">
+                      <h3 className="text-base font-semibold text-foreground truncate">
+                        {selectedThread.subject || "(No subject)"}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                        {selectedThread.contactName ? `${selectedThread.contactName} · ` : ""}
+                        {selectedThread.contactEmail}
+                      </p>
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4 text-xs bg-background/30 p-3 rounded-lg border border-border/40 font-sans">
-                    <div>
-                      <span className="text-muted-foreground">SENT ON:</span>
-                      <p className="text-foreground mt-0.5">{new Date(selectedMsg.createdAt).toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">SUBJECT:</span>
-                      <p className="text-foreground mt-0.5">{selectedMsg.subject || "(No Subject)"}</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <span className="block font-sans text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">
-                      // Message Content
-                    </span>
-                    <div className="rounded-xl border border-border/60 bg-background/20 p-5 text-sm leading-relaxed text-foreground whitespace-pre-wrap">
-                      {selectedMsg.message}
-                    </div>
-                  </div>
-                </CardContent>
-                <div className="pt-6 border-t border-border/60 flex justify-end px-6 pb-6 md:px-8 md:pb-8">
-                  <Button asChild>
-                    <a href={`mailto:${selectedMsg.email}?subject=RE: ${selectedMsg.subject || "Portfolio Inquiry"}`}>
-                      <Mail className="h-4 w-4" /> Reply via Email
-                    </a>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    onClick={() =>
+                      setDeleteTarget({
+                        id: selectedThread.id,
+                        name: selectedThread.contactName || selectedThread.contactEmail,
+                      })
+                    }
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
-              </Card>
+
+                <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hidden px-5 py-4 space-y-3">
+                  {selectedThread.message && (
+                    <div className="rounded-xl border border-border bg-muted/20 p-4 space-y-2">
+                      <div className="flex justify-between items-baseline gap-2">
+                        <span className="text-xs font-semibold text-foreground truncate">
+                          {selectedThread.message.name}{" "}
+                          <span className="text-muted-foreground font-normal">via contact form</span>
+                        </span>
+                        <span className="text-[10px] text-muted-foreground shrink-0">
+                          {new Date(selectedThread.message.createdAt).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                        {selectedThread.message.message}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedThread.emails.map((email) => {
+                    const outbound = email.direction === "outbound";
+                    return (
+                      <div
+                        key={email.id}
+                        className={`rounded-xl border p-4 space-y-2 ${
+                          outbound ? "border-primary/20 bg-primary/[0.04]" : "border-border bg-card"
+                        }`}
+                      >
+                        <div className="flex justify-between items-baseline gap-2">
+                          <span className="text-xs font-semibold text-foreground truncate">
+                            {outbound ? "You" : email.fromEmail}
+                            {outbound && (
+                              <span className="text-muted-foreground font-normal"> to {email.toEmail}</span>
+                            )}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground shrink-0">
+                            {new Date(email.sentAt).toLocaleString()}
+                          </span>
+                        </div>
+                        <EmailBodyFrame html={email.bodyHtml} />
+                        {email.attachments.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2 border-t border-border/60">
+                            {email.attachments.map((att) => (
+                              <a
+                                key={att.id}
+                                href={att.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center gap-1.5 text-xs bg-muted/50 border border-border rounded-full px-2.5 py-1 hover:bg-muted transition-colors"
+                              >
+                                <Paperclip className="h-3 w-3" />
+                                {att.fileName}
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {gmailConnected ? (
+                  <div className="shrink-0 border-t border-border">
+                    <EmailComposer
+                      key={selectedThread.id}
+                      compact
+                      bare
+                      to={selectedThread.contactEmail}
+                      subject={selectedThread.subject ? `Re: ${selectedThread.subject.replace(/^Re:\s*/i, "")}` : "Re: Your message"}
+                      onSend={(payload) => handleReplySend(selectedThread, payload)}
+                      placeholder="Write your reply…"
+                      sendLabel="Reply"
+                    />
+                  </div>
+                ) : (
+                  <p className="shrink-0 text-xs text-muted-foreground text-center py-3 border-t border-dashed border-border">
+                    Connect Gmail above to reply to this conversation.
+                  </p>
+                )}
+              </>
             ) : (
               <EmptyState
-                title="No message selected"
-                description="Select a message from the inbox list to read it and reply."
+                title="No conversation selected"
+                description="Select a conversation from the inbox list to read it and reply."
                 icon={Mail}
-                className="min-h-[450px]"
+                className="h-full border-0 shadow-none"
               />
             )}
-          </div>
+          </Card>
         </div>
       )}
+
+      <Dialog open={composeOpen} onOpenChange={setComposeOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <PenSquare className="h-4 w-4 text-muted-foreground" />
+              New email
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2">
+              <span className="text-xs text-muted-foreground w-14 shrink-0">Name</span>
+              <Input
+                value={composeToName}
+                onChange={(e) => setComposeToName(e.target.value)}
+                placeholder="Recipient name (optional)"
+                className="border-0 shadow-none h-7 px-0 focus-visible:ring-0"
+              />
+            </div>
+            <EmailComposer
+              to={composeTo}
+              editableRecipient
+              onToChange={setComposeTo}
+              subject={composeSubject}
+              editableSubject
+              onSubjectChange={setComposeSubject}
+              onSend={handleComposeSend}
+              placeholder="Write your email…"
+              sendLabel="Send"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <DeleteDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
-        title="Delete Message"
-        description={`Are you sure you want to delete the message from ${deleteTarget?.name}? This action cannot be undone.`}
+        title="Delete conversation"
+        description={`Are you sure you want to delete the conversation with ${deleteTarget?.name}? This action cannot be undone.`}
         onConfirm={handleDelete}
         loading={deleteLoading}
       />
