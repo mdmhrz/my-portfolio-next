@@ -13,6 +13,7 @@ import { DataTable } from "@/components/admin/DataTable";
 import { RowActionsMenu } from "@/components/admin/RowActionsMenu";
 import { DeleteDialog } from "@/components/admin/DeleteDialog";
 import { Pagination } from "@/components/admin/Pagination";
+import { AdminBadge } from "@/components/admin/AdminBadge";
 
 const COLUMNS = ["Title", "Tags", "Status", "Featured", "Views", "Read", "Date", "Actions"];
 
@@ -122,20 +123,17 @@ export function BlogsPageContents() {
             </TableCell>
 
             <TableCell>
-              <Badge variant={b.published ? "default" : "secondary"}>
+              <AdminBadge variant={b.published ? "success" : "secondary"}>
                 {b.published ? "Published" : "Draft"}
-              </Badge>
+              </AdminBadge>
             </TableCell>
 
             <TableCell>
               {b.featured ? (
-                <span
-                  title="Appears in the homepage blog slider"
-                  className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400"
-                >
+                <AdminBadge variant="warning" className="gap-1 px-2 py-0.5">
                   <Globe className="h-3 w-3" />
                   Homepage
-                </span>
+                </AdminBadge>
               ) : (
                 <span className="text-xs text-muted-foreground">—</span>
               )}

@@ -17,7 +17,7 @@ const chartConfig = {
 
 export function MessagesAreaChart({ data }: MessagesAreaChartProps) {
   return (
-    <Card>
+    <Card className="border border-border shadow-sm dark:shadow-none rounded-xl">
       <CardHeader>
         <CardTitle>Inbound Messages</CardTitle>
         <CardDescription>Messages received over the last 30 days</CardDescription>

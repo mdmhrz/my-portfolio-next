@@ -62,7 +62,7 @@ export function CtaPageContents() {
         description="The banner shown near the bottom of the landing page inviting visitors to reach out."
       />
 
-      <Card>
+      <Card className="border border-border shadow-sm dark:shadow-none rounded-xl">
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">

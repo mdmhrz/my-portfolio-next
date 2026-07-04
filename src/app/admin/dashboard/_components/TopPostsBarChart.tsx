@@ -17,7 +17,7 @@ const chartConfig = {
 
 export function TopPostsBarChart({ data }: TopPostsBarChartProps) {
   return (
-    <Card>
+    <Card className="border border-border shadow-sm dark:shadow-none rounded-xl">
       <CardHeader>
         <CardTitle>Top Posts</CardTitle>
         <CardDescription>Your 5 most-viewed blog posts</CardDescription>

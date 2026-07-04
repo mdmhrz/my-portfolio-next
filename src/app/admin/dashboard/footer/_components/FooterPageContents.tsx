@@ -66,7 +66,7 @@ export function FooterPageContents() {
         description="Content shown in the site-wide footer — brand bio, availability card, and copyright."
       />
 
-      <Card>
+      <Card className="border border-border shadow-sm dark:shadow-none rounded-xl">
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">

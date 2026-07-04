@@ -40,7 +40,7 @@ export function SkillsPieChart({ data }: SkillsPieChartProps) {
   }, {} as ChartConfig);
 
   return (
-    <Card>
+    <Card className="border border-border shadow-sm dark:shadow-none rounded-xl">
       <CardHeader>
         <CardTitle>Skills by Category</CardTitle>
         <CardDescription>Breakdown of your skill set</CardDescription>
