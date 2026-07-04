@@ -7,6 +7,11 @@ export interface BannerData {
   chips: string[];
   backgroundImg?: string | null;
   backgroundAlt?: string | null;
+  backgroundTemplate?: string | null;
+  layoutTemplate?: string | null;
+  animationTemplate?: string | null;
+  heroImage?: string | null;
+  heroImageAlt?: string | null;
 }
 
 export interface ExperienceData {

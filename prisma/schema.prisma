@@ -73,9 +73,17 @@ model Verification {
 model Banner {
   id            String   @id @default("singleton")
   description   String   // Hero tagline/pitch
-  backgroundImg String?  // Hero section background image
+  backgroundImg String?  // Static image shown when backgroundTemplate = "none" (falls back to solid color)
   backgroundAlt String?  // Alt text for background image
   chips         String[] // e.g., ["Frontend Dev @ Xgenious", "Docker · AWS"]
+
+  // Template system — three independent axes, freely mixable.
+  backgroundTemplate String  @default("none")      // "none" | "lattice" | "particles" | "wave"
+  layoutTemplate     String  @default("signature") // "signature" | "showcase"
+  animationTemplate  String  @default("signature") // "signature" | "fade"
+  heroImage          String? // Optional showcase image some layouts use instead of the code card
+  heroImageAlt       String?
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

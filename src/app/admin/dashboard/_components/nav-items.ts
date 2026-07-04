@@ -3,6 +3,7 @@ import {
   UserCircle,
   Gauge,
   LayoutDashboard,
+  Wand2,
   Briefcase,
   FolderKanban,
   BookOpen,
@@ -17,6 +18,7 @@ export type TabValue =
   | "overview"
   | "profile"
   | "banner"
+  | "banner-template"
   | "experience"
   | "projects"
   | "skills"
@@ -56,6 +58,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Site Content",
     items: [
       { value: "banner", label: "Hero Banner", href: "/admin/dashboard/banner", icon: LayoutDashboard },
+      { value: "banner-template", label: "Hero Template", href: "/admin/dashboard/banner/template", icon: Wand2 },
       { value: "experience", label: "Experience", href: "/admin/dashboard/experience", icon: Briefcase },
       { value: "projects", label: "Projects", href: "/admin/dashboard/projects", icon: FolderKanban },
       { value: "skills", label: "Skills", href: "/admin/dashboard/skills", icon: Wrench },

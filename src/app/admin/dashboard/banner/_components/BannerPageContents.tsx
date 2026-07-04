@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Save, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Save, Loader2, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +14,7 @@ import { PageHeader } from "@/components/admin/PageHeader";
 import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 
 export function BannerPageContents() {
+  const router = useRouter();
   const { banner, fetchBanner, updateBanner } = usePortfolioStore();
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -60,6 +62,15 @@ export function BannerPageContents() {
       <PageHeader
         title="Hero Banner"
         description="Presentation-only styling for the landing page hero — tagline and tech chips. Your name, contact links, and photo live under Profile."
+        action={
+          <Button
+            variant="outline"
+            onClick={() => router.push("/admin/dashboard/banner/template")}
+          >
+            <Wand2 className="h-4 w-4" />
+            Hero Template
+          </Button>
+        }
       />
 
       <Card>

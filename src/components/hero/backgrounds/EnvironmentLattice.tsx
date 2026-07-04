@@ -9,7 +9,7 @@ import fragmentShader from './shaders/env.frag';
 // A full-viewport monochrome 3D point lattice — an "environment" you look
 // around in. Strong mouse parallax (group tilt + camera dolly) plus a cursor
 // repel in the shader, so movement always feels responsive.
-export function Environment3D({ color }: { color: string }) {
+export function EnvironmentLattice({ color }: { color: string }) {
   const group = useRef<THREE.Group>(null);
   const matRef = useRef<THREE.ShaderMaterial>(null);
   const { camera } = useThree();

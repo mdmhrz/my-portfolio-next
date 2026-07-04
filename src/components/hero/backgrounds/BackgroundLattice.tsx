@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState, type CSSProperties } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useTheme } from 'next-themes';
-import { Environment3D } from './Environment3D';
+import { EnvironmentLattice } from './EnvironmentLattice';
 
 // Resolve a CSS custom property to an rgb() string Three.Color can parse.
 function cssColor(name: string, fallback: string) {
@@ -40,7 +40,7 @@ function checkWebGLSupport(): boolean {
   }
 }
 
-export function Scene({ reduced }: { reduced: boolean }) {
+export function BackgroundLattice({ reduced }: { reduced: boolean }) {
   const { resolvedTheme } = useTheme();
   const [color, setColor] = useState(() => cssColor('--foreground', '#ffffff'));
   const [bgColor, setBgColor] = useState(() => cssColor('--background', '#000000'));
@@ -68,7 +68,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
       >
         <color attach="background" args={[bgColor]} />
         <Suspense fallback={null}>
-          <Environment3D color={color} />
+          <EnvironmentLattice color={color} />
         </Suspense>
       </Canvas>
     </div>
