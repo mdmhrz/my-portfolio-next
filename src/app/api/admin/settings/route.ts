@@ -28,6 +28,9 @@ export async function POST(request: Request) {
 
     if ("logoUrl" in body) data.logoUrl = body.logoUrl || null;
     if ("logoAlt" in body) data.logoAlt = body.logoAlt || null;
+    if ("logoUrlDark" in body) data.logoUrlDark = body.logoUrlDark || null;
+    if ("logoAltDark" in body) data.logoAltDark = body.logoAltDark || null;
+    if ("faviconUrl" in body) data.faviconUrl = body.faviconUrl || null;
     // Homepage blog section (visibility now lives in SectionConfig, key="homepageBlogs")
     if ("homepageBlogTitle" in body) data.homepageBlogTitle = body.homepageBlogTitle || null;
     if ("homepageBlogSubtitle" in body) data.homepageBlogSubtitle = body.homepageBlogSubtitle || null;
@@ -39,9 +42,15 @@ export async function POST(request: Request) {
       create: { id: "singleton", ...data },
     });
 
-    revalidatePath("/");
-    revalidatePath("/about");
-    revalidatePath("/contact");
+    // Favicon lives in the root layout, which every route shares — revalidate the
+    // whole layout tree for it instead of just the homepage/about/contact paths.
+    if ("faviconUrl" in body) {
+      revalidatePath("/", "layout");
+    } else {
+      revalidatePath("/");
+      revalidatePath("/about");
+      revalidatePath("/contact");
+    }
     return NextResponse.json({ success: true, data: settings });
   } catch (error) {
     console.error("POST settings error:", error);

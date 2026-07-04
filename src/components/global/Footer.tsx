@@ -53,9 +53,11 @@ interface FooterProps {
   navLinks?: FooterNavLink[];
   logoUrl?: string | null;
   logoAlt?: string | null;
+  logoUrlDark?: string | null;
+  logoAltDark?: string | null;
 }
 
-export function Footer({ profile, footer, navLinks, logoUrl, logoAlt }: FooterProps = {}) {
+export function Footer({ profile, footer, navLinks, logoUrl, logoAlt, logoUrlDark, logoAltDark }: FooterProps = {}) {
   const pathname = usePathname();
   const name = profile?.name || DEFAULT_NAME;
   const nav = (navLinks ?? []).filter((l) => l.showInFooter);
@@ -129,7 +131,7 @@ export function Footer({ profile, footer, navLinks, logoUrl, logoAlt }: FooterPr
           {/* Brand Column */}
           <div className="space-y-5 md:col-span-5">
             <a href="/" onClick={(e) => handleNavClick(e, "/#home")} aria-label="Home" className="inline-block">
-              <Logo className="h-8 w-auto" src={logoUrl} alt={logoAlt} />
+              <Logo className="h-8 w-auto" src={logoUrl} alt={logoAlt} srcDark={logoUrlDark} altDark={logoAltDark} />
             </a>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
               {footer?.bio || profile?.bio || DEFAULT_BIO}

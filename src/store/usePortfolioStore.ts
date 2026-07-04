@@ -81,6 +81,9 @@ export interface SiteSettingsData {
   id?: string;
   logoUrl?: string | null;
   logoAlt?: string | null;
+  logoUrlDark?: string | null;
+  logoAltDark?: string | null;
+  faviconUrl?: string | null;
   // Homepage "Featured Articles" slider controls
   homepageBlogTitle?: string | null;
   homepageBlogSubtitle?: string | null;

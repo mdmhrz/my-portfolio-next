@@ -16,6 +16,12 @@ interface ImageUploadProps {
   folder?: string;
   alt?: string;
   onAltChange?: (alt: string) => void;
+  /** Aspect ratio class for the drop zone / preview box. Defaults to "aspect-video". */
+  previewClassName?: string;
+  /** Hide the alt-text field — for purely decorative icons (e.g. favicons) with no a11y role. */
+  hideAlt?: boolean;
+  /** object-fit for the preview image. Use "contain" for logos/icons, "cover" (default) for photos. */
+  objectFit?: "cover" | "contain";
 }
 
 const ALLOWED_FORMATS = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
@@ -40,6 +46,9 @@ export function ImageUpload({
   folder = "portfolio",
   alt = "",
   onAltChange,
+  previewClassName = "aspect-video",
+  hideAlt = false,
+  objectFit = "cover",
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -236,12 +245,15 @@ export function ImageUpload({
       ) : (
         /* ── Image preview ─────────────────────────────────────── */
         <div className="space-y-3">
-          <div className="group relative w-full aspect-video overflow-hidden rounded-xl border border-border bg-muted/30">
+          <div className={cn("group relative w-full overflow-hidden rounded-xl border border-border bg-muted/30", previewClassName)}>
             <Image
               src={value}
               alt={alt || "Uploaded image"}
               fill
-              className="object-cover transition-all duration-300 group-hover:brightness-75"
+              className={cn(
+                "transition-all duration-300 group-hover:brightness-75",
+                objectFit === "contain" ? "object-contain p-3" : "object-cover"
+              )}
               sizes="(max-width: 768px) 100vw, 50vw"
               unoptimized
             />
@@ -299,18 +311,20 @@ export function ImageUpload({
           </div>
 
           {/* Alt text field */}
-          <div className="space-y-1.5">
-            <Label className="text-xs font-semibold">Alt Text</Label>
-            <Input
-              type="text"
-              placeholder="Describe the image for screen readers and SEO…"
-              value={alt}
-              onChange={(e) => onAltChange?.(e.target.value)}
-            />
-            <p className="text-[11px] text-muted-foreground/70">
-              Good alt text improves accessibility and search ranking.
-            </p>
-          </div>
+          {!hideAlt && (
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold">Alt Text</Label>
+              <Input
+                type="text"
+                placeholder="Describe the image for screen readers and SEO…"
+                value={alt}
+                onChange={(e) => onAltChange?.(e.target.value)}
+              />
+              <p className="text-[11px] text-muted-foreground/70">
+                Good alt text improves accessibility and search ranking.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

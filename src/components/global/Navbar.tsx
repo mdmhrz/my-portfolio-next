@@ -51,9 +51,11 @@ interface NavbarProps {
   navLinks?: NavLinkItem[];
   logoUrl?: string | null;
   logoAlt?: string | null;
+  logoUrlDark?: string | null;
+  logoAltDark?: string | null;
 }
 
-export function Navbar({ navLinks, logoUrl, logoAlt }: NavbarProps = {}) {
+export function Navbar({ navLinks, logoUrl, logoAlt, logoUrlDark, logoAltDark }: NavbarProps = {}) {
   const filtered = navLinks?.filter((l) => l.showInNav) ?? [];
   const links = filtered.length > 0
     ? filtered.map((l) => ({ name: l.label, href: l.href }))
@@ -129,7 +131,7 @@ export function Navbar({ navLinks, logoUrl, logoAlt }: NavbarProps = {}) {
           onClick={(e) => handleNavClick(e, "/#home")}
           aria-label="Home"
         >
-          <Logo src={logoUrl} alt={logoAlt} />
+          <Logo src={logoUrl} alt={logoAlt} srcDark={logoUrlDark} altDark={logoAltDark} />
         </a>
 
         {/* Desktop links */}
@@ -181,7 +183,7 @@ export function Navbar({ navLinks, logoUrl, logoAlt }: NavbarProps = {}) {
                 <SheetHeader className="flex flex-row items-center justify-between border-b border-border p-6">
                   <SheetTitle asChild>
                     <a href="/" aria-label="Home">
-                      <Logo src={logoUrl} alt={logoAlt} />
+                      <Logo src={logoUrl} alt={logoAlt} srcDark={logoUrlDark} altDark={logoAltDark} />
                     </a>
                   </SheetTitle>
                   <ThemeToggle />

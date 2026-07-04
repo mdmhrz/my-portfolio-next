@@ -256,9 +256,15 @@ model Profile {
 model SiteSettings {
   id              String   @id @default("singleton")
 
-  // SITE LOGO
+  // SITE LOGO — logoUrl/logoAlt shown on a light background, logoUrlDark/logoAltDark
+  // (optional) shown on a dark background. Falls back to the built-in mark if unset.
   logoUrl         String?
   logoAlt         String?
+  logoUrlDark     String?
+  logoAltDark     String?
+
+  // FAVICON — replaces the built-in browser-tab icon when set.
+  faviconUrl      String?
 
   // FONTS
   fontType        String?   @default("default")      // "default" | "google" | "custom"

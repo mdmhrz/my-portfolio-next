@@ -116,7 +116,7 @@ export default async function ContactPage() {
       />
 
       <div className="relative min-h-screen overflow-hidden bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
-        <Navbar navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} />
+        <Navbar navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} logoUrlDark={settings?.logoUrlDark} logoAltDark={settings?.logoAltDark} />
 
         {/* Dynamic ambient backgrounds */}
         <div className="pointer-events-none absolute top-0 right-1/4 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
@@ -224,7 +224,7 @@ export default async function ContactPage() {
           </div>
         </main>
 
-        <Footer profile={profile} footer={footer} navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} />
+        <Footer profile={profile} footer={footer} navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} logoUrlDark={settings?.logoUrlDark} logoAltDark={settings?.logoAltDark} />
       </div>
     </AppearanceColorScope>
   );

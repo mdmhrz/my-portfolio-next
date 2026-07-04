@@ -1,18 +1,34 @@
+'use client';
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
   className?: string;
   src?: string | null;
   alt?: string | null;
+  srcDark?: string | null;
+  altDark?: string | null;
 }
 
-export function Logo({ className, src, alt }: LogoProps) {
-  if (src) {
+export function Logo({ className, src, alt, srcDark, altDark }: LogoProps) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  // Avoid a flash of the wrong variant: until the theme is known client-side,
+  // prefer whichever custom logo is set (or the light one), never guess dark.
+  const isDark = mounted && resolvedTheme === "dark";
+  const activeSrc = isDark && srcDark ? srcDark : src;
+  const activeAlt = isDark && srcDark ? altDark : alt;
+
+  if (activeSrc) {
     return (
       <Image
-        src={src}
-        alt={alt || "Site logo"}
+        src={activeSrc}
+        alt={activeAlt || "Site logo"}
         width={112}
         height={28}
         className={cn("h-7 w-auto object-contain", className)}

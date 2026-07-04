@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { prisma } from "@/lib/prisma";
 import { ThemeProvider } from "@/components/global/ThemeProvider";
 import { AppearanceFont } from "@/components/global/AppearanceFont";
 import { Toaster } from "@/components/ui/sonner";
@@ -20,51 +21,61 @@ const SITE_NAME = "Mobarak Hossain Razu";
 const SITE_DESCRIPTION =
   "Mobarak Hossain Razu — Full-Stack Developer specializing in Next.js, React, Node.js, Go, PostgreSQL, Docker, and AWS.";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "Mobarak Hossain | Full-Stack Developer",
-    template: "%s | Mobarak Hossain Razu",
-  },
-  description: SITE_DESCRIPTION,
-  keywords: [
-    "Full-Stack Developer", "Next.js", "React", "Node.js", "Go",
-    "PostgreSQL", "Docker", "AWS", "Mobarak Hossain", "Razu",
-    "Software Engineer", "Portfolio", "Bangladesh Developer",
-  ],
-  authors: [{ name: SITE_NAME, url: SITE_URL }],
-  creator: SITE_NAME,
-  publisher: SITE_NAME,
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+  const favicon = settings?.faviconUrl || "/brand/default-favicon.svg";
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: "Mobarak Hossain | Full-Stack Developer",
+      template: "%s | Mobarak Hossain Razu",
+    },
+    description: SITE_DESCRIPTION,
+    keywords: [
+      "Full-Stack Developer", "Next.js", "React", "Node.js", "Go",
+      "PostgreSQL", "Docker", "AWS", "Mobarak Hossain", "Razu",
+      "Software Engineer", "Portfolio", "Bangladesh Developer",
+    ],
+    authors: [{ name: SITE_NAME, url: SITE_URL }],
+    creator: SITE_NAME,
+    publisher: SITE_NAME,
+    icons: {
+      icon: favicon,
+      shortcut: favicon,
+      apple: favicon,
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: SITE_URL,
-    siteName: SITE_NAME,
-    title: "Mobarak Hossain | Full-Stack Developer",
-    description: SITE_DESCRIPTION,
-    // og:image is injected automatically from opengraph-image.tsx at this route level
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Mobarak Hossain | Full-Stack Developer",
-    description: SITE_DESCRIPTION,
-    // twitter:image is derived from the opengraph-image.tsx file
-  },
-  alternates: {
-    canonical: SITE_URL,
-  },
-};
+    openGraph: {
+      type: "website",
+      locale: "en_US",
+      url: SITE_URL,
+      siteName: SITE_NAME,
+      title: "Mobarak Hossain | Full-Stack Developer",
+      description: SITE_DESCRIPTION,
+      // og:image is injected automatically from opengraph-image.tsx at this route level
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Mobarak Hossain | Full-Stack Developer",
+      description: SITE_DESCRIPTION,
+      // twitter:image is derived from the opengraph-image.tsx file
+    },
+    alternates: {
+      canonical: SITE_URL,
+    },
+  };
+}
 
 const personJsonLd = {
   "@context": "https://schema.org",

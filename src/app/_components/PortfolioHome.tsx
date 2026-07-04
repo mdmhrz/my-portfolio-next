@@ -78,7 +78,7 @@ export function PortfolioHome({
   return (
     <div className="relative min-h-screen selection:bg-primary selection:text-primary-foreground bg-background">
       <IntroLoader onDone={() => setIntroDone(true)} />
-      <Navbar navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} />
+      <Navbar navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} logoUrlDark={settings?.logoUrlDark} logoAltDark={settings?.logoAltDark} />
 
       <main className="relative z-10 w-full">
         <MouseFollower />
@@ -86,7 +86,7 @@ export function PortfolioHome({
         {orderedSections.map((section) => (
           <Fragment key={section.key}>{SECTION_REGISTRY[section.key]?.()}</Fragment>
         ))}
-        <Footer profile={profile} footer={footer} navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} />
+        <Footer profile={profile} footer={footer} navLinks={navLinks} logoUrl={settings?.logoUrl} logoAlt={settings?.logoAlt} logoUrlDark={settings?.logoUrlDark} logoAltDark={settings?.logoAltDark} />
       </main>
     </div>
   );
