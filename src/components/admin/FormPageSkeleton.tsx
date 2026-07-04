@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { SkeletonPageHeader } from "./SkeletonPageHeader";
 
 interface FormPageSkeletonProps {
   fields?: number;
@@ -14,10 +15,7 @@ export function FormPageSkeleton({
 }: FormPageSkeletonProps) {
   return (
     <div className={`${maxWidth} space-y-6`}>
-      <div className="space-y-2">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-80" />
-      </div>
+      <SkeletonPageHeader />
       <Card>
         <CardContent className="pt-6 space-y-6">
           {hasGridRow && (

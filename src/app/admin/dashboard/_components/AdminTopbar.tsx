@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/global/ThemeToggle";
 import { authClient } from "@/lib/auth-client";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { NAV_GROUPS, NAV_ITEMS } from "./nav-items";
+import { CountBadge } from "@/components/admin/CountBadge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -73,7 +74,7 @@ export function AdminTopbar({
   const userImage = profile?.avatarUrl || session?.user?.image;
 
   return (
-    <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-3 shrink-0">
+    <header className="h-16 flex items-center justify-between gap-4 border-b border-border bg-card px-4 shrink-0">
       {/* Left: mobile hamburger + page title */}
       <div className="flex items-center gap-3 min-w-0">
         <Button
@@ -123,15 +124,14 @@ export function AdminTopbar({
               aria-label="Notifications"
             >
               <Bell className="h-4 w-4" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 h-3.5 min-w-3.5 px-1 rounded-full bg-foreground text-[8px] font-bold text-background flex items-center justify-center">
-                  {unreadCount}
-                </span>
-              )}
+              <CountBadge
+                count={unreadCount}
+                className="absolute top-1 right-1 min-w-[16px] h-4 text-[9px] px-1"
+              />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72">
-            <DropdownMenuLabel className="font-sans text-[10px] uppercase tracking-wider">
+            <DropdownMenuLabel className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Notifications {unreadCount > 0 && `(${unreadCount} unread)`}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -182,7 +182,7 @@ export function AdminTopbar({
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs font-semibold text-foreground truncate">{userName}</span>
                   <span className="text-[10px] text-muted-foreground truncate">{userEmail}</span>
-                  <span className="text-[9px] font-sans text-green-500 uppercase tracking-wider mt-0.5">{userRole}</span>
+                  <span className="text-[9px] font-semibold text-success uppercase tracking-wider mt-0.5">{userRole}</span>
                 </div>
               </div>
               <DropdownMenuSeparator />
@@ -199,7 +199,7 @@ export function AdminTopbar({
               <DropdownMenuSeparator />
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
-                  className="cursor-pointer text-xs text-red-500 focus:text-red-500 focus:bg-red-500/10 flex items-center gap-2 font-medium"
+                  className="cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10 flex items-center gap-2 font-medium"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   Log Out
@@ -217,7 +217,7 @@ export function AdminTopbar({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={onLogout} className="bg-red-600 hover:bg-red-700 text-white">Sign Out</AlertDialogAction>
+              <AlertDialogAction onClick={onLogout} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">Sign Out</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

@@ -5,7 +5,8 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/admin/PageHeader";
-import { Type, Palette, Loader2 } from "lucide-react";
+import { Type, Palette } from "lucide-react";
+import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 import { useAppearanceStore } from "@/store/useAppearanceStore";
 import { FontsTab } from "./_components/FontsTab";
 import { ColorsTab } from "./_components/ColorsTab";
@@ -100,13 +101,7 @@ function AppearancePageContent() {
 
 export default function AppearancePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex h-96 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      }
-    >
+    <Suspense fallback={<FormPageSkeleton fields={4} hasGridRow />}>
       <AppearancePageContent />
     </Suspense>
   );

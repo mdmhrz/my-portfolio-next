@@ -8,14 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { FormDialog } from "@/components/admin/FormDialog";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DataTable } from "@/components/admin/DataTable";
@@ -159,58 +152,57 @@ export function ExperiencePageContents() {
         loading={deleteLoading}
       />
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{editingExp ? "Edit Experience" : "Add Experience"}</DialogTitle>
-            <DialogDescription>
-              {editingExp ? "Update your work experience details" : "Add a new work experience entry"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="exp-company" className="text-xs font-semibold">Company</Label>
-                <Input id="exp-company" type="text" required value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="exp-role" className="text-xs font-semibold">Role</Label>
-                <Input id="exp-role" type="text" required value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2 space-y-2">
-                <Label htmlFor="exp-location" className="text-xs font-semibold">Location</Label>
-                <Input id="exp-location" type="text" required value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="exp-order" className="text-xs font-semibold">Order</Label>
-                <Input id="exp-order" type="number" required value={form.order} onChange={(e) => setForm({ ...form, order: Number(e.target.value) })} />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="exp-timeline" className="text-xs font-semibold">Timeline</Label>
-              <Input id="exp-timeline" type="text" required placeholder="Jul 2025 — Present" value={form.timeline} onChange={(e) => setForm({ ...form, timeline: e.target.value })} />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="exp-desc" className="text-xs font-semibold">Description</Label>
-              <Textarea id="exp-desc" required rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            </div>
-          </form>
-
-          <DialogFooter className="gap-3">
+      <FormDialog
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        title={editingExp ? "Edit Experience" : "Add Experience"}
+        description={editingExp ? "Update your work experience details" : "Add a new work experience entry"}
+        size="lg"
+        onSubmit={handleSubmit}
+        footer={
+          <>
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={loading} onClick={handleSubmit}>
+            <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Save Experience
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="exp-company" className="text-xs font-semibold">Company</Label>
+              <Input id="exp-company" type="text" required value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="exp-role" className="text-xs font-semibold">Role</Label>
+              <Input id="exp-role" type="text" required value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-2 space-y-2">
+              <Label htmlFor="exp-location" className="text-xs font-semibold">Location</Label>
+              <Input id="exp-location" type="text" required value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="exp-order" className="text-xs font-semibold">Order</Label>
+              <Input id="exp-order" type="number" required value={form.order} onChange={(e) => setForm({ ...form, order: Number(e.target.value) })} />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="exp-timeline" className="text-xs font-semibold">Timeline</Label>
+            <Input id="exp-timeline" type="text" required placeholder="Jul 2025 — Present" value={form.timeline} onChange={(e) => setForm({ ...form, timeline: e.target.value })} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="exp-desc" className="text-xs font-semibold">Description</Label>
+            <Textarea id="exp-desc" required rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          </div>
+        </div>
+      </FormDialog>
     </div>
   );
 }

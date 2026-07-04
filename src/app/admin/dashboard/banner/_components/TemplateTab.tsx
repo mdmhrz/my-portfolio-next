@@ -169,7 +169,7 @@ export function TemplateTab() {
         </div>
 
         {/* Controls */}
-        <Card className="lg:sticky lg:top-6">
+        <Card className="lg:sticky lg:top-6 border border-border shadow-sm dark:shadow-none rounded-xl">
           <CardContent className="pt-6">
             <Tabs defaultValue="templates">
               <TabsList className="grid w-full grid-cols-4">

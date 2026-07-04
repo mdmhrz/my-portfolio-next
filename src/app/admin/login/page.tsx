@@ -54,8 +54,8 @@ export default function AdminLoginPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background px-4 py-12 selection:bg-primary selection:text-primary-foreground">
       {/* Background gradients */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(120,119,198,0.08),transparent)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_40%_30%_at_80%_80%,rgba(120,119,198,0.04),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,hsl(var(--primary)/0.08),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_40%_30%_at_80%_80%,hsl(var(--primary)/0.04),transparent)]" />
 
       <div className="relative z-10 w-full max-w-sm">
         {/* Back link */}
@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
           </Link>
         </div>
 
-        <Card className="shadow-2xl ring-1 ring-border/60 backdrop-blur-sm">
+        <Card className="border border-border shadow-2xl dark:shadow-none rounded-xl backdrop-blur-sm">
           <CardHeader className="pb-2 pt-6 px-6 space-y-4">
             {/* Shield icon badge */}
             <div className="flex items-center justify-center">

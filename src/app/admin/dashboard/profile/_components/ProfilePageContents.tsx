@@ -106,7 +106,7 @@ export function ProfilePageContents() {
         description="The single source of truth for your identity and contact info — name, photo, bio, and social links shown everywhere on the site."
       />
 
-      <Card>
+      <Card className="border border-border shadow-sm dark:shadow-none rounded-xl">
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -201,7 +201,7 @@ export function ProfilePageContents() {
             <div className="border-t border-border pt-6">
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">Contact & Social</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="email" className="text-xs font-semibold">Public Contact Email</Label>
                   <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                 </div>

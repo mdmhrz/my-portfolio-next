@@ -9,18 +9,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { usePortfolioStore, type SkillData } from "@/store/usePortfolioStore";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { RowActionsMenu } from "@/components/admin/RowActionsMenu";
 import { DeleteDialog } from "@/components/admin/DeleteDialog";
+import { EmptyState } from "@/components/admin/EmptyState";
+import { FormDialog } from "@/components/admin/FormDialog";
 
 const CATEGORIES = ["frontend", "backend", "devops", "tools", "database", "other"];
 
@@ -28,7 +22,7 @@ function SkillsGroupSkeleton() {
   return (
     <div className="space-y-6">
       {[3, 2, 4].map((count, gi) => (
-        <div key={gi} className="rounded-2xl border border-border bg-card overflow-hidden">
+        <div key={gi} className="rounded-xl border border-border bg-card overflow-hidden">
           <div className="bg-muted/50 border-b border-border px-6 py-3">
             <Skeleton className="h-3 w-20" />
           </div>
@@ -141,14 +135,21 @@ export function SkillsPageContents() {
       {isLoading ? (
         <SkillsGroupSkeleton />
       ) : skills.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center text-sm text-muted-foreground">
-          No skills yet. Click &quot;Add Skill&quot; to build your stack.
-        </div>
+        <EmptyState
+          title="No skills yet"
+          description='Click "Add Skill" to build your stack and showcase your capabilities.'
+          icon={Plus}
+          action={
+            <Button onClick={openAddModal}>
+              <Plus className="h-4 w-4" /> Add Skill
+            </Button>
+          }
+        />
       ) : (
         <div className="space-y-6">
           {Object.entries(grouped).map(([category, items]) => (
-            <div key={category} className="rounded-2xl border border-border bg-card overflow-hidden">
-              <div className="bg-muted/50 text-xs font-semibold text-muted-foreground border-b border-border px-6 py-3 capitalize">
+            <div key={category} className="rounded-xl border border-border bg-card overflow-hidden shadow-sm dark:shadow-none">
+              <div className="bg-muted/30 text-xs font-medium uppercase tracking-wide text-muted-foreground border-b border-border px-6 py-3.5 capitalize">
                 {category}
               </div>
               <Table>
@@ -193,74 +194,73 @@ export function SkillsPageContents() {
         loading={deleteLoading}
       />
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{editingSkill ? "Edit Skill" : "Add Skill"}</DialogTitle>
-            <DialogDescription>
-              {editingSkill ? "Update skill details" : "Add a new skill to your tech stack"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="skill-name" className="text-xs font-semibold">Name *</Label>
-              <Input
-                id="skill-name"
-                type="text"
-                required
-                placeholder="Next.js"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="skill-category" className="text-xs font-semibold">Category</Label>
-                <Select value={form.category} onValueChange={(val) => setForm({ ...form, category: val })}>
-                  <SelectTrigger id="skill-category">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CATEGORIES.map((c) => (
-                      <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="skill-order" className="text-xs font-semibold">Order</Label>
-                <Input
-                  id="skill-order"
-                  type="number"
-                  value={form.order}
-                  onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="skill-icon" className="text-xs font-semibold">Icon identifier (optional)</Label>
-              <Input
-                id="skill-icon"
-                type="text"
-                placeholder="e.g. si-nextdotjs"
-                value={form.icon}
-                onChange={(e) => setForm({ ...form, icon: e.target.value })}
-              />
-            </div>
-          </form>
-
-          <DialogFooter className="gap-3">
+      <FormDialog
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        title={editingSkill ? "Edit Skill" : "Add Skill"}
+        description={editingSkill ? "Update skill details" : "Add a new skill to your tech stack"}
+        size="md"
+        onSubmit={handleSubmit}
+        footer={
+          <>
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={loading} onClick={handleSubmit}>
+            <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Save
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="skill-name" className="text-xs font-semibold">Name *</Label>
+            <Input
+              id="skill-name"
+              type="text"
+              required
+              placeholder="Next.js"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="skill-category" className="text-xs font-semibold">Category</Label>
+              <Select value={form.category} onValueChange={(val) => setForm({ ...form, category: val })}>
+                <SelectTrigger id="skill-category">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((c) => (
+                    <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="skill-order" className="text-xs font-semibold">Order</Label>
+              <Input
+                id="skill-order"
+                type="number"
+                value={form.order}
+                onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="skill-icon" className="text-xs font-semibold">Icon identifier (optional)</Label>
+            <Input
+              id="skill-icon"
+              type="text"
+              placeholder="e.g. si-nextdotjs"
+              value={form.icon}
+              onChange={(e) => setForm({ ...form, icon: e.target.value })}
+            />
+          </div>
+        </div>
+      </FormDialog>
     </div>
   );
 }

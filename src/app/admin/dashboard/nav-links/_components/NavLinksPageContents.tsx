@@ -8,18 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { usePortfolioStore, type NavLinkData } from "@/store/usePortfolioStore";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DeleteDialog } from "@/components/admin/DeleteDialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/admin/EmptyState";
+import { FormDialog } from "@/components/admin/FormDialog";
 
 export function NavLinksPageContents() {
   const {
@@ -130,9 +124,16 @@ export function NavLinksPageContents() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center text-sm text-muted-foreground">
-          No nav links yet. Click &quot;Add Link&quot; to create one.
-        </div>
+        <EmptyState
+          title="No nav links yet"
+          description='Click "Add Link" to create one and customize navigation.'
+          icon={Plus}
+          action={
+            <Button onClick={openAddModal}>
+              <Plus className="h-4 w-4" /> Add Link
+            </Button>
+          }
+        />
       ) : (
         <Reorder.Group axis="y" values={items} onReorder={handleReorder} className="space-y-2">
           {items.map((link) => (
@@ -179,68 +180,67 @@ export function NavLinksPageContents() {
         loading={deleteLoading}
       />
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{editingLink ? "Edit Link" : "Add Link"}</DialogTitle>
-            <DialogDescription>
-              {editingLink ? "Update this navigation link" : "Add a new navigation link"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="link-label" className="text-xs font-semibold">Label *</Label>
-              <Input
-                id="link-label"
-                required
-                placeholder="Journey"
-                value={form.label}
-                onChange={(e) => setForm({ ...form, label: e.target.value })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="link-href" className="text-xs font-semibold">Link *</Label>
-              <Input
-                id="link-href"
-                required
-                placeholder="/#journey"
-                value={form.href}
-                onChange={(e) => setForm({ ...form, href: e.target.value })}
-              />
-              <span className="text-[10px] text-muted-foreground font-sans">
-                Use &quot;/#section-id&quot; to scroll to a homepage section, or a path like &quot;/about&quot;.
-              </span>
-            </div>
-
-            <div className="flex items-center gap-6 pt-1">
-              <label className="flex items-center gap-2 text-xs font-semibold">
-                <Switch
-                  checked={form.showInNav}
-                  onCheckedChange={(val) => setForm({ ...form, showInNav: val })}
-                />
-                Show in Navbar
-              </label>
-              <label className="flex items-center gap-2 text-xs font-semibold">
-                <Switch
-                  checked={form.showInFooter}
-                  onCheckedChange={(val) => setForm({ ...form, showInFooter: val })}
-                />
-                Show in Footer
-              </label>
-            </div>
-          </form>
-
-          <DialogFooter className="gap-3">
+      <FormDialog
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        title={editingLink ? "Edit Link" : "Add Link"}
+        description={editingLink ? "Update this navigation link" : "Add a new navigation link"}
+        size="md"
+        onSubmit={handleSubmit}
+        footer={
+          <>
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving} onClick={handleSubmit}>
+            <Button type="submit" disabled={saving}>
               {saving && <Loader2 className="h-4 w-4 animate-spin" />}
               Save
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="link-label" className="text-xs font-semibold">Label *</Label>
+            <Input
+              id="link-label"
+              required
+              placeholder="Journey"
+              value={form.label}
+              onChange={(e) => setForm({ ...form, label: e.target.value })}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="link-href" className="text-xs font-semibold">Link *</Label>
+            <Input
+              id="link-href"
+              required
+              placeholder="/#journey"
+              value={form.href}
+              onChange={(e) => setForm({ ...form, href: e.target.value })}
+            />
+            <span className="text-[10px] text-muted-foreground font-sans">
+              Use &quot;/#section-id&quot; to scroll to a homepage section, or a path like &quot;/about&quot;.
+            </span>
+          </div>
+
+          <div className="flex items-center gap-6 pt-1">
+            <label className="flex items-center gap-2 text-xs font-semibold">
+              <Switch
+                checked={form.showInNav}
+                onCheckedChange={(val) => setForm({ ...form, showInNav: val })}
+              />
+              Show in Navbar
+            </label>
+            <label className="flex items-center gap-2 text-xs font-semibold">
+              <Switch
+                checked={form.showInFooter}
+                onCheckedChange={(val) => setForm({ ...form, showInFooter: val })}
+              />
+              Show in Footer
+            </label>
+          </div>
+        </div>
+      </FormDialog>
     </div>
   );
 }

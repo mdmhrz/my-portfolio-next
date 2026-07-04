@@ -92,7 +92,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <main className={
           isEditorRoute
             ? "flex-1 flex flex-col min-h-0 overflow-hidden"
-            : "flex-1 overflow-y-auto p-6 md:p-10"
+            : "flex-1 overflow-y-auto p-6 md:p-8"
         }>
           {children}
         </main>

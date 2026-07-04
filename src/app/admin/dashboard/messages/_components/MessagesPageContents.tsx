@@ -10,11 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DeleteDialog } from "@/components/admin/DeleteDialog";
+import { EmptyState } from "@/components/admin/EmptyState";
 
 function MessagesSkeleton() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <Card className="lg:col-span-5 overflow-hidden flex flex-col max-h-[70vh]">
+      <Card className="lg:col-span-5 overflow-hidden flex flex-col max-h-[70vh] border border-border shadow-sm dark:shadow-none rounded-xl">
         <CardHeader className="p-4 border-b border-border bg-muted/10">
           <Skeleton className="h-3 w-40" />
         </CardHeader>
@@ -32,7 +33,7 @@ function MessagesSkeleton() {
         </div>
       </Card>
       <div className="lg:col-span-7">
-        <Card className="min-h-[450px] flex items-center justify-center">
+        <Card className="min-h-[450px] flex items-center justify-center border border-border shadow-sm dark:shadow-none rounded-xl">
           <CardContent className="text-center flex flex-col items-center justify-center gap-3">
             <Skeleton className="h-8 w-8 rounded-full" />
             <Skeleton className="h-4 w-48" />
@@ -94,7 +95,7 @@ export function MessagesPageContents() {
         <MessagesSkeleton />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <Card className="lg:col-span-5 overflow-hidden flex flex-col max-h-[70vh]">
+          <Card className="lg:col-span-5 overflow-hidden flex flex-col max-h-[70vh] border border-border shadow-sm dark:shadow-none rounded-xl">
             <CardHeader className="p-4 border-b border-border bg-muted/10">
               <span className="text-xs font-semibold text-muted-foreground">
                 Total Inbox Submissions ({messages.length})
@@ -145,7 +146,7 @@ export function MessagesPageContents() {
 
           <div className="lg:col-span-7">
             {selectedMsg ? (
-              <Card className="flex flex-col justify-between min-h-[450px]">
+              <Card className="flex flex-col justify-between min-h-[450px] border border-border shadow-sm dark:shadow-none rounded-xl">
                 <CardContent className="p-6 md:p-8 space-y-6">
                   <div className="flex justify-between items-start border-b border-border pb-5 gap-4 flex-wrap">
                     <div>
@@ -202,12 +203,12 @@ export function MessagesPageContents() {
                 </div>
               </Card>
             ) : (
-              <Card className="flex flex-col items-center justify-center min-h-[450px]">
-                <CardContent className="text-center flex flex-col items-center justify-center">
-                  <Mail className="h-8 w-8 text-zinc-600 mb-3" />
-                  <p className="text-sm text-muted-foreground">Select a message from the inbox list to read it.</p>
-                </CardContent>
-              </Card>
+              <EmptyState
+                title="No message selected"
+                description="Select a message from the inbox list to read it and reply."
+                icon={Mail}
+                className="min-h-[450px]"
+              />
             )}
           </div>
         </div>

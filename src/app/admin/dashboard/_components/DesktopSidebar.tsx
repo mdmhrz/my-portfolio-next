@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Logo } from "@/components/global/Logo";
 import { SidebarNavLinks } from "./SidebarNavLinks";
 
@@ -29,7 +28,7 @@ export function DesktopSidebar({
     >
       <div className="flex flex-col gap-6">
         {/* Brand + collapse toggle */}
-        <div className="flex items-center justify-center h-15 border-b border-border relative px-4">
+        <div className="flex items-center justify-center h-16 border-b border-border relative px-4">
           <Link
             href="/"
             className="flex items-center justify-center hover:opacity-80 transition-opacity"

@@ -4,9 +4,10 @@ import { Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/admin/PageHeader";
-import { FileText, Wand2, Loader2 } from "lucide-react";
+import { FileText, Wand2 } from "lucide-react";
 import { ContentTab } from "./_components/ContentTab";
 import { TemplateTab } from "./_components/TemplateTab";
+import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 
 export const dynamic = "force-dynamic";
 
@@ -64,13 +65,7 @@ function BannerPageContent() {
 
 export default function BannerPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex h-96 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      }
-    >
+    <Suspense fallback={<FormPageSkeleton fields={4} hasGridRow />}>
       <BannerPageContent />
     </Suspense>
   );
