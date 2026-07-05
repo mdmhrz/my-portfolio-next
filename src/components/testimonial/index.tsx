@@ -2,6 +2,7 @@ import { TestimonialsCarousel } from "./TestimonialsCarousel";
 import { TestimonialsArc } from "./TestimonialsArc";
 import { TestimonialsBento } from "./TestimonialsBento";
 import { TestimonialsShowcase } from "./TestimonialsShowcase";
+import { TestimonialsSpotlight } from "./TestimonialsSpotlight";
 import type { TestimonialItem, TestimonialsSettings } from "./types";
 
 export type { TestimonialItem, TestimonialsSettings } from "./types";
@@ -10,9 +11,10 @@ export {
   TestimonialsArc,
   TestimonialsBento,
   TestimonialsShowcase,
+  TestimonialsSpotlight,
 };
 
-export type TestimonialsTemplateId = "carousel" | "arc" | "bento" | "showcase";
+export type TestimonialsTemplateId = "carousel" | "arc" | "bento" | "showcase" | "spotlight";
 
 export interface TestimonialsTemplateMeta {
   id: TestimonialsTemplateId;
@@ -41,10 +43,15 @@ export const TESTIMONIALS_SECTION_TEMPLATES: TestimonialsTemplateMeta[] = [
     label: "Showcase + CTA",
     description: "Big stat tile beside chat-bubble reviews, with a call-to-action banner.",
   },
+  {
+    id: "spotlight",
+    label: "Spotlight Card",
+    description: "Featured portrait card with a speech-bubble quote and thumbnail switcher.",
+  },
 ];
 
 export function normalizeTemplate(value: unknown): TestimonialsTemplateId {
-  return value === "arc" || value === "bento" || value === "showcase"
+  return value === "arc" || value === "bento" || value === "showcase" || value === "spotlight"
     ? (value as TestimonialsTemplateId)
     : "carousel";
 }
@@ -63,6 +70,8 @@ export function renderTestimonialsSection(
       return <TestimonialsBento {...props} />;
     case "showcase":
       return <TestimonialsShowcase {...props} />;
+    case "spotlight":
+      return <TestimonialsSpotlight {...props} />;
     case "carousel":
     default:
       return <TestimonialsCarousel {...props} />;
