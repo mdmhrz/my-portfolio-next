@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Reorder } from "motion/react";
-import { GripVertical, Layers, Route, Briefcase, Wrench, FolderKanban, Newspaper, MousePointerClick, Mail } from "lucide-react";
+import { GripVertical, Layers, Route, Briefcase, Wrench, FolderKanban, Newspaper, MousePointerClick, Mail, MessageSquareQuote } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -16,6 +16,7 @@ const SECTION_META: Record<string, { label: string; icon: React.ComponentType<{ 
   tools: { label: "Skills / Tools", icon: Wrench },
   caseStudies: { label: "Case Studies", icon: FolderKanban },
   homepageBlogs: { label: "Featured Articles", icon: Newspaper },
+  testimonials: { label: "Testimonials", icon: MessageSquareQuote },
   cta: { label: "Call to Action", icon: MousePointerClick },
   contact: { label: "Contact Form", icon: Mail },
 };

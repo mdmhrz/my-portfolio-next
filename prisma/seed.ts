@@ -408,13 +408,58 @@ async function main() {
       { key: "tools", order: 3 },
       { key: "caseStudies", order: 4 },
       { key: "homepageBlogs", order: 5 },
-      { key: "cta", order: 6 },
-      { key: "contact", order: 7 },
+      { key: "testimonials", order: 6 },
+      { key: "cta", order: 7 },
+      { key: "contact", order: 8 },
     ];
     await prisma.sectionConfig.createMany({ data: starterSections });
     console.log(`✅ ${starterSections.length} starter section configs seeded`);
   } else {
     console.log(`✅ Section configs already present (${sectionConfigCount}) — skipped`);
+  }
+
+  // 11b. Starter testimonials — seed only if the table is empty (never duplicates).
+  const testimonialCount = await prisma.testimonial.count();
+  if (testimonialCount === 0) {
+    console.log("💬 Creating starter testimonials...");
+    const starterTestimonials = [
+      {
+        name: "Sarah Chen",
+        role: "Founder",
+        company: "TechVenture Labs",
+        quote: "Razu shipped our MVP faster than we thought possible. The attention to detail and clear communication throughout the project was exceptional.",
+        rating: 5,
+        order: 0,
+      },
+      {
+        name: "Marcus Johnson",
+        role: "CTO",
+        company: "DataFlow Systems",
+        quote: "Working with Razu on our platform redesign was seamless. The architecture decisions were solid and the code quality was production-ready from day one.",
+        rating: 5,
+        order: 1,
+      },
+      {
+        name: "Emma Rodriguez",
+        role: "Product Manager",
+        company: "CreativeStudio Co",
+        quote: "Not just a developer, but a true problem solver. Razu brought fresh perspectives and innovative solutions to every challenge we faced.",
+        rating: 5,
+        order: 2,
+      },
+      {
+        name: "David Park",
+        role: "Engineering Lead",
+        company: "CloudScale Inc",
+        quote: "The technical depth and ability to communicate complex concepts simply made collaboration effortless. Highly recommend for any serious project.",
+        rating: 5,
+        order: 3,
+      },
+    ];
+    await prisma.testimonial.createMany({ data: starterTestimonials });
+    console.log(`✅ ${starterTestimonials.length} starter testimonials seeded`);
+  } else {
+    console.log(`✅ Testimonials already present (${testimonialCount}) — skipped`);
   }
 
   // 12. Starter skills — seed only if the table is empty (never duplicates).

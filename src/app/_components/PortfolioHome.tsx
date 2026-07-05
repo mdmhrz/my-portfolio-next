@@ -14,7 +14,9 @@ import { Contact } from "./Contact";
 import { Footer } from "@/components/global/Footer";
 import { MouseFollower } from "@/components/global/MouseFollower";
 import { HomepageBlogs } from "./HomepageBlogs";
+import { HomepageTestimonials } from "./HomepageTestimonials";
 import type { BlogListItem } from "@/components/blog";
+import type { TestimonialItem } from "@/components/testimonial";
 
 interface SectionConfigItem {
   key: string;
@@ -30,6 +32,7 @@ interface PortfolioHomeProps {
   settings?: any;
   skills?: any[];
   homepageBlogs?: BlogListItem[];
+  testimonials?: TestimonialItem[];
   cta?: any;
   footer?: any;
   navLinks?: any[];
@@ -44,6 +47,7 @@ export function PortfolioHome({
   settings,
   skills,
   homepageBlogs,
+  testimonials,
   cta,
   footer,
   navLinks,
@@ -67,6 +71,7 @@ export function PortfolioHome({
     tools: () => <Tools skills={skills} />,
     caseStudies: () => <CaseStudies projects={projects} />,
     homepageBlogs: () => <HomepageBlogs posts={homepageBlogs ?? []} settings={settings} />,
+    testimonials: () => <HomepageTestimonials testimonials={testimonials ?? []} settings={settings} />,
     cta: () => <CTA cta={cta} profile={profile} />,
     contact: () => <Contact profile={profile} />,
   };

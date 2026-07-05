@@ -1,9 +1,10 @@
 'use client';
 
+import { useRef } from "react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, Keyboard, A11y } from "swiper/modules";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Reveal } from "@/components/global/Reveal";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +31,8 @@ const DEFAULT_SUBTITLE = "Notes, deep dives, and lessons from building things on
 
 export function HomepageBlogs({ posts, settings }: HomepageBlogsProps) {
   const template = normalizeTemplate(settings?.homepageBlogTemplate);
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
   // Section-level show/hide is handled by SectionConfig (key="homepageBlogs") in
   // PortfolioHome's registry — this only guards against an empty post list.
@@ -43,12 +46,32 @@ export function HomepageBlogs({ posts, settings }: HomepageBlogsProps) {
       <div className="container mx-auto max-w-7xl">
         <Reveal className="mb-14 flex flex-col gap-4">
           <span className="text-xs font-semibold text-primary">From the blog</span>
-          <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
-            {title}
-          </h2>
-          <p className="max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-            {subtitle}
-          </p>
+          <div className="flex items-end justify-between gap-8">
+            <div className="flex flex-col gap-4">
+              <h2 className="text-4xl font-medium tracking-tight text-foreground md:text-6xl">
+                {title}
+              </h2>
+              <p className="max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+                {subtitle}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                ref={prevRef}
+                className="group flex h-10 w-10 items-center justify-center rounded-full bg-primary transition-all hover:opacity-80"
+                aria-label="Previous slide"
+              >
+                <ChevronLeft className="h-5 w-5 text-primary-foreground" />
+              </button>
+              <button
+                ref={nextRef}
+                className="group flex h-10 w-10 items-center justify-center rounded-full bg-primary transition-all hover:opacity-80"
+                aria-label="Next slide"
+              >
+                <ChevronRight className="h-5 w-5 text-primary-foreground" />
+              </button>
+            </div>
+          </div>
         </Reveal>
 
         <Reveal y={40} delay={0.05} className="homepage-blogs-swiper">
@@ -59,7 +82,15 @@ export function HomepageBlogs({ posts, settings }: HomepageBlogsProps) {
             grabCursor
             keyboard={{ enabled: true }}
             pagination={{ clickable: true }}
-            navigation
+            navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+            onInit={(swiper) => {
+              if (prevRef.current && nextRef.current && swiper.params.navigation) {
+                swiper.params.navigation.prevEl = prevRef.current;
+                swiper.params.navigation.nextEl = nextRef.current;
+                swiper.navigation.init();
+                swiper.navigation.update();
+              }
+            }}
             autoplay={{ delay: 4500, disableOnInteraction: false, pauseOnMouseEnter: true }}
             loop={posts.length > 1}
             breakpoints={{

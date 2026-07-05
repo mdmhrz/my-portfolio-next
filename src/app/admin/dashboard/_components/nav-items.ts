@@ -14,6 +14,7 @@ import {
   MousePointerClick,
   PanelBottom,
   Link2,
+  MessageSquareQuote,
 } from "lucide-react";
 
 export type TabValue =
@@ -30,6 +31,7 @@ export type TabValue =
   | "settings"
   | "blogs"
   | "blogs-display-settings"
+  | "testimonials"
   | "messages";
 
 export interface NavItem {
@@ -66,6 +68,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { value: "projects", label: "Projects", href: "/admin/dashboard/projects", icon: FolderKanban },
       { value: "skills", label: "Skills", href: "/admin/dashboard/skills", icon: Wrench },
       { value: "cta", label: "Call to Action", href: "/admin/dashboard/cta", icon: MousePointerClick },
+      { value: "testimonials", label: "Testimonials", href: "/admin/dashboard/testimonials", icon: MessageSquareQuote },
       { value: "footer", label: "Footer", href: "/admin/dashboard/footer", icon: PanelBottom },
       { value: "nav-links", label: "Navigation Links", href: "/admin/dashboard/nav-links", icon: Link2 },
       { value: "appearance", label: "Appearance", href: "/admin/dashboard/appearance", icon: Palette },

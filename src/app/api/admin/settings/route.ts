@@ -21,9 +21,9 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    // Site logo, Blog Display Settings, and other settings save to this same endpoint
-    // independently — only touch fields actually present in the request body,
-    // or saving one silently wipes the other's fields back to null/default.
+    // Site logo, Blog Display Settings, Testimonials Display Settings, and other settings
+    // save to this same endpoint independently — only touch fields actually present in the
+    // request body, or saving one silently wipes the other's fields back to null/default.
     const data: Record<string, unknown> = {};
 
     if ("logoUrl" in body) data.logoUrl = body.logoUrl || null;
@@ -35,6 +35,14 @@ export async function POST(request: Request) {
     if ("homepageBlogTitle" in body) data.homepageBlogTitle = body.homepageBlogTitle || null;
     if ("homepageBlogSubtitle" in body) data.homepageBlogSubtitle = body.homepageBlogSubtitle || null;
     if ("homepageBlogTemplate" in body) data.homepageBlogTemplate = body.homepageBlogTemplate || "standard";
+    // Homepage testimonials section (visibility now lives in SectionConfig, key="testimonials")
+    if ("homepageTestimonialsTitle" in body) data.homepageTestimonialsTitle = body.homepageTestimonialsTitle || null;
+    if ("homepageTestimonialsSubtitle" in body) data.homepageTestimonialsSubtitle = body.homepageTestimonialsSubtitle || null;
+    if ("homepageTestimonialsTemplate" in body) data.homepageTestimonialsTemplate = body.homepageTestimonialsTemplate || "carousel";
+    if ("homepageTestimonialsStat" in body) data.homepageTestimonialsStat = body.homepageTestimonialsStat || null;
+    if ("homepageTestimonialsStatLabel" in body) data.homepageTestimonialsStatLabel = body.homepageTestimonialsStatLabel || null;
+    if ("homepageTestimonialsCtaText" in body) data.homepageTestimonialsCtaText = body.homepageTestimonialsCtaText || null;
+    if ("homepageTestimonialsCtaLink" in body) data.homepageTestimonialsCtaLink = body.homepageTestimonialsCtaLink || null;
 
     const settings = await prisma.siteSettings.upsert({
       where: { id: "singleton" },

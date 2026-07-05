@@ -185,7 +185,7 @@ model NavLink {
 
 model SectionConfig {
   id      String  @id @default(uuid())
-  key     String  @unique // "hero" | "techMarquee" | "journey" | "experience" | "tools" | "caseStudies" | "homepageBlogs" | "cta" | "contact"
+  key     String  @unique // "hero" | "techMarquee" | "journey" | "experience" | "tools" | "caseStudies" | "homepageBlogs" | "testimonials" | "cta" | "contact"
   visible Boolean @default(true)
   order   Int     @default(0)
 
@@ -360,9 +360,38 @@ model SiteSettings {
   homepageBlogSubtitle  String?                        // custom subheading; null = default
   homepageBlogTemplate  String   @default("standard")  // "standard" | "overlay" | "minimal"
 
+  // HOMEPAGE TESTIMONIALS SECTION — controls the testimonials section on the landing page
+  // Visibility now lives in SectionConfig (key="testimonials") alongside every other section.
+  homepageTestimonialsTitle     String?
+  homepageTestimonialsSubtitle  String?
+  homepageTestimonialsTemplate  String   @default("carousel") // "carousel" | "scattered" | "autoslide" | "bento"
+  homepageTestimonialsStat      String?  // e.g. "12+" — shown only by the bento preset
+  homepageTestimonialsStatLabel String?  // e.g. "Happy Clients"
+  homepageTestimonialsCtaText   String?  // e.g. "Get in Touch"
+  homepageTestimonialsCtaLink   String?  // defaults to "/contact" if unset
+
   updatedAt       DateTime  @updatedAt
 
   @@map("site_settings")
+}
+
+model Testimonial {
+  id             String   @id @default(uuid())
+  name           String
+  role           String?
+  company        String?
+  quote          String   @db.Text
+  avatarUrl      String?
+  avatarAlt      String?
+  rating         Int?     // 1-5, optional
+  videoUrl       String?  // Optional video testimonial (Preset A "Carousel" video card)
+  highlight      String?  // Short metric badge, e.g. "8X" (Preset C "Bento Stats")
+  highlightLabel String?  // Metric caption, e.g. "Increase in conversion rate"
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("testimonial")
 }
 
 model Skill {

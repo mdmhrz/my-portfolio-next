@@ -88,6 +88,31 @@ export interface SiteSettingsData {
   homepageBlogTitle?: string | null;
   homepageBlogSubtitle?: string | null;
   homepageBlogTemplate?: string | null;
+  // Homepage Testimonials section controls
+  homepageTestimonialsTitle?: string | null;
+  homepageTestimonialsSubtitle?: string | null;
+  homepageTestimonialsTemplate?: string | null;
+  homepageTestimonialsStat?: string | null;
+  homepageTestimonialsStatLabel?: string | null;
+  homepageTestimonialsCtaText?: string | null;
+  homepageTestimonialsCtaLink?: string | null;
+}
+
+export interface TestimonialData {
+  id: string;
+  name: string;
+  role?: string | null;
+  company?: string | null;
+  quote: string;
+  avatarUrl?: string | null;
+  avatarAlt?: string | null;
+  rating?: number | null;
+  videoUrl?: string | null;
+  highlight?: string | null;
+  highlightLabel?: string | null;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CtaData {
@@ -203,6 +228,7 @@ interface PortfolioStore {
   banner: BannerData | null;
   experiences: ExperienceData[];
   projects: ProjectData[];
+  testimonials: TestimonialData[];
   threads: ThreadData[];
   gmailConnected: boolean;
   gmailEmail: string | null;
@@ -243,6 +269,12 @@ interface PortfolioStore {
   createProject: (data: Omit<ProjectData, "id">) => Promise<void>;
   updateProject: (id: string, data: Partial<ProjectData>) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
+
+  fetchTestimonials: () => Promise<void>;
+  createTestimonial: (data: Omit<TestimonialData, "id" | "order" | "createdAt" | "updatedAt">) => Promise<void>;
+  updateTestimonial: (id: string, data: Partial<TestimonialData>) => Promise<void>;
+  deleteTestimonial: (id: string) => Promise<void>;
+  reorderTestimonials: (items: TestimonialData[]) => Promise<void>;
 
   fetchThreads: () => Promise<void>;
   fetchThread: (id: string) => Promise<ThreadData | null>;
@@ -290,6 +322,7 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   banner: null,
   experiences: [],
   projects: [],
+  testimonials: [],
   threads: [],
   gmailConnected: false,
   gmailEmail: null,
@@ -719,6 +752,58 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
       set((state) => ({ skills: state.skills.filter((s) => s.id !== id) }));
     } catch (err) {
       console.error("Error deleting skill:", err);
+      throw err;
+    }
+  },
+
+  // Testimonials Actions
+  fetchTestimonials: async () => {
+    try {
+      const res = await api.get("/admin/testimonials");
+      set({ testimonials: res.data.data });
+    } catch (err) {
+      console.error("Error fetching testimonials:", err);
+    }
+  },
+  createTestimonial: async (data) => {
+    try {
+      const res = await api.post("/admin/testimonials", data);
+      set((state) => ({ testimonials: [...state.testimonials, res.data.data].sort((a, b) => a.order - b.order) }));
+    } catch (err) {
+      console.error("Error creating testimonial:", err);
+      throw err;
+    }
+  },
+  updateTestimonial: async (id, data) => {
+    try {
+      const res = await api.put(`/admin/testimonials/${id}`, data);
+      set((state) => ({
+        testimonials: state.testimonials.map((t) => (t.id === id ? res.data.data : t)).sort((a, b) => a.order - b.order),
+      }));
+    } catch (err) {
+      console.error("Error updating testimonial:", err);
+      throw err;
+    }
+  },
+  deleteTestimonial: async (id) => {
+    try {
+      await api.delete(`/admin/testimonials/${id}`);
+      set((state) => ({ testimonials: state.testimonials.filter((t) => t.id !== id) }));
+    } catch (err) {
+      console.error("Error deleting testimonial:", err);
+      throw err;
+    }
+  },
+  reorderTestimonials: async (items) => {
+    // Optimistic: reflect the new order instantly, resync from server on failure.
+    set({ testimonials: items });
+    try {
+      await api.put("/admin/testimonials/reorder", {
+        items: items.map((t, i) => ({ id: t.id, order: i })),
+      });
+    } catch (err) {
+      console.error("Error reordering testimonials:", err);
+      await get().fetchTestimonials();
       throw err;
     }
   },

@@ -5,7 +5,7 @@ import { AppearanceColorScope } from "@/components/global/AppearanceColorScope";
 export const revalidate = 3600; // Revalidate every hour; admin mutations call revalidatePath("/")
 
 export default async function Home() {
-  const [banner, experiences, projects, profile, settings, skills, homepageBlogs, cta, footer, navLinks, sections] = await Promise.all([
+  const [banner, experiences, projects, profile, settings, skills, homepageBlogs, testimonials, cta, footer, navLinks, sections] = await Promise.all([
     prisma.banner.findFirst(),
     prisma.experience.findMany({
       include: {
@@ -75,6 +75,7 @@ export default async function Home() {
         createdAt: true,
       },
     }),
+    prisma.testimonial.findMany({ orderBy: { order: "asc" } }),
     prisma.cta.findUnique({ where: { id: "singleton" } }),
     prisma.footer.findUnique({ where: { id: "singleton" } }),
     prisma.navLink.findMany({ orderBy: { order: "asc" } }),
@@ -96,6 +97,7 @@ export default async function Home() {
         settings={settings}
         skills={skills}
         homepageBlogs={serializedBlogs}
+        testimonials={testimonials}
         cta={cta}
         footer={footer}
         navLinks={navLinks}
