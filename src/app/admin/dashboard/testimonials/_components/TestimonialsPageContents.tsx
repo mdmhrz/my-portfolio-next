@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { Reorder } from 'motion/react';
 import { toast } from 'sonner';
-import { GripVertical, Star, Check, Plus, Pencil, Trash2 } from 'lucide-react';
+import { GripVertical, Star, Check, Plus, Pencil, Trash2, Copy } from 'lucide-react';
 import { usePortfolioStore, type TestimonialData } from '@/store/usePortfolioStore';
 import {
   renderTestimonialsSection,
@@ -16,6 +16,7 @@ import {
 import { PageHeader } from '@/components/admin/PageHeader';
 import { FormDialog } from '@/components/admin/FormDialog';
 import { DeleteDialog } from '@/components/admin/DeleteDialog';
+import { RowActionsMenu } from '@/components/admin/RowActionsMenu';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -158,6 +159,18 @@ export function TestimonialsPageContents() {
     }
   };
 
+  const duplicateCard = async (t: TestimonialData) => {
+    // Copy every content field; the API assigns a fresh id/order/timestamps.
+    const { id, order, createdAt, updatedAt, ...rest } = t;
+    void id; void order; void createdAt; void updatedAt;
+    try {
+      await createTestimonial({ ...rest, name: `${t.name} (Copy)` });
+      toast.success('Testimonial duplicated.');
+    } catch {
+      toast.error('Failed to duplicate.');
+    }
+  };
+
   const confirmDelete = async () => {
     if (!deleteId) return;
     setDeleting(true);
@@ -254,8 +267,13 @@ export function TestimonialsPageContents() {
                         {[...Array(t.rating)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />)}
                       </span>
                     ) : null}
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(t)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setDeleteId(t.id)}><Trash2 className="h-4 w-4" /></Button>
+                    <RowActionsMenu
+                      actions={[
+                        { label: 'Edit', icon: <Pencil className="h-4 w-4" />, onClick: () => openEdit(t) },
+                        { label: 'Duplicate', icon: <Copy className="h-4 w-4" />, onClick: () => duplicateCard(t) },
+                        { label: 'Delete', icon: <Trash2 className="h-4 w-4" />, onClick: () => setDeleteId(t.id), variant: 'destructive' },
+                      ]}
+                    />
                   </Reorder.Item>
                 ))}
               </Reorder.Group>

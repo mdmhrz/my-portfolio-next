@@ -40,9 +40,13 @@ export function TestimonialsArc({
 
   const windowSize = Math.min(5, count);
   const half = Math.floor(windowSize / 2);
+  // Angle is measured as an offset from the active avatar, so the active one always
+  // lands on angle 0 — the arc's exact vertical centre (rightmost point) — no matter
+  // how many testimonials are in view.
+  const step = ARC.spread / Math.max(half, 1);
   const arcItems = Array.from({ length: windowSize }, (_, k) => {
     const idx = (active - half + k + count) % count;
-    const angle = windowSize === 1 ? 0 : -ARC.spread + (k / (windowSize - 1)) * 2 * ARC.spread;
+    const angle = (k - half) * step;
     const x = ARC.cx + ARC.r * Math.cos(toRad(angle));
     const y = ARC.cy + ARC.r * Math.sin(toRad(angle));
     return { item: testimonials[idx], idx, x, y };
