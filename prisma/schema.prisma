@@ -405,3 +405,18 @@ model Skill {
 
   @@map("skill")
 }
+
+// First-party, privacy-friendly traffic tracking (public pages only). Powers the
+// dashboard's Visitors / Page Views / Resume Downloads metrics — no third-party API.
+model AnalyticsEvent {
+  id        String   @id @default(uuid())
+  type      String   @default("pageview") // "pageview" | "resume_download"
+  path      String?
+  referrer  String?
+  country   String?  // from the x-vercel-ip-country header when available
+  visitorId String?  // anonymous client id (localStorage) for unique-visitor counts
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@map("analytics_event")
+}

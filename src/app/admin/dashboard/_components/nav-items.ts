@@ -10,7 +10,6 @@ import {
   Mail,
   Wrench,
   Settings,
-  Palette,
   MousePointerClick,
   PanelBottom,
   Link2,
@@ -71,8 +70,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { value: "testimonials", label: "Testimonials", href: "/admin/dashboard/testimonials", icon: MessageSquareQuote },
       { value: "footer", label: "Footer", href: "/admin/dashboard/footer", icon: PanelBottom },
       { value: "nav-links", label: "Navigation Links", href: "/admin/dashboard/nav-links", icon: Link2 },
-      { value: "appearance", label: "Appearance", href: "/admin/dashboard/appearance", icon: Palette },
-      { value: "settings", label: "Site Settings", href: "/admin/dashboard/settings", icon: Settings },
     ],
   },
   {
@@ -91,13 +88,13 @@ export const NAV_GROUPS: NavGroup[] = [
 ];
 
 /**
- * Reachable only via the topbar user-menu (not the sidebar) — Profile is
- * personal account info, not a content section. Still listed here so the
- * topbar page title resolves correctly when you're on that page.
+ * Pinned to the bottom of the sidebar, separated from the scrollable groups
+ * above — Site Settings + Account (like the dashboard reference layout).
  */
-const HIDDEN_NAV_ITEMS: NavItem[] = [
-  { value: "profile", label: "Profile", href: "/admin/dashboard/profile", icon: UserCircle },
+export const NAV_BOTTOM: NavItem[] = [
+  { value: "settings", label: "Site Settings", href: "/admin/dashboard/settings", icon: Settings },
+  { value: "profile", label: "Account", href: "/admin/dashboard/profile", icon: UserCircle },
 ];
 
 /** Flattened view — handy where a single lookup list is more convenient than groups. */
-export const NAV_ITEMS: NavItem[] = [...NAV_GROUPS.flatMap((g) => g.items), ...HIDDEN_NAV_ITEMS];
+export const NAV_ITEMS: NavItem[] = [...NAV_GROUPS.flatMap((g) => g.items), ...NAV_BOTTOM];

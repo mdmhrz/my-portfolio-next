@@ -5,7 +5,10 @@ import "./globals.css";
 import { prisma } from "@/lib/prisma";
 import { ThemeProvider } from "@/components/global/ThemeProvider";
 import { AppearanceFont } from "@/components/global/AppearanceFont";
+import { AnalyticsBeacon } from "@/components/global/AnalyticsBeacon";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const satoshi = localFont({
   src: [
@@ -112,6 +115,11 @@ export default function RootLayout({
           {children}
           <Toaster position="top-right" richColors />
         </ThemeProvider>
+        {/* Vercel traffic + performance (viewed in Vercel dashboard) */}
+        <Analytics />
+        <SpeedInsights />
+        {/* First-party pageview tracking (powers the admin dashboard metrics) */}
+        <AnalyticsBeacon />
       </body>
     </html>
   );

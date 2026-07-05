@@ -7,10 +7,10 @@ import { Navbar } from "@/components/global/Navbar";
 import { Footer } from "@/components/global/Footer";
 import { Reveal } from "@/components/global/Reveal";
 import { Button } from "@/components/ui/button";
+import { ResumeDownloadButton } from "@/components/global/ResumeDownloadButton";
 import {
   MapPin,
   Briefcase,
-  FileText,
   EnvelopeSimple,
   GithubLogo,
   LinkedinLogo,
@@ -192,12 +192,7 @@ export default async function AboutPage() {
 
                   {resumeUrl && resumeUrl !== "#" && (
                     <div className="pt-2 border-t border-border/50">
-                      <Button asChild className="w-full rounded-xl gap-2 font-semibold text-xs tracking-tight shadow-sm hover:shadow-md transition-all duration-300">
-                        <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
-                          <FileText weight="bold" className="h-4 w-4" />
-                          Download Resume
-                        </a>
-                      </Button>
+                      <ResumeDownloadButton href={resumeUrl} />
                     </div>
                   )}
                 </div>

@@ -1,15 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Mail,
   Trash2,
   PenSquare,
   RefreshCw,
-  RotateCw,
-  Unlink,
-  CircleCheck,
   Paperclip,
   Loader2,
 } from "lucide-react";
@@ -85,10 +83,8 @@ export function MessagesPageContents() {
     deleteThread,
     sendEmail,
     gmailConnected,
-    gmailEmail,
     fetchGmailStatus,
     syncGmailNow,
-    disconnectGmail,
   } = usePortfolioStore();
 
   const searchParams = useSearchParams();
@@ -99,7 +95,6 @@ export function MessagesPageContents() {
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
-  const [disconnecting, setDisconnecting] = useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
   const [composeTo, setComposeTo] = useState("");
   const [composeToName, setComposeToName] = useState("");
@@ -172,17 +167,6 @@ export function MessagesPageContents() {
     }
   }
 
-  async function handleDisconnect() {
-    setDisconnecting(true);
-    try {
-      await disconnectGmail();
-      toast.success("Gmail disconnected");
-    } catch {
-      // store already toasts the error
-    } finally {
-      setDisconnecting(false);
-    }
-  }
 
   async function handleReplySend(thread: ThreadData, payload: { bodyHtml: string; attachments: ComposerAttachment[] }) {
     await sendEmail({
@@ -237,40 +221,14 @@ export function MessagesPageContents() {
       />
 
       {!gmailConnected && !isLoading && (
-        <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/20 px-4 py-3">
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-muted/20 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2 text-sm">
             <Mail className="h-4 w-4 text-muted-foreground" />
-            <span>Connect Gmail to send replies and sync incoming mail directly from this inbox.</span>
+            <span>Connect Gmail to send replies and sync incoming mail. Manage it in Settings.</span>
           </div>
           <Button size="sm" asChild>
-            <a href="/api/admin/gmail/connect">Connect Gmail</a>
+            <Link href="/admin/dashboard/settings/integrations">Go to Settings</Link>
           </Button>
-        </div>
-      )}
-      {gmailConnected && gmailEmail && (
-        <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/10 px-4 py-2.5">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <CircleCheck className="h-3.5 w-3.5 text-green-600" />
-            Connected as <span className="text-foreground font-medium">{gmailEmail}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground gap-1.5">
-              <a href="/api/admin/gmail/connect">
-                <RotateCw className="h-3.5 w-3.5" />
-                Reconnect
-              </a>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleDisconnect}
-              disabled={disconnecting}
-              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 gap-1.5"
-            >
-              {disconnecting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Unlink className="h-3.5 w-3.5" />}
-              Disconnect
-            </Button>
-          </div>
         </div>
       )}
       </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Logo } from "@/components/global/Logo";
 import { SidebarNavLinks } from "./SidebarNavLinks";
+import { NAV_BOTTOM } from "./nav-items";
 
 interface MobileSidebarProps {
   unreadCount: number;
@@ -47,6 +48,16 @@ export function MobileSidebar({
           <SidebarNavLinks
             unreadCount={unreadCount}
             collapsed={false}
+            onNavigate={() => onOpenChange(false)}
+          />
+        </div>
+
+        {/* Pinned bottom: Settings + Account */}
+        <div className="border-t border-border px-5 py-4 shrink-0">
+          <SidebarNavLinks
+            unreadCount={unreadCount}
+            collapsed={false}
+            items={NAV_BOTTOM}
             onNavigate={() => onOpenChange(false)}
           />
         </div>

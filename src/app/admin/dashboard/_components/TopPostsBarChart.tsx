@@ -11,7 +11,7 @@ interface TopPostsBarChartProps {
 const chartConfig = {
   views: {
     label: "Views",
-    color: "var(--chart-1)",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig;
 
