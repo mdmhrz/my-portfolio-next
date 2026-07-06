@@ -22,18 +22,23 @@ import {
 
 export const revalidate = 3600; // Cache and revalidate page every hour
 
+const SITE_URL = "https://mhrazu.com";
+
 // Dynamic SEO metadata generation
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await prisma.profile.findUnique({ where: { id: "singleton" } });
   const siteTitle = profile?.bio ? `About — ${profile.bio.slice(0, 50)}...` : "About Mobarak Hossain | Full-Stack Developer";
   const siteDesc = profile?.longBio ? profile.longBio.slice(0, 160) : "Learn more about Mobarak Hossain Razu, full-stack software developer, technical background, and experience.";
+  const canonicalUrl = `${SITE_URL}/about`;
 
   return {
     title: siteTitle,
     description: siteDesc,
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title: siteTitle,
       description: siteDesc,
+      url: canonicalUrl,
       type: "profile",
     },
     twitter: {
