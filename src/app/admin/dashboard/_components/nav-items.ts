@@ -4,6 +4,7 @@ import {
   Gauge,
   LayoutDashboard,
   Briefcase,
+  KanbanSquare,
   FolderKanban,
   BookOpen,
   Sliders,
@@ -31,7 +32,8 @@ export type TabValue =
   | "blogs"
   | "blogs-display-settings"
   | "testimonials"
-  | "messages";
+  | "messages"
+  | "jobs";
 
 export interface NavItem {
   value: TabValue;
@@ -83,6 +85,12 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Inbox",
     items: [
       { value: "messages", label: "Messages", href: "/admin/dashboard/messages", icon: Mail, showBadge: true },
+    ],
+  },
+  {
+    label: "Job Tracker",
+    items: [
+      { value: "jobs", label: "Applications", href: "/admin/dashboard/jobs", icon: KanbanSquare },
     ],
   },
 ];

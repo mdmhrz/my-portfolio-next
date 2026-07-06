@@ -66,7 +66,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     /^\/admin\/dashboard\/blogs\/[^/]+\/edit$/.test(pathname);
 
   return (
-    <div className="fixed inset-0 flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-background text-foreground">
+    <div className="fixed inset-0 flex flex-col md:flex-row h-dvh w-screen overflow-hidden bg-background text-foreground">
       {/* Desktop collapsible sidebar — hidden in editor mode */}
       {!isEditorRoute && (
         <DesktopSidebar

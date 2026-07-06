@@ -11,7 +11,13 @@
     "postinstall": "prisma generate"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "migrate": "prisma migrate dev --name init",
+    "studio": "prisma studio",
+    "generate": "prisma generate",
+    "deploy": "prisma migrate deploy",
+    "reset": "prisma migrate reset --force",
+    "push": "prisma db push"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

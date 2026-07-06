@@ -76,23 +76,23 @@ model Banner {
   id            String   @id @default("singleton")
   headline      String   @default("") // Hero headline (person's name/title as shown in the hero)
   subtitle      String   @default("") // Hero eyebrow/subtitle (job title as shown in the hero)
-  description   String   // Hero tagline/pitch
-  backgroundImg String?  // Static image shown when backgroundTemplate = "none" (falls back to solid color)
-  backgroundAlt String?  // Alt text for background image
+  description   String // Hero tagline/pitch
+  backgroundImg String? // Static image shown when backgroundTemplate = "none" (falls back to solid color)
+  backgroundAlt String? // Alt text for background image
   chips         String[] // e.g., ["Frontend Dev @ Xgenious", "Docker · AWS"]
   ctaLabel      String   @default("View work")
   ctaHref       String   @default("#work")
 
   // Template system — three independent axes, freely mixable.
-  backgroundTemplate String  @default("none")      // "none" | "lattice" | "particles" | "wave"
+  backgroundTemplate String  @default("none") // "none" | "lattice" | "particles" | "wave"
   layoutTemplate     String  @default("signature") // "signature" | "showcase"
   animationTemplate  String  @default("signature") // "signature" | "fade"
   heroImage          String? // Optional showcase image some layouts use instead of the code card
   heroImageAlt       String?
   showcaseImageSide  String  @default("left") // "left" | "right" — which side the showcase image sits on (desktop)
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("banner")
 }
@@ -102,10 +102,10 @@ model Experience {
   company     String
   role        String
   location    String
-  timeline    String    // e.g., "Jul 2025 — Present"
+  timeline    String // e.g., "Jul 2025 — Present"
   description String
-  logo        String?   // Company logo URL
-  logoAlt     String?   // Alt text for company logo
+  logo        String? // Company logo URL
+  logoAlt     String? // Alt text for company logo
   order       Int       @default(0)
   projects    Project[]
   createdAt   DateTime  @default(now())
@@ -130,13 +130,13 @@ model Project {
   contributions     String[]
   live              String?
   image             String
-  imageAlt          String?     // Alt text for image
+  imageAlt          String? // Alt text for image
   featured          Boolean     @default(false) // Show in CaseStudies hero section
-  span              String?     // For UI grid layout e.g. "lg:col-span-7"
+  span              String? // For UI grid layout e.g. "lg:col-span-7"
   architectureTitle String?
   architectureDesc  String?
   architectureTree  String?
-  metrics           Json?       // List of metrics e.g. [{"label":"Deployment","value":"AWS EC2"}]
+  metrics           Json? // List of metrics e.g. [{"label":"Deployment","value":"AWS EC2"}]
   order             Int         @default(0)
   experienceId      String?
   experience        Experience? @relation(fields: [experienceId], references: [id], onDelete: SetNull)
@@ -159,7 +159,7 @@ model Cta {
 
 model Footer {
   id                String   @id @default("singleton")
-  bio               String?  // null = fall back to Profile.bio
+  bio               String? // null = fall back to Profile.bio
   availabilityBadge String   @default("Open for roles")
   availabilityText  String   @default("Currently accepting freelance contracts, SaaS consulting, and full-time frontend/full-stack engineering roles.")
   location          String   @default("Remote / UTC+6")
@@ -280,7 +280,7 @@ model Blog {
   id              String   @id @default(uuid())
   title           String
   slug            String   @unique
-  content         String   // Markdown string
+  content         String // Markdown string
   excerpt         String
   coverImage      String?
   coverImageAlt   String?
@@ -305,16 +305,16 @@ model Blog {
 model Profile {
   id           String   @id @default("singleton")
   name         String
-  designation  String   // e.g. "Full-Stack Developer"
-  bio          String   // Short bio for Journey/Hero section
-  longBio      String?  // Extended bio paragraph
-  avatarUrl    String?  // Profile photo (Cloudinary URL)
-  avatarAlt    String?  // Alt text for avatar
-  resumeUrl    String?  // Public PDF link
+  designation  String // e.g. "Full-Stack Developer"
+  bio          String // Short bio for Journey/Hero section
+  longBio      String? // Extended bio paragraph
+  avatarUrl    String? // Profile photo (Cloudinary URL)
+  avatarAlt    String? // Alt text for avatar
+  resumeUrl    String? // Public PDF link
   location     String?
-  availability String?  // e.g. "Open to work"
+  availability String? // e.g. "Open to work"
   email        String?
-  whatsapp     String?  // Public contact whatsapp number/link
+  whatsapp     String? // Public contact whatsapp number/link
   github       String?
   linkedin     String?
   facebook     String?
@@ -325,52 +325,52 @@ model Profile {
 }
 
 model SiteSettings {
-  id              String   @id @default("singleton")
+  id String @id @default("singleton")
 
   // SITE LOGO — logoUrl/logoAlt shown on a light background, logoUrlDark/logoAltDark
   // (optional) shown on a dark background. Falls back to the built-in mark if unset.
-  logoUrl         String?
-  logoAlt         String?
-  logoUrlDark     String?
-  logoAltDark     String?
+  logoUrl     String?
+  logoAlt     String?
+  logoUrlDark String?
+  logoAltDark String?
 
   // FAVICON — replaces the built-in browser-tab icon when set.
-  faviconUrl      String?
+  faviconUrl String?
 
   // FONTS
-  fontType        String?   @default("default")      // "default" | "google" | "custom"
-  fontName        String?   @default("Satoshi")
-  fontWeights     String[]  @default(["400", "500", "700", "900"])
-  customFontUrl   String?   @db.Text                 // URL to custom font (Cloudinary)
+  fontType      String?  @default("default") // "default" | "google" | "custom"
+  fontName      String?  @default("Satoshi")
+  fontWeights   String[] @default(["400", "500", "700", "900"])
+  customFontUrl String?  @db.Text // URL to custom font (Cloudinary)
 
   // COLORS — two independent sets. null = use built-in globals.css theme (restore target).
   // Shape: { mode: "simple"|"themes"|"advanced", accentColor, themePreset, customPalette }
-  publicColors    Json?                              // Public site (/, /blogs, …)
-  dashboardColors Json?                              // Admin dashboard (/admin/*)
+  publicColors    Json? // Public site (/, /blogs, …)
+  dashboardColors Json? // Admin dashboard (/admin/*)
 
   // COLORS (legacy flat fields — retained for back-compat, no longer read/written)
-  colorMode       String?   @default("simple")
-  accentColor     String?   @default("#000000")
-  themePreset     String?   @default("default")
-  customPalette   Json?
+  colorMode     String? @default("simple")
+  accentColor   String? @default("#000000")
+  themePreset   String? @default("default")
+  customPalette Json?
 
   // HOMEPAGE BLOG SECTION — controls the "Featured Articles" slider on the landing page
   // Visibility now lives in SectionConfig (key="homepageBlogs") alongside every other section.
-  homepageBlogTitle     String?                        // custom heading; null = default
-  homepageBlogSubtitle  String?                        // custom subheading; null = default
-  homepageBlogTemplate  String   @default("standard")  // "standard" | "overlay" | "minimal"
+  homepageBlogTitle    String? // custom heading; null = default
+  homepageBlogSubtitle String? // custom subheading; null = default
+  homepageBlogTemplate String  @default("standard") // "standard" | "overlay" | "minimal"
 
   // HOMEPAGE TESTIMONIALS SECTION — controls the testimonials section on the landing page
   // Visibility now lives in SectionConfig (key="testimonials") alongside every other section.
   homepageTestimonialsTitle     String?
   homepageTestimonialsSubtitle  String?
-  homepageTestimonialsTemplate  String   @default("carousel") // "carousel" | "scattered" | "autoslide" | "bento"
-  homepageTestimonialsStat      String?  // e.g. "12+" — shown only by the bento preset
-  homepageTestimonialsStatLabel String?  // e.g. "Happy Clients"
-  homepageTestimonialsCtaText   String?  // e.g. "Get in Touch"
-  homepageTestimonialsCtaLink   String?  // defaults to "/contact" if unset
+  homepageTestimonialsTemplate  String  @default("carousel") // "carousel" | "scattered" | "autoslide" | "bento"
+  homepageTestimonialsStat      String? // e.g. "12+" — shown only by the bento preset
+  homepageTestimonialsStatLabel String? // e.g. "Happy Clients"
+  homepageTestimonialsCtaText   String? // e.g. "Get in Touch"
+  homepageTestimonialsCtaLink   String? // defaults to "/contact" if unset
 
-  updatedAt       DateTime  @updatedAt
+  updatedAt DateTime @updatedAt
 
   @@map("site_settings")
 }
@@ -383,10 +383,10 @@ model Testimonial {
   quote          String   @db.Text
   avatarUrl      String?
   avatarAlt      String?
-  rating         Int?     // 1-5, optional
-  videoUrl       String?  // Optional video testimonial (Preset A "Carousel" video card)
-  highlight      String?  // Short metric badge, e.g. "8X" (Preset C "Bento Stats")
-  highlightLabel String?  // Metric caption, e.g. "Increase in conversion rate"
+  rating         Int? // 1-5, optional
+  videoUrl       String? // Optional video testimonial (Preset A "Carousel" video card)
+  highlight      String? // Short metric badge, e.g. "8X" (Preset C "Bento Stats")
+  highlightLabel String? // Metric caption, e.g. "Increase in conversion rate"
   order          Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -395,12 +395,12 @@ model Testimonial {
 }
 
 model Skill {
-  id       String   @id @default(uuid())
-  name     String
-  category String   // "frontend" | "backend" | "devops" | "tools"
-  icon     String?  // icon identifier or SVG string / image URL
-  iconAlt  String?  // Alt text for skill icon
-  order    Int      @default(0)
+  id        String   @id @default(uuid())
+  name      String
+  category  String // "frontend" | "backend" | "devops" | "tools"
+  icon      String? // icon identifier or SVG string / image URL
+  iconAlt   String? // Alt text for skill icon
+  order     Int      @default(0)
   createdAt DateTime @default(now())
 
   @@map("skill")
@@ -413,10 +413,84 @@ model AnalyticsEvent {
   type      String   @default("pageview") // "pageview" | "resume_download"
   path      String?
   referrer  String?
-  country   String?  // from the x-vercel-ip-country header when available
-  visitorId String?  // anonymous client id (localStorage) for unique-visitor counts
+  country   String? // from the x-vercel-ip-country header when available
+  visitorId String? // anonymous client id (localStorage) for unique-visitor counts
   createdAt DateTime @default(now())
 
   @@index([type, createdAt])
   @@map("analytics_event")
+}
+
+// --- Job Tracker ---
+// Personal CRM for job applications, since sources vary wildly (LinkedIn,
+// referrals, Google Forms, hard copy, …) and no single API can capture them all.
+model JobApplication {
+  id                 String           @id @default(uuid())
+  company            String
+  position           String
+  companyLogo        String?
+  jobUrl             String?
+  source             String // "linkedin" | "facebook" | "google_form" | "referral" | "friend" | "email" | "career_site" | "hard_copy" | "other"
+  applicationType    String // "easy_apply" | "external_website" | "email" | "google_form" | "hard_copy" | "referral"
+  status             String           @default("saved") // "found" | "saved" | "preparing" | "applied" | "assessment" | "interview" | "offer" | "rejected"
+  deadline           DateTime?
+  salaryMin          Int?
+  salaryMax          Int?
+  salaryCurrency     String?
+  location           String?
+  workMode           String? // "remote" | "hybrid" | "onsite"
+  resumeVersion      String?
+  coverLetterVersion String?
+  notes              String?          @db.Text
+  appliedAt          DateTime?
+  gmailThreadId      String? // manual link to a Gmail thread for this application (Phase 3)
+  calendarEventId    String? // Google Calendar event id for a scheduled interview (Phase 4)
+  calendarEventLink  String? // htmlLink to open the event in Google Calendar
+  order              Int              @default(0)
+  events             JobStatusEvent[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@map("job_application")
+}
+
+// Append-only history — every status change and manual note, so the
+// pipeline board can show how a job got to its current state, not just the state itself.
+model JobStatusEvent {
+  id             String         @id @default(uuid())
+  jobId          String
+  job            JobApplication @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  status         String
+  note           String?
+  source         String         @default("manual") // "manual" | "gmail" | "extension"
+  gmailMessageId String?        @unique // dedup marker for events auto-created by the Gmail scan
+  createdAt      DateTime       @default(now())
+
+  @@map("job_status_event")
+}
+
+// A labeled Gmail message the job-tracker scan couldn't confidently match to
+// an existing JobApplication (see src/lib/job-gmail-scan.ts) — surfaced in the
+// dashboard for a one-click manual link instead of guessing wrong.
+model UnmatchedJobEmail {
+  id              String   @id @default(uuid())
+  gmailMessageId  String   @unique
+  gmailThreadId   String?
+  fromEmail       String
+  fromName        String?
+  subject         String?
+  snippet         String?
+  suggestedStatus String // heuristic guess: "applied" | "assessment" | "interview" | "offer" | "rejected"
+  receivedAt      DateTime
+  createdAt       DateTime @default(now())
+
+  @@map("unmatched_job_email")
+}
+
+model JobTrackerSettings {
+  id         String   @id @default("singleton")
+  gmailLabel String   @default("Jobs") // Gmail label the scan searches (q: "label:<this>")
+  updatedAt  DateTime @updatedAt
+
+  @@map("job_tracker_settings")
 }

@@ -7,6 +7,7 @@ import { encrypt, decrypt } from "@/lib/crypto";
 export const GMAIL_SCOPES = [
   "https://www.googleapis.com/auth/gmail.send",
   "https://www.googleapis.com/auth/gmail.readonly",
+  "https://www.googleapis.com/auth/calendar.events",
 ];
 
 export function isGmailOAuthConfigured() {
@@ -54,9 +55,10 @@ export async function isGmailConnected() {
   return Boolean(account);
 }
 
-// Returns an authenticated Gmail API client for the single connected admin
-// account, auto-persisting rotated access tokens back to the DB.
-export async function getGmailClient() {
+// Shared by every Google API client (Gmail, Calendar, …) for the single
+// connected admin account — one OAuth2 client, auto-persisting rotated
+// access tokens back to the DB regardless of which API ends up using it.
+async function getAuthorizedClient() {
   const account = await getSingleGmailAccount();
   const client = getOAuth2Client();
 
@@ -78,7 +80,22 @@ export async function getGmailClient() {
     }
   });
 
+  return { client, account };
+}
+
+// Returns an authenticated Gmail API client for the single connected admin account.
+export async function getGmailClient() {
+  const { client, account } = await getAuthorizedClient();
   return { gmail: google.gmail({ version: "v1", auth: client }), account };
+}
+
+// Returns an authenticated Google Calendar client for the same connected
+// account — requires the `calendar.events` scope, added alongside the two
+// Gmail scopes; an account connected before this scope existed must
+// reconnect (re-consent) once via /api/admin/gmail/connect before this works.
+export async function getCalendarClient() {
+  const { client, account } = await getAuthorizedClient();
+  return { calendar: google.calendar({ version: "v3", auth: client }), account };
 }
 
 interface SendGmailMimeParams {

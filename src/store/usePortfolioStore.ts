@@ -224,11 +224,71 @@ export interface BlogData {
   updatedAt: string;
 }
 
+export interface JobStatusEventData {
+  id: string;
+  jobId: string;
+  status: string;
+  note?: string | null;
+  source: string;
+  gmailMessageId?: string | null;
+  createdAt: string;
+}
+
+export interface UnmatchedJobEmailData {
+  id: string;
+  gmailMessageId: string;
+  gmailThreadId?: string | null;
+  fromEmail: string;
+  fromName?: string | null;
+  subject?: string | null;
+  snippet?: string | null;
+  suggestedStatus: string;
+  receivedAt: string;
+  createdAt: string;
+}
+
+export interface JobTrackerSettingsData {
+  id?: string;
+  gmailLabel: string;
+  updatedAt?: string;
+}
+
+export interface JobApplicationData {
+  id: string;
+  company: string;
+  position: string;
+  companyLogo?: string | null;
+  jobUrl?: string | null;
+  source: string;
+  applicationType: string;
+  status: string;
+  deadline?: string | null;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  salaryCurrency?: string | null;
+  location?: string | null;
+  workMode?: string | null;
+  resumeVersion?: string | null;
+  coverLetterVersion?: string | null;
+  notes?: string | null;
+  appliedAt?: string | null;
+  gmailThreadId?: string | null;
+  calendarEventId?: string | null;
+  calendarEventLink?: string | null;
+  order: number;
+  events?: JobStatusEventData[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface PortfolioStore {
   banner: BannerData | null;
   experiences: ExperienceData[];
   projects: ProjectData[];
   testimonials: TestimonialData[];
+  jobs: JobApplicationData[];
+  unmatchedJobEmails: UnmatchedJobEmailData[];
+  jobTrackerSettings: JobTrackerSettingsData | null;
   threads: ThreadData[];
   gmailConnected: boolean;
   gmailEmail: string | null;
@@ -275,6 +335,22 @@ interface PortfolioStore {
   updateTestimonial: (id: string, data: Partial<TestimonialData>) => Promise<void>;
   deleteTestimonial: (id: string) => Promise<void>;
   reorderTestimonials: (items: TestimonialData[]) => Promise<void>;
+
+  fetchJobs: () => Promise<void>;
+  createJob: (data: Partial<JobApplicationData>) => Promise<void>;
+  updateJob: (id: string, data: Partial<JobApplicationData>) => Promise<void>;
+  deleteJob: (id: string) => Promise<void>;
+  addJobEvent: (id: string, data: { status?: string; note?: string }) => Promise<void>;
+
+  fetchUnmatchedJobEmails: () => Promise<void>;
+  linkUnmatchedJobEmail: (id: string, jobId: string) => Promise<void>;
+  dismissUnmatchedJobEmail: (id: string) => Promise<void>;
+  fetchJobTrackerSettings: () => Promise<void>;
+  updateJobTrackerSettings: (data: { gmailLabel: string }) => Promise<void>;
+  syncJobGmail: () => Promise<{ matched: number; unmatched: number; scanned: number }>;
+
+  addJobToCalendar: (id: string, data: { title: string; description?: string; startTime: string; durationMinutes?: number }) => Promise<void>;
+  removeJobFromCalendar: (id: string) => Promise<void>;
 
   fetchThreads: () => Promise<void>;
   fetchThread: (id: string) => Promise<ThreadData | null>;
@@ -323,6 +399,9 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   experiences: [],
   projects: [],
   testimonials: [],
+  jobs: [],
+  unmatchedJobEmails: [],
+  jobTrackerSettings: null,
   threads: [],
   gmailConnected: false,
   gmailEmail: null,
@@ -804,6 +883,128 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
     } catch (err) {
       console.error("Error reordering testimonials:", err);
       await get().fetchTestimonials();
+      throw err;
+    }
+  },
+
+  // Job Tracker Actions
+  fetchJobs: async () => {
+    try {
+      const res = await api.get("/admin/jobs");
+      set({ jobs: res.data.data });
+    } catch (err) {
+      console.error("Error fetching jobs:", err);
+    }
+  },
+  createJob: async (data) => {
+    try {
+      const res = await api.post("/admin/jobs", data);
+      set((state) => ({ jobs: [res.data.data, ...state.jobs] }));
+    } catch (err) {
+      console.error("Error creating job:", err);
+      throw err;
+    }
+  },
+  updateJob: async (id, data) => {
+    try {
+      const res = await api.patch(`/admin/jobs/${id}`, data);
+      set((state) => ({ jobs: state.jobs.map((j) => (j.id === id ? res.data.data : j)) }));
+    } catch (err) {
+      console.error("Error updating job:", err);
+      throw err;
+    }
+  },
+  deleteJob: async (id) => {
+    try {
+      await api.delete(`/admin/jobs/${id}`);
+      set((state) => ({ jobs: state.jobs.filter((j) => j.id !== id) }));
+    } catch (err) {
+      console.error("Error deleting job:", err);
+      throw err;
+    }
+  },
+  addJobEvent: async (id, data) => {
+    try {
+      const res = await api.post(`/admin/jobs/${id}/events`, data);
+      set((state) => ({
+        jobs: state.jobs.map((j) =>
+          j.id === id ? { ...j, events: [res.data.data, ...(j.events ?? [])] } : j
+        ),
+      }));
+    } catch (err) {
+      console.error("Error adding job event:", err);
+      throw err;
+    }
+  },
+
+  // Job Gmail Scan Actions
+  fetchUnmatchedJobEmails: async () => {
+    try {
+      const res = await api.get("/admin/jobs/unmatched-emails");
+      set({ unmatchedJobEmails: res.data.data });
+    } catch (err) {
+      console.error("Error fetching unmatched job emails:", err);
+    }
+  },
+  linkUnmatchedJobEmail: async (id, jobId) => {
+    try {
+      const res = await api.post(`/admin/jobs/unmatched-emails/${id}/link`, { jobId });
+      set((state) => ({
+        unmatchedJobEmails: state.unmatchedJobEmails.filter((e) => e.id !== id),
+        jobs: state.jobs.map((j) => (j.id === jobId ? res.data.data : j)),
+      }));
+    } catch (err) {
+      console.error("Error linking job email:", err);
+      throw err;
+    }
+  },
+  dismissUnmatchedJobEmail: async (id) => {
+    try {
+      await api.delete(`/admin/jobs/unmatched-emails/${id}`);
+      set((state) => ({ unmatchedJobEmails: state.unmatchedJobEmails.filter((e) => e.id !== id) }));
+    } catch (err) {
+      console.error("Error dismissing job email:", err);
+      throw err;
+    }
+  },
+  fetchJobTrackerSettings: async () => {
+    try {
+      const res = await api.get("/admin/jobs/settings");
+      set({ jobTrackerSettings: res.data.data });
+    } catch (err) {
+      console.error("Error fetching job tracker settings:", err);
+    }
+  },
+  updateJobTrackerSettings: async (data) => {
+    try {
+      const res = await api.patch("/admin/jobs/settings", data);
+      set({ jobTrackerSettings: res.data.data });
+    } catch (err) {
+      console.error("Error updating job tracker settings:", err);
+      throw err;
+    }
+  },
+  syncJobGmail: async () => {
+    const res = await api.post("/admin/jobs/gmail-scan");
+    await Promise.all([get().fetchJobs(), get().fetchUnmatchedJobEmails()]);
+    return res.data.data;
+  },
+
+  addJobToCalendar: async (id, data) => {
+    try {
+      const res = await api.post(`/admin/jobs/${id}/calendar`, data);
+      set((state) => ({ jobs: state.jobs.map((j) => (j.id === id ? res.data.data : j)) }));
+    } catch (err) {
+      console.error("Error adding job to calendar:", err);
+      throw err;
+    }
+  },
+  removeJobFromCalendar: async (id) => {
+    try {
+      const res = await api.delete(`/admin/jobs/${id}/calendar`);
+      set((state) => ({ jobs: state.jobs.map((j) => (j.id === id ? res.data.data : j)) }));
+    } catch (err) {
+      console.error("Error removing job from calendar:", err);
       throw err;
     }
   },
