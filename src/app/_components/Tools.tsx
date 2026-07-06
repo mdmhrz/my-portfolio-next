@@ -700,7 +700,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                     </div>
 
                     {/* Language Badge */}
-                    <span className="font-sans text-[9px] uppercase tracking-wider text-muted-foreground/40">
+                    <span className="font-sans text-[9px] uppercase tracking-wider text-muted-foreground/60">
                       {activeSnippet.lang}
                     </span>
                   </div>
@@ -728,7 +728,7 @@ export function Tools({ skills }: { skills?: any[] }) {
 
                   {/* Code Workspace Editor Area */}
                   <div className="relative overflow-x-auto bg-card p-6 min-h-[280px]">
-                    <div className="absolute top-4 right-5 flex items-center gap-1.5 font-sans text-[9px] text-muted-foreground/35 select-none">
+                    <div className="absolute top-4 right-5 flex items-center gap-1.5 font-sans text-[9px] text-muted-foreground/60 select-none">
                       <TerminalSquare className="h-3 w-3" /> EDITOR ACTIVE
                     </div>
                     
@@ -739,7 +739,7 @@ export function Tools({ skills }: { skills?: any[] }) {
                           return (
                             <tr key={idx} className="group/line hover:bg-primary/[0.03] dark:hover:bg-primary/[0.03] transition-colors">
                               {/* Line Number */}
-                              <td className="w-8 select-none pr-4 text-right font-mono text-[10px] text-muted-foreground/30 group-hover/line:text-primary dark:group-hover/line:text-primary font-semibold transition-colors">
+                              <td className="w-8 select-none pr-4 text-right font-mono text-[10px] text-muted-foreground/60 group-hover/line:text-primary dark:group-hover/line:text-primary font-semibold transition-colors">
                                 {idx + 1}
                               </td>
                               {/* Code Text */}

@@ -183,7 +183,7 @@ export function IntroLoader({ onDone }: { onDone: () => void }) {
         <span>[</span>
         <span ref={pctRef} className="text-foreground font-bold min-w-[24px] text-right">0</span>
         <span>% ]</span>
-        <span className="text-muted-foreground/30">•</span>
+        <span className="text-muted-foreground/30" aria-hidden="true">•</span>
         <span className="flex overflow-hidden text-primary dark:text-primary">
           {"INITIALIZING PORTFOLIO".split("").map((char, index) => (
             <motion.span

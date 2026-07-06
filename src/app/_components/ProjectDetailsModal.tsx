@@ -118,9 +118,9 @@ export function ProjectDetailsModal({ project, onClose, onNavigate, allProjects 
                     <span className="inline-block rounded-full border border-primary/10 dark:border-primary/15 bg-primary/[0.04] dark:bg-primary/[0.04] px-3 py-1 text-xs text-primary dark:text-primary">
                       {project.category}
                     </span>
-                    <h1 className="mt-4 text-4xl font-medium tracking-tight text-foreground md:text-5xl lg:text-6xl leading-[1.15]">
+                    <h2 className="mt-4 text-4xl font-medium tracking-tight text-foreground md:text-5xl lg:text-6xl leading-[1.15]">
                       {project.title}
-                    </h1>
+                    </h2>
                     <p className="mt-2 text-base text-muted-foreground md:text-lg">
                       {project.subtitle}
                     </p>

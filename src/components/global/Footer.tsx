@@ -230,7 +230,8 @@ export function Footer({ profile, footer, navLinks, logoUrl, logoAlt, logoUrlDar
           onMouseLeave={() => setIsWatermarkHovered(false)}
           className="relative group/watermark select-none overflow-hidden pt-6 pb-2 text-center"
         >
-          <span 
+          <span
+            aria-hidden="true"
             className={`block text-[clamp(2rem,11.5vw,7.5rem)] font-extrabold uppercase leading-none tracking-tighter select-none pointer-events-none transition-all duration-700 ${
               isWatermarkHovered
                 ? "text-primary/70"
