@@ -10,6 +10,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     where: { published: true },
     select: { slug: true, updatedAt: true },
     orderBy: { createdAt: "desc" },
+  }).catch((error) => {
+    console.error("Sitemap DB query failed, returning static routes only:", error);
+    return [];
   });
 
   const blogEntries: MetadataRoute.Sitemap = blogs.map((blog) => ({

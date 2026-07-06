@@ -26,7 +26,7 @@ const SITE_DESCRIPTION =
   "Mobarak Hossain Razu — Full-Stack Developer specializing in Next.js, React, Node.js, Go, PostgreSQL, Docker, and AWS.";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+  const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } }).catch(() => null);
   const favicon = settings?.faviconUrl || "/brand/default-favicon.svg";
 
   return {
@@ -37,9 +37,11 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: SITE_DESCRIPTION,
     keywords: [
-      "Full-Stack Developer", "Next.js", "React", "Node.js", "Go",
-      "PostgreSQL", "Docker", "AWS", "Mobarak Hossain", "Razu",
-      "Software Engineer", "Portfolio", "Bangladesh Developer",
+      "Full-Stack Developer", "Md. Mobarak Hossain", "Mobarak Hossain Razu", "Razu",
+      "Next.js Developer", "React Developer", "Node.js Developer", "Go Developer",
+      "TypeScript", "JavaScript", "PostgreSQL", "Prisma ORM", "Docker", "AWS",
+      "Tailwind CSS", "REST API", "System Design", "SaaS Development",
+      "Web Application Developer", "Software Engineer", "Bangladesh Developer", "Portfolio",
     ],
     authors: [{ name: SITE_NAME, url: SITE_URL }],
     creator: SITE_NAME,
@@ -88,7 +90,11 @@ const personJsonLd = {
   url: SITE_URL,
   jobTitle: "Full-Stack Developer",
   description: SITE_DESCRIPTION,
-  sameAs: ["https://github.com/mdmhrz"],
+  sameAs: [
+    "https://github.com/mdmhrz",
+    "https://www.linkedin.com/in/mdmhrz",
+    "https://www.facebook.com/mdmhrz",
+  ],
 };
 
 export default function RootLayout({
@@ -97,6 +103,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={satoshi.variable} suppressHydrationWarning>
       <head>
+        {/* This is for development purpose only-React Grab */}
         {process.env.NODE_ENV === "development" && (
           <Script
             src="//unpkg.com/react-grab/dist/index.global.js"
@@ -105,18 +112,27 @@ export default function RootLayout({
           />
         )}
       </head>
+
       <body className="antialiased font-sans bg-background text-foreground">
+
+        {/* Applies the admin-configured font override to the document at runtime */}
         <AppearanceFont />
+
+        {/* Person structured data (JSON-LD) so search engines can surface a rich snippet */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
+
+        {/* Supplies light/dark theme context to the app and persists the user's preference */}
         <ThemeProvider>
           {children}
+          {/* Renders toast notifications triggered from anywhere in the app */}
           <Toaster position="top-right" richColors />
         </ThemeProvider>
-        {/* Vercel traffic + performance (viewed in Vercel dashboard) */}
+        {/* Vercel Analytics — tracks page views and traffic (viewed in Vercel dashboard) */}
         <Analytics />
+        {/* Vercel Speed Insights — tracks Core Web Vitals performance (viewed in Vercel dashboard) */}
         <SpeedInsights />
         {/* First-party pageview tracking (powers the admin dashboard metrics) */}
         <AnalyticsBeacon />

@@ -31,7 +31,7 @@ export async function generateStaticParams() {
   const blogs = await prisma.blog.findMany({
     where: { published: true },
     select: { slug: true },
-  });
+  }).catch(() => []);
   return blogs.map((b) => ({ slug: b.slug }));
 }
 
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
       createdAt: true,
       updatedAt: true,
     },
-  });
+  }).catch(() => null);
   if (!post) return {};
 
   const canonicalUrl = `${SITE_URL}/blogs/${slug}`;
@@ -99,15 +99,40 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { slug } = await params;
 
-  const post = await prisma.blog.findFirst({
-    where: { slug, published: true },
-  });
+  let post;
+  try {
+    post = await prisma.blog.findFirst({
+      where: { slug, published: true },
+    });
+  } catch (error) {
+    console.error("Blog post DB query failed:", error);
+    // DB is unreachable — this is a temporary outage, not a missing post,
+    // so show a friendly retry message rather than a misleading 404.
+    return (
+      <div className="relative mx-auto max-w-2xl px-6 py-32 text-center">
+        <h1 className="text-2xl font-medium tracking-tight text-foreground">
+          This article is temporarily unavailable
+        </h1>
+        <p className="mt-4 text-muted-foreground">
+          We&apos;re having trouble loading this content right now. Please try again in a moment.
+        </p>
+        <Link
+          href="/blogs"
+          className="mt-8 inline-flex items-center gap-2 text-xs font-sans uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Blogs
+        </Link>
+      </div>
+    );
+  }
 
   if (!post) {
     notFound();
   }
 
-  // Previous / next published articles (by publish date).
+  // Previous / next published articles (by publish date). Best-effort — if the
+  // DB hiccups here the article itself still renders, just without these links.
   const [prev, next] = await Promise.all([
     prisma.blog.findFirst({
       where: { published: true, createdAt: { lt: post.createdAt } },
@@ -119,24 +144,33 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       orderBy: { createdAt: "asc" },
       select: { slug: true, title: true },
     }),
-  ]);
+  ]).catch((error) => {
+    console.error("Blog prev/next DB query failed:", error);
+    return [null, null];
+  });
 
   // Related posts (same category, fall back to latest others).
-  let related = post.category
-    ? await prisma.blog.findMany({
-        where: { published: true, id: { not: post.id }, category: post.category },
+  let related: { slug: string; title: string; coverImage: string | null; coverImageAlt: string | null; createdAt: Date }[] = [];
+  try {
+    related = post.category
+      ? await prisma.blog.findMany({
+          where: { published: true, id: { not: post.id }, category: post.category },
+          orderBy: { createdAt: "desc" },
+          take: 3,
+          select: { slug: true, title: true, coverImage: true, coverImageAlt: true, createdAt: true },
+        })
+      : [];
+    if (related.length === 0) {
+      related = await prisma.blog.findMany({
+        where: { published: true, id: { not: post.id } },
         orderBy: { createdAt: "desc" },
         take: 3,
         select: { slug: true, title: true, coverImage: true, coverImageAlt: true, createdAt: true },
-      })
-    : [];
-  if (related.length === 0) {
-    related = await prisma.blog.findMany({
-      where: { published: true, id: { not: post.id } },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-      select: { slug: true, title: true, coverImage: true, coverImageAlt: true, createdAt: true },
-    });
+      });
+    }
+  } catch (error) {
+    console.error("Related posts DB query failed:", error);
+    related = [];
   }
 
   // Build the Table of Contents from H2/H3 headings.

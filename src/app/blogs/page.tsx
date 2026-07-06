@@ -44,6 +44,9 @@ export default async function BlogListPage() {
       views: true,
       createdAt: true,
     },
+  }).catch((error) => {
+    console.error("Blog list DB query failed, rendering with fallback content:", error);
+    return [];
   });
 
   // Collect all unique tags across all posts

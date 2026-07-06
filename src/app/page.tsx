@@ -4,8 +4,26 @@ import { AppearanceColorScope } from "@/components/global/AppearanceColorScope";
 
 export const revalidate = 3600; // Revalidate every hour; admin mutations call revalidatePath("/")
 
+// Rendered when the DB is unreachable, so the homepage still shows every
+// section (each one falls back to its own static/default content) instead
+// of a hard 500.
+const DEFAULT_SECTIONS = [
+  { key: "techMarquee", order: 0, visible: true },
+  { key: "journey", order: 1, visible: true },
+  { key: "experience", order: 2, visible: true },
+  { key: "tools", order: 3, visible: true },
+  { key: "caseStudies", order: 4, visible: true },
+  { key: "homepageBlogs", order: 5, visible: true },
+  { key: "testimonials", order: 6, visible: true },
+  { key: "cta", order: 7, visible: true },
+  { key: "contact", order: 8, visible: true },
+];
+
 export default async function Home() {
-  const [banner, experiences, projects, profile, settings, skills, homepageBlogs, testimonials, cta, footer, navLinks, sections] = await Promise.all([
+  let banner: any, experiences: any[], projects: any[], profile: any, settings: any, skills: any[], homepageBlogs: any[], testimonials: any[], cta: any, footer: any, navLinks: any[], sections: any[];
+
+  try {
+    [banner, experiences, projects, profile, settings, skills, homepageBlogs, testimonials, cta, footer, navLinks, sections] = await Promise.all([
     prisma.banner.findFirst(),
     prisma.experience.findMany({
       include: {
@@ -80,7 +98,22 @@ export default async function Home() {
     prisma.footer.findUnique({ where: { id: "singleton" } }),
     prisma.navLink.findMany({ orderBy: { order: "asc" } }),
     prisma.sectionConfig.findMany({ orderBy: { order: "asc" } }),
-  ]);
+    ]);
+  } catch (error) {
+    console.error("Homepage DB query failed, rendering with fallback content:", error);
+    banner = null;
+    experiences = [];
+    projects = [];
+    profile = null;
+    settings = null;
+    skills = [];
+    homepageBlogs = [];
+    testimonials = [];
+    cta = null;
+    footer = null;
+    navLinks = [];
+    sections = DEFAULT_SECTIONS;
+  }
 
   const serializedBlogs = homepageBlogs.map((b) => ({
     ...b,

@@ -26,7 +26,7 @@ const SITE_URL = "https://mhrazu.com";
 
 // Dynamic SEO metadata generation
 export async function generateMetadata(): Promise<Metadata> {
-  const profile = await prisma.profile.findUnique({ where: { id: "singleton" } });
+  const profile = await prisma.profile.findUnique({ where: { id: "singleton" } }).catch(() => null);
   const siteTitle = profile?.bio ? `About — ${profile.bio.slice(0, 50)}...` : "About Mobarak Hossain | Full-Stack Developer";
   const siteDesc = profile?.longBio ? profile.longBio.slice(0, 160) : "Learn more about Mobarak Hossain Razu, full-stack software developer, technical background, and experience.";
   const canonicalUrl = `${SITE_URL}/about`;
@@ -50,13 +50,24 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [profile, settings, skills, footer, navLinks] = await Promise.all([
-    prisma.profile.findUnique({ where: { id: "singleton" } }),
-    prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
-    prisma.skill.findMany({ orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
-    prisma.footer.findUnique({ where: { id: "singleton" } }),
-    prisma.navLink.findMany({ orderBy: { order: "asc" } }),
-  ]);
+  let profile: any, settings: any, skills: any[], footer: any, navLinks: any[];
+
+  try {
+    [profile, settings, skills, footer, navLinks] = await Promise.all([
+      prisma.profile.findUnique({ where: { id: "singleton" } }),
+      prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
+      prisma.skill.findMany({ orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
+      prisma.footer.findUnique({ where: { id: "singleton" } }),
+      prisma.navLink.findMany({ orderBy: { order: "asc" } }),
+    ]);
+  } catch (error) {
+    console.error("About page DB query failed, rendering with fallback content:", error);
+    profile = null;
+    settings = null;
+    skills = [];
+    footer = null;
+    navLinks = [];
+  }
 
   // Fallback defaults if DB is empty
   const defaultProfile = {
@@ -96,20 +107,26 @@ export default async function AboutPage() {
 
   const categoriesOrder = ["frontend", "backend", "devops", "tools", "other"];
 
-  // Person Structured Data Schema for SEO
+  // AboutPage wrapping the Person as mainEntity — the root layout already emits a
+  // sitewide Person block, so this avoids a second, conflicting top-level Person
+  // entity (different sameAs lists) competing on the same page.
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Person",
-    "name": name,
-    "jobTitle": designation,
+    "@type": "AboutPage",
+    "name": `About ${name}`,
     "url": "https://mhrazu.com/about",
-    "image": avatarUrl,
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": location,
+    "mainEntity": {
+      "@type": "Person",
+      "name": name,
+      "jobTitle": designation,
+      "image": avatarUrl,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": location,
+      },
+      "description": bio,
+      "sameAs": [github, linkedin, facebook],
     },
-    "description": bio,
-    "sameAs": [github, linkedin, facebook],
   };
 
   return (

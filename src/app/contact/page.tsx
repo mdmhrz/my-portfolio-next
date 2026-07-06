@@ -23,7 +23,7 @@ const SITE_URL = "https://mhrazu.com";
 
 // Dynamic SEO metadata generation
 export async function generateMetadata(): Promise<Metadata> {
-  const profile = await prisma.profile.findUnique({ where: { id: "singleton" } });
+  const profile = await prisma.profile.findUnique({ where: { id: "singleton" } }).catch(() => null);
   const siteTitle = "Contact Mobarak Hossain Razu | Full-Stack Software Developer";
   const siteDesc = profile?.bio ? `Get in touch with Mobarak Hossain: ${profile.bio}` : "Contact Mobarak Hossain Razu for freelance projects, full-time opportunities, or tech collaboration.";
   const canonicalUrl = `${SITE_URL}/contact`;
@@ -47,12 +47,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const [profile, settings, footer, navLinks] = await Promise.all([
-    prisma.profile.findUnique({ where: { id: "singleton" } }),
-    prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
-    prisma.footer.findUnique({ where: { id: "singleton" } }),
-    prisma.navLink.findMany({ orderBy: { order: "asc" } }),
-  ]);
+  let profile: any, settings: any, footer: any, navLinks: any[];
+
+  try {
+    [profile, settings, footer, navLinks] = await Promise.all([
+      prisma.profile.findUnique({ where: { id: "singleton" } }),
+      prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
+      prisma.footer.findUnique({ where: { id: "singleton" } }),
+      prisma.navLink.findMany({ orderBy: { order: "asc" } }),
+    ]);
+  } catch (error) {
+    console.error("Contact page DB query failed, rendering with fallback content:", error);
+    profile = null;
+    settings = null;
+    footer = null;
+    navLinks = [];
+  }
 
   const email = profile?.email || "mdmobarakhossainrazu@gmail.com";
   const github = profile?.github || "https://github.com/mdmhrz";
@@ -110,6 +120,7 @@ export default async function ContactPage() {
         "@type": "PostalAddress",
         "addressLocality": location,
       },
+      "sameAs": [github, linkedin, facebook],
     },
   };
 
