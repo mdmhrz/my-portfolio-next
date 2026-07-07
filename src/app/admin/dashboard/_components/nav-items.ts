@@ -15,6 +15,7 @@ import {
   PanelBottom,
   Link2,
   MessageSquareQuote,
+  ShieldCheck,
 } from "lucide-react";
 
 export type TabValue =
@@ -33,7 +34,8 @@ export type TabValue =
   | "blogs-display-settings"
   | "testimonials"
   | "messages"
-  | "jobs";
+  | "jobs"
+  | "vault";
 
 export interface NavItem {
   value: TabValue;
@@ -91,6 +93,12 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Job Tracker",
     items: [
       { value: "jobs", label: "Applications", href: "/admin/dashboard/jobs", icon: KanbanSquare },
+    ],
+  },
+  {
+    label: "Vault",
+    items: [
+      { value: "vault", label: "Secrets", href: "/admin/dashboard/vault", icon: ShieldCheck },
     ],
   },
 ];

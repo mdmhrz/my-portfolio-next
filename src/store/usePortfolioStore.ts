@@ -253,6 +253,61 @@ export interface JobTrackerSettingsData {
   updatedAt?: string;
 }
 
+// `value` is only ever present on fields returned by revealVaultItem() — the
+// masked list/detail reads never include it, and it must never be persisted
+// outside component-local state (no localStorage, no long-lived store field).
+export interface VaultFieldData {
+  id?: string;
+  label: string;
+  type: string; // "text" | "password" | "url" | "textarea" | "json" | "env" | "number"
+  order: number;
+  value?: string;
+}
+
+export interface VaultAuditLogData {
+  id: string;
+  vaultItemId: string | null;
+  action: string; // "created" | "opened" | "copied" | "updated" | "deleted" | "restored"
+  fieldLabel?: string | null;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  createdAt: string;
+}
+
+export interface VaultRevealResult {
+  success: boolean;
+  requiresPassword?: boolean;
+  error?: string;
+  data?: VaultFieldData[];
+}
+
+// Metadata only (field labels, no values) — browsing history never requires a reveal.
+export interface VaultHistoryData {
+  id: string;
+  changedAt: string;
+  fieldLabels: string[];
+}
+
+export interface VaultRestoreResult {
+  success: boolean;
+  requiresPassword?: boolean;
+  error?: string;
+  data?: VaultItemData;
+}
+
+export interface VaultItemData {
+  id: string;
+  title: string;
+  category: string;
+  description?: string | null;
+  tags: string[];
+  favorite: boolean;
+  expiresAt?: string | null;
+  fields: VaultFieldData[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface JobApplicationData {
   id: string;
   company: string;
@@ -287,6 +342,7 @@ interface PortfolioStore {
   projects: ProjectData[];
   testimonials: TestimonialData[];
   jobs: JobApplicationData[];
+  vaultItems: VaultItemData[];
   unmatchedJobEmails: UnmatchedJobEmailData[];
   jobTrackerSettings: JobTrackerSettingsData | null;
   threads: ThreadData[];
@@ -353,6 +409,32 @@ interface PortfolioStore {
   addJobToCalendar: (id: string, data: { title: string; description?: string; startTime: string; durationMinutes?: number }) => Promise<void>;
   removeJobFromCalendar: (id: string) => Promise<void>;
 
+  fetchVaultItems: () => Promise<void>;
+  createVaultItem: (data: {
+    title: string;
+    category: string;
+    description?: string | null;
+    tags?: string[];
+    favorite?: boolean;
+    expiresAt?: string | null;
+    fields: { label: string; type?: string; value: string }[];
+  }) => Promise<void>;
+  updateVaultItem: (id: string, data: {
+    title?: string;
+    category?: string;
+    description?: string | null;
+    tags?: string[];
+    favorite?: boolean;
+    expiresAt?: string | null;
+    fields?: { label: string; type?: string; value: string }[];
+  }) => Promise<void>;
+  deleteVaultItem: (id: string) => Promise<void>;
+  revealVaultItem: (id: string, password?: string) => Promise<VaultRevealResult>;
+  fetchVaultAuditLog: (id: string) => Promise<VaultAuditLogData[]>;
+  logVaultCopy: (id: string, fieldLabel?: string) => void;
+  fetchVaultHistory: (id: string) => Promise<VaultHistoryData[]>;
+  restoreVaultItemVersion: (id: string, historyId: string, password?: string) => Promise<VaultRestoreResult>;
+
   fetchThreads: () => Promise<void>;
   fetchThread: (id: string) => Promise<ThreadData | null>;
   markThreadRead: (id: string, unread: boolean) => Promise<void>;
@@ -401,6 +483,7 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
   projects: [],
   testimonials: [],
   jobs: [],
+  vaultItems: [],
   unmatchedJobEmails: [],
   jobTrackerSettings: null,
   threads: [],
@@ -1021,5 +1104,80 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
       console.error("Error removing job from calendar:", err);
       throw err;
     }
+  },
+
+  // Secrets Vault Actions
+  fetchVaultItems: async () => {
+    try {
+      const res = await api.get("/admin/vault");
+      set({ vaultItems: res.data.data });
+    } catch (err) {
+      console.error("Error fetching vault items:", err);
+    }
+  },
+  createVaultItem: async (data) => {
+    try {
+      const res = await api.post("/admin/vault", data);
+      set((state) => ({ vaultItems: [res.data.data, ...state.vaultItems] }));
+    } catch (err) {
+      console.error("Error creating vault item:", err);
+      throw err;
+    }
+  },
+  updateVaultItem: async (id, data) => {
+    try {
+      const res = await api.patch(`/admin/vault/${id}`, data);
+      set((state) => ({ vaultItems: state.vaultItems.map((v) => (v.id === id ? res.data.data : v)) }));
+    } catch (err) {
+      console.error("Error updating vault item:", err);
+      throw err;
+    }
+  },
+  deleteVaultItem: async (id) => {
+    try {
+      await api.delete(`/admin/vault/${id}`);
+      set((state) => ({ vaultItems: state.vaultItems.filter((v) => v.id !== id) }));
+    } catch (err) {
+      console.error("Error deleting vault item:", err);
+      throw err;
+    }
+  },
+  // Deliberately does not touch `vaultItems` state — revealed plaintext lives
+  // only in the calling component's local state, never in the store. Returns
+  // the whole response body (not just `.data`) since `requiresPassword` is a
+  // normal step in the flow, not an error — showToast:false so the caller
+  // decides how to surface it instead of a generic axios interceptor toast.
+  revealVaultItem: async (id, password) => {
+    const res = await api.post(
+      `/admin/vault/${id}/reveal`,
+      password ? { password } : {},
+      { showToast: false }
+    );
+    return res.data as VaultRevealResult;
+  },
+  fetchVaultAuditLog: async (id) => {
+    const res = await api.get(`/admin/vault/${id}/audit`);
+    return res.data.data as VaultAuditLogData[];
+  },
+  // Fire-and-forget — a copy should never feel slower because of logging.
+  logVaultCopy: (id, fieldLabel) => {
+    api.post(`/admin/vault/${id}/audit`, { fieldLabel }, { showToast: false }).catch(() => {});
+  },
+  fetchVaultHistory: async (id) => {
+    const res = await api.get(`/admin/vault/${id}/history`);
+    return res.data.data as VaultHistoryData[];
+  },
+  // Same "200 even when re-auth is needed" shape as revealVaultItem — restoring
+  // is exactly as sensitive as revealing, so it goes through the same dance.
+  restoreVaultItemVersion: async (id, historyId, password) => {
+    const res = await api.post(
+      `/admin/vault/${id}/history/${historyId}/restore`,
+      password ? { password } : {},
+      { showToast: false }
+    );
+    if (res.data.success) {
+      set((state) => ({ vaultItems: state.vaultItems.map((v) => (v.id === id ? res.data.data : v)) }));
+    }
+    return res.data as VaultRestoreResult;
   },
 }));

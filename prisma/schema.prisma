@@ -494,3 +494,76 @@ model JobTrackerSettings {
 
   @@map("job_tracker_settings")
 }
+
+// --- Secrets Vault ---
+// Single place for every credential/secret (API keys, DB URLs, SSH keys, env
+// vars, ...). No typed columns on purpose — VaultField.type + encryptedValue
+// is the only shape, so a new kind of secret never needs a migration.
+model VaultItem {
+  id          String             @id @default(uuid())
+  title       String
+  category    String // free-form: "Password" | "API" | "Database" | "Server" | "OAuth" | "Payment" | "Email" | "DNS" | "Cloud" | "Personal" | "Custom"
+  description String?
+  tags        String[]
+  favorite    Boolean            @default(false)
+  expiresAt   DateTime?
+  fields      VaultField[]
+  history     VaultItemHistory[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@map("vault_item")
+}
+
+// One labeled value on an item. `encryptedValue` is always ciphertext
+// regardless of `type` — type only drives how the UI renders/masks it.
+model VaultField {
+  id             String    @id @default(uuid())
+  vaultItemId    String
+  vaultItem      VaultItem @relation(fields: [vaultItemId], references: [id], onDelete: Cascade)
+  label          String // e.g. "API Key", "Host", "Signing Secret"
+  type           String    @default("password") // "text" | "password" | "url" | "textarea" | "json" | "env" | "number"
+  encryptedValue String    @db.Text
+  order          Int       @default(0)
+
+  @@map("vault_field")
+}
+
+// Append-only snapshot taken on every edit, so a changed/rotated secret can
+// be rolled back to what it was before.
+model VaultItemHistory {
+  id          String    @id @default(uuid())
+  vaultItemId String
+  vaultItem   VaultItem @relation(fields: [vaultItemId], references: [id], onDelete: Cascade)
+  snapshot    Json // [{ label, type, encryptedValue, order }, ...] as of changedAt
+  changedAt   DateTime  @default(now())
+
+  @@map("vault_item_history")
+}
+
+// Deliberately no relation to VaultItem — an audit trail must survive the
+// item it refers to being deleted (the "deleted" entry itself would vanish
+// on cascade otherwise), so vaultItemId is a plain, unconstrained reference.
+model VaultAuditLog {
+  id          String   @id @default(uuid())
+  vaultItemId String?
+  action      String // "created" | "opened" | "copied" | "updated" | "deleted" | "restored"
+  fieldLabel  String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@map("vault_audit_log")
+}
+
+// Backs the reveal rate limit — DB-backed (not in-memory) since this app runs
+// on Vercel's stateless serverless functions, where in-memory counters don't
+// survive across invocations.
+model VaultLoginAttempt {
+  id        String   @id @default(uuid())
+  success   Boolean
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@map("vault_login_attempt")
+}
