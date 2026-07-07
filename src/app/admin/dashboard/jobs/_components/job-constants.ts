@@ -22,6 +22,19 @@ export const JOB_STATUS_COLORS: Record<string, string> = {
   rejected: "bg-destructive/10 text-destructive",
 };
 
+// Border-color counterpart to JOB_STATUS_COLORS — same hues, used for the
+// Kanban card's left status accent instead of a badge background.
+export const JOB_STATUS_BORDER_COLORS: Record<string, string> = {
+  found: "border-l-muted-foreground/40",
+  saved: "border-l-secondary-foreground/40",
+  preparing: "border-l-blue-500",
+  applied: "border-l-indigo-500",
+  assessment: "border-l-amber-500",
+  interview: "border-l-purple-500",
+  offer: "border-l-emerald-500",
+  rejected: "border-l-destructive",
+};
+
 export const JOB_SOURCES = [
   { value: "linkedin", label: "LinkedIn" },
   { value: "facebook", label: "Facebook" },

@@ -115,7 +115,7 @@ export function JobDetailSheet({ job, onOpenChange, onEdit, onAddNote }: JobDeta
 
   return (
     <Sheet open={!!job} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-md">
+      <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>{job.position}</SheetTitle>
           <SheetDescription>{job.company}</SheetDescription>

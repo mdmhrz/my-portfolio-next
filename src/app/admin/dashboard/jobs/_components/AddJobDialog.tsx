@@ -81,6 +81,47 @@ export function AddJobDialog({ open, onOpenChange, job, resumeVersions, coverLet
   const [form, setForm] = useState<JobForm>(() => formFromJob(job));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [jdOpen, setJdOpen] = useState(false);
+  const [jdText, setJdText] = useState('');
+  const [jdParsing, setJdParsing] = useState(false);
+  const [jdError, setJdError] = useState<string | null>(null);
+
+  const parseJd = async () => {
+    if (!jdText.trim()) return;
+    setJdParsing(true);
+    setJdError(null);
+    try {
+      const res = await fetch('/api/admin/jobs/parse-jd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: jdText }),
+      });
+      const json = await res.json();
+      if (!json.success) {
+        setJdError(json.error || 'Failed to parse job description');
+        return;
+      }
+      const d = json.data as Record<string, string | number | null>;
+      setForm((f) => ({
+        ...f,
+        company: (d.company as string) || f.company,
+        position: (d.position as string) || f.position,
+        location: (d.location as string) || f.location,
+        salaryMin: d.salaryMin != null ? String(d.salaryMin) : f.salaryMin,
+        salaryMax: d.salaryMax != null ? String(d.salaryMax) : f.salaryMax,
+        salaryCurrency: (d.salaryCurrency as string) || f.salaryCurrency,
+        workMode: (d.workMode as string) || f.workMode,
+        jobUrl: (d.jobUrl as string) || f.jobUrl,
+        notes: d.notes ? (f.notes ? `${f.notes}\n\n${d.notes}` : (d.notes as string)) : f.notes,
+      }));
+      setJdOpen(false);
+      setJdText('');
+    } catch {
+      setJdError('Network error — try again');
+    } finally {
+      setJdParsing(false);
+    }
+  };
 
   const submit = async () => {
     const parsed = jobSchema.safeParse(form);
@@ -117,6 +158,34 @@ export function AddJobDialog({ open, onOpenChange, job, resumeVersions, coverLet
         </>
       }
     >
+      {!job && (
+        <div className="rounded-lg border border-dashed p-3 space-y-2">
+          {!jdOpen ? (
+            <Button type="button" variant="ghost" size="sm" onClick={() => setJdOpen(true)}>
+              ✨ Paste a job description to prefill
+            </Button>
+          ) : (
+            <>
+              <Textarea
+                rows={5}
+                value={jdText}
+                onChange={(e) => setJdText(e.target.value)}
+                placeholder="Paste the job posting text here…"
+              />
+              <div className="flex items-center gap-2">
+                <Button type="button" size="sm" onClick={parseJd} disabled={jdParsing || !jdText.trim()}>
+                  {jdParsing ? 'Parsing…' : 'Parse with AI'}
+                </Button>
+                <Button type="button" variant="ghost" size="sm" onClick={() => { setJdOpen(false); setJdError(null); }}>
+                  Cancel
+                </Button>
+              </div>
+              {jdError && <p className="text-xs text-destructive">{jdError}</p>}
+            </>
+          )}
+        </div>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Company *" error={errors.company}>
           <Input value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder="Acme Inc." />

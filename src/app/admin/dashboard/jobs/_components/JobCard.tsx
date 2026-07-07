@@ -1,6 +1,8 @@
 'use client';
 
-import { Pencil, Trash2, Eye, Calendar, MapPin } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Pencil, Trash2, Eye, Calendar, MapPin, GripVertical } from 'lucide-react';
 import { JobApplicationData } from '@/store/usePortfolioStore';
 import { RowActionsMenu } from '@/components/admin/RowActionsMenu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -8,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   JOB_STATUSES,
   JOB_STATUS_COLORS,
+  JOB_STATUS_BORDER_COLORS,
   JOB_SOURCES,
   JOB_WORK_MODES,
   labelFor,
@@ -27,14 +30,37 @@ export function JobCard({ job, onOpenDetail, onEdit, onDelete, onStatusChange }:
   const salary = formatSalary(job.salaryMin, job.salaryMax, job.salaryCurrency);
   const deadline = formatDate(job.deadline);
 
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: job.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
-    <div className="space-y-3 rounded-lg border border-border bg-background p-4">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`space-y-3 rounded-lg border border-l-2 border-border bg-background p-4 shadow-sm transition-shadow hover:shadow-md ${
+        JOB_STATUS_BORDER_COLORS[job.status] ?? ''
+      } ${isDragging ? 'opacity-50' : ''}`}
+    >
       <div className="flex items-start justify-between gap-2">
         <button
           type="button"
           onClick={() => onOpenDetail(job)}
-          className="flex min-w-0 flex-1 items-center gap-3 text-left"
+          className="flex min-w-0 flex-1 items-center gap-2 text-left"
         >
+          <span
+            {...attributes}
+            {...listeners}
+            onClick={(e) => e.stopPropagation()}
+            className="shrink-0 cursor-grab touch-none text-muted-foreground/50 hover:text-muted-foreground active:cursor-grabbing"
+          >
+            <GripVertical className="h-4 w-4" />
+          </span>
           <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted text-xs font-semibold text-muted-foreground">
             {job.companyLogo ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -79,7 +105,7 @@ export function JobCard({ job, onOpenDetail, onEdit, onDelete, onStatusChange }:
       )}
 
       <Select value={job.status} onValueChange={(v) => onStatusChange(job, v)}>
-        <SelectTrigger className={`w-full ${JOB_STATUS_COLORS[job.status] ?? ''}`}>
+        <SelectTrigger className={`h-8 w-full text-xs ${JOB_STATUS_COLORS[job.status] ?? ''}`}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

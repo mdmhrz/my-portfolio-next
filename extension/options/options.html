@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Job Tracker Settings</title>
+    <style>
+      body {
+        font: 14px/1.5 system-ui, -apple-system, sans-serif;
+        max-width: 420px;
+        margin: 32px auto;
+        color: #1a1a1a;
+        background: #fff;
+      }
+      h1 {
+        font-size: 16px;
+        margin: 0 0 16px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin: 16px 0 4px;
+      }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        border: 1px solid #d0d0d0;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+      button {
+        margin-top: 20px;
+        padding: 8px 16px;
+        background: #4f46e5;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #4338ca;
+      }
+      #status {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #16a34a;
+        min-height: 16px;
+      }
+      p.hint {
+        color: #666;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>mhrazu.com Job Tracker — Settings</h1>
+
+    <label for="apiBaseUrl">Dashboard URL</label>
+    <input id="apiBaseUrl" placeholder="https://mhrazu.com" />
+    <p class="hint">Use http://localhost:3000 while testing locally.</p>
+
+    <label for="apiToken">API Token</label>
+    <input id="apiToken" type="password" placeholder="JOB_IMPORT_TOKEN value" />
+    <p class="hint">Matches the JOB_IMPORT_TOKEN environment variable on the server.</p>
+
+    <button id="save">Save</button>
+    <div id="status"></div>
+
+    <script src="options.js"></script>
+  </body>
+</html>

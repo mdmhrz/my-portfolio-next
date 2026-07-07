@@ -19,7 +19,7 @@ The foundation. Ships a fully usable manual tracker before any automation exists
 
 **Shipped:** Prisma models + migration `20260706181146_add_job_tracker`, all three API routes, `jobs` store slice in `usePortfolioStore.ts`, "Job Tracker" nav group, and the full dashboard page (board view with per-card status `Select`, table view, `AddJobDialog` create/edit, `JobDetailSheet` with timeline + note-adding). `npx tsc --noEmit`, `eslint`, and `next build` all pass clean; smoke-tested against the running dev server (`/admin/dashboard/jobs` → 200, `/api/admin/jobs` → 401 unauthenticated, as expected).
 
-**One deviation from the original spec:** no drag-and-drop between board columns. No DnD library is installed (`@dnd-kit` etc. was never added — didn't want to pull in a new dependency for a "nice-to-have" interaction). Each `JobCard` instead has a `Select` at the bottom that moves it between the 8 pipeline stages; functionally equivalent, one extra click. Revisit this if the manual reordering feels clunky in daily use — `@dnd-kit/core` is the natural pick if so.
+**Update (2026-07-08):** drag-and-drop shipped after all — `@dnd-kit/core` + `@dnd-kit/sortable` + `@dnd-kit/utilities` added. The board is now a `KanbanBoard.tsx` component: `DndContext` with `PointerSensor` + `KeyboardSensor` (so it's keyboard-operable, not mouse-only), each column is a `useDroppable` lane with a `SortableContext` of cards. Dragging a card to a different column calls the same `changeStatus`/`updateJob` path the `Select` always used (still logs a `JobStatusEvent` identically) — drag is just a second trigger for the same status-change logic, not a replacement. Dragging within a column reorders via a new `PUT /api/admin/jobs/reorder` route + `reorderJobs` store action, both mirroring the existing `testimonials/reorder` pattern exactly. The per-card `Select` stays as the accessible non-drag fallback, just visually shrunk now that the drag handle is primary. Also: the page split into **Board**/**Stats** tabs (stats/funnel chart moved out of the way of the working view), cards got a status-colored left border + hover elevation (`JOB_STATUS_BORDER_COLORS` in `job-constants.ts`), columns became bounded-height scrollable "lanes," and `JobDetailSheet` widened (`sm:max-w-md` → `sm:max-w-lg`). `tsc`/`eslint`/`next build` clean; the reorder route verified end-to-end with curl (401 unauthenticated, persists correctly authenticated). **Not verified: the actual drag interaction in a real browser** — this session had no browser-automation tool available, so the visual redesign, drag-and-drop itself, and keyboard-drag path need a manual check.
 
 ### 1.1 Prisma models
 `prisma/schema.prisma` — add:
@@ -176,7 +176,7 @@ Verified live: "Add to Calendar" successfully creates a real event on the connec
 
 ---
 
-## Phase 5 — Browser extension (captures the sources Gmail scanning can't)
+## Phase 5 — Browser extension (captures the sources Gmail scanning can't) ✅ COMPLETE
 
 Separate mini-project (own folder, e.g. `extension/`), not part of the Next.js build.
 
@@ -185,16 +185,28 @@ Separate mini-project (own folder, e.g. `extension/`), not part of the Next.js b
 - "Save to mhrazu.com" popup button → `POST /api/admin/jobs/import` [NEW route, same auth pattern but needs a long-lived API token instead of session cookies — add a simple `JOB_IMPORT_TOKEN` env var checked in the route, since a browser extension can't carry the admin session cookie]
 - This is the biggest scope item — build only after Phases 1–3 are validated in daily use
 
+**Shipped:** `src/app/api/admin/jobs/import/route.ts` (bearer-token auth via `JOB_IMPORT_TOKEN`, zod validation built from the existing `job-constants.ts` enums, dedup by `jobUrl`, creates a `JobStatusEvent` with `source: "extension"`, always lands at `status: "found"`). A fully vanilla-JS Manifest V3 extension at `extension/` — no bundler, no npm deps: `manifest.json`, generated placeholder icons, `shared/scrape-utils.js` (schema.org `JobPosting` JSON-LD parsing tried first, salary-regex fallback), content scripts for `linkedin.js`/`greenhouse.js`/`lever.js`/`workday.js` (Workday polls up to 4s since it's an async-rendering SPA), a popup (editable prefilled form + "Save to mhrazu.com") that falls back to an on-demand `chrome.scripting.executeScript` generic JSON-LD scrape on unrecognized domains, an options page storing `apiBaseUrl`/`apiToken` in `chrome.storage.sync`, and a minimal `background.js` service worker (opens the options page on install). `tsc`, `eslint`, and `next build` all pass clean. Verified end-to-end against the running dev server with curl: no/wrong token → 401, valid payload → job + `extension`-sourced event created, same `jobUrl` resubmitted → `duplicate: true` with no second row, missing required field → 400 with a zod field error.
+
+**Deviation from spec:** this is the only `/api/admin/*` route with request-body validation (zod) — every other admin route trusts its own session-authed UI and does none; this one accepts input from outside that boundary so it can't make that assumption.
+
+**Not built / left for real-world use:** the extension hasn't been loaded against a live LinkedIn/Greenhouse/Lever/Workday page yet — selectors (especially LinkedIn's, which are known to drift) are untested against real markup and may need adjustment the first time they're tried for real. `.env.example` documents `JOB_IMPORT_TOKEN`; the local `.env` already has a generated value for testing — production needs its own value set before the extension is used against `mhrazu.com`.
+
 ---
 
-## Phase 6 — AI assistant (deferred, needs a provider decision)
+## Phase 6 — AI assistant
 
-No AI SDK is installed yet (checked `package.json` — no `openai`/`@anthropic-ai`/`ai` packages). Before starting this phase, decide: Anthropic API directly, OpenAI, or the Vercel `ai` SDK abstraction. Once chosen:
+Provider decision made: `openai` npm SDK routed through **OpenRouter** (`baseURL: "https://openrouter.ai/api/v1"`) with a free-model fallback list — no OpenAI billing, reusing a pattern already proven in another of the user's projects. Of the four sub-features below, only 6.1 is built so far.
 
-- JD paste → parse into a draft `JobApplication` (company/position/location/salary/requirements)
-- Resume-to-JD match scoring
-- Cover letter drafting from `longBio`/`Skill`/`Project` data already in the CMS
-- Follow-up reminder suggestions based on `JobStatusEvent` time-since-last-update
+- JD paste → parse into a draft `JobApplication` (company/position/location/salary/requirements) ✅ COMPLETE (6.1)
+- Resume-to-JD match scoring — not started
+- Cover letter drafting from `longBio`/`Skill`/`Project` data already in the CMS — not started
+- Follow-up reminder suggestions based on `JobStatusEvent` time-since-last-update — not started
+
+### 6.1 — JD parsing ✅ COMPLETE
+
+**Shipped:** `openai` added as a dependency. `src/lib/job-jd-parser.ts` (`parseJobDescription`) — builds an `OpenAI` client pointed at OpenRouter, tries a hardcoded list of 7 free models in order (skips to the next on 429/402/404/rate-limit/no-endpoints, throws immediately on 401/auth error), system prompt requests a raw JSON object (`company`/`position`/`location`/`salaryMin`/`salaryMax`/`salaryCurrency`/`workMode`/`jobUrl`/`notes`, `null` for anything not literally present — no guessing), response parsing strips a possible markdown fence and defensively validates each field. `src/app/api/admin/jobs/parse-jd/route.ts` — unlike the Phase 5 import route, this is called from the authenticated dashboard UI itself, so it uses the normal `verifyAdmin()` session pattern, not a bearer token; zod-validates the input (min 20 chars). `AddJobDialog.tsx` got a collapsed-by-default "Paste a job description to prefill" section (create mode only) — a textarea + "Parse with AI" button that merges returned fields into the existing form state (only overwriting fields the AI actually returned, never clobbering something already typed) and lets the admin review/edit before the unchanged existing submit path runs. The AI never talks to Prisma directly — parsing only ever produces a prefill.
+
+`tsc`, `eslint`, and `next build` all pass clean. Verified end-to-end against the running dev server with a real logged-in session cookie: unauthenticated → 401, too-short description → 400 (zod), valid-length description with no `OPENROUTER_API_KEY` configured → 502 with a clear "AI parsing isn't configured" message. **Not yet verified: an actual successful parse** — that needs a real `OPENROUTER_API_KEY` (OpenRouter account) set in `.env`, which the user needs to provide/generate themselves before trying it live through the dashboard UI.
 
 ---
 
@@ -204,4 +216,6 @@ No AI SDK is installed yet (checked `package.json` — no `openai`/`@anthropic-a
 2. **Phase 2** ✅ — cheap, high value, no new infra
 3. **Phase 3** ✅ — highest leverage automation, reuses infra that already exists
 4. **Phase 4** ✅ — calendar sync, confirmed working end-to-end live
-5. **Phase 5** and **Phase 6** — remaining, picked up in a later session. Phase 5 (browser extension) is the bigger of the two and fully separate from this Next.js app; Phase 6 (AI) is blocked on choosing a provider first.
+5. **Phase 5** ✅ — browser extension, built and curl-verified end-to-end; real-world selector testing against live job pages is the next thing to validate in daily use
+6. **Phase 6.1** ✅ — JD parsing via OpenRouter, curl-verified end-to-end except the live model call itself (needs a real `OPENROUTER_API_KEY`)
+7. **Phase 6.2–6.4** — resume-match scoring, cover-letter drafting, follow-up reminders — remaining, picked up in a later session

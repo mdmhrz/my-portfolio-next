@@ -340,6 +340,7 @@ interface PortfolioStore {
   createJob: (data: Partial<JobApplicationData>) => Promise<void>;
   updateJob: (id: string, data: Partial<JobApplicationData>) => Promise<void>;
   deleteJob: (id: string) => Promise<void>;
+  reorderJobs: (items: JobApplicationData[]) => Promise<void>;
   addJobEvent: (id: string, data: { status?: string; note?: string }) => Promise<void>;
 
   fetchUnmatchedJobEmails: () => Promise<void>;
@@ -920,6 +921,19 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
       set((state) => ({ jobs: state.jobs.filter((j) => j.id !== id) }));
     } catch (err) {
       console.error("Error deleting job:", err);
+      throw err;
+    }
+  },
+  reorderJobs: async (items) => {
+    // Optimistic: reflect the new order instantly, resync from server on failure.
+    set({ jobs: items });
+    try {
+      await api.put("/admin/jobs/reorder", {
+        items: items.map((j, i) => ({ id: j.id, order: i })),
+      });
+    } catch (err) {
+      console.error("Error reordering jobs:", err);
+      await get().fetchJobs();
       throw err;
     }
   },

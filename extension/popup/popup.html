@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Save to Job Tracker</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Save to Job Tracker</h1>
+      <span id="siteBadge"></span>
+    </header>
+
+    <div id="loading">Scanning page…</div>
+
+    <form id="form" class="hidden">
+      <label>Company<input id="company" required /></label>
+      <label>Position<input id="position" required /></label>
+      <label>Job URL<input id="jobUrl" /></label>
+      <label>Location<input id="location" /></label>
+
+      <div class="row">
+        <label>Salary min<input id="salaryMin" type="number" min="0" /></label>
+        <label>Salary max<input id="salaryMax" type="number" min="0" /></label>
+        <label class="narrow">Currency<input id="salaryCurrency" maxlength="6" /></label>
+      </div>
+
+      <div class="row">
+        <label
+          >Source
+          <select id="source">
+            <option value="linkedin">LinkedIn</option>
+            <option value="career_site" selected>Career Website</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label
+          >Work mode
+          <select id="workMode">
+            <option value="">—</option>
+            <option value="remote">Remote</option>
+            <option value="hybrid">Hybrid</option>
+            <option value="onsite">Onsite</option>
+          </select>
+        </label>
+      </div>
+
+      <label
+        >Application type
+        <select id="applicationType">
+          <option value="external_website" selected>External Website</option>
+          <option value="easy_apply">Easy Apply</option>
+          <option value="email">Email</option>
+          <option value="google_form">Google Form</option>
+          <option value="referral">Referral</option>
+        </select>
+      </label>
+
+      <button id="save" type="submit">Save to mhrazu.com</button>
+      <div id="result"></div>
+    </form>
+
+    <p id="needsSetup" class="hidden">
+      No dashboard URL/token configured yet.
+      <a id="openOptions" href="#">Open settings</a>
+    </p>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
