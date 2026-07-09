@@ -1,4 +1,4 @@
-import { Palette, Paintbrush, LayoutGrid, Plug, Webhook, Sparkles, type LucideIcon } from "lucide-react";
+import { Palette, Paintbrush, LayoutGrid, Plug, Webhook, Sparkles, Fingerprint, type LucideIcon } from "lucide-react";
 
 export interface SettingsNavItem {
   label: string;
@@ -33,6 +33,12 @@ export const SETTINGS_GROUPS: SettingsNavGroup[] = [
     items: [
       { label: "Integrations", href: `${BASE}/integrations`, icon: Plug },
       { label: "Webhooks", href: `${BASE}/webhooks`, icon: Webhook, soon: true },
+    ],
+  },
+  {
+    label: "Account",
+    items: [
+      { label: "Security", href: `${BASE}/security`, icon: Fingerprint },
     ],
   },
   {

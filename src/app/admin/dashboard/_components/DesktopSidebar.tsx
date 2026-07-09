@@ -13,6 +13,10 @@ interface DesktopSidebarProps {
   unreadCount: number;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  logoUrl?: string | null;
+  logoAlt?: string | null;
+  logoUrlDark?: string | null;
+  logoAltDark?: string | null;
 }
 
 /**
@@ -23,6 +27,10 @@ export function DesktopSidebar({
   unreadCount,
   isCollapsed,
   onToggleCollapse,
+  logoUrl,
+  logoAlt,
+  logoUrlDark,
+  logoAltDark,
 }: DesktopSidebarProps) {
   const [query, setQuery] = useState("");
 
@@ -35,7 +43,7 @@ export function DesktopSidebar({
       {/* Brand + collapse toggle */}
       <div className="flex items-center justify-center h-16 border-b border-border relative px-4 shrink-0">
         <Link href="/" className="flex items-center justify-center hover:opacity-80 transition-opacity" title="Go to home">
-          <Logo className="h-8 w-auto" />
+          <Logo className="h-8 w-auto" src={logoUrl} alt={logoAlt} srcDark={logoUrlDark} altDark={logoAltDark} />
         </Link>
         <Button
           onClick={onToggleCollapse}

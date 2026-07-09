@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { LayoutGrid, List, Plus, Pencil, Trash2, Eye } from 'lucide-react';
+import { LayoutGrid, List, Plus, Pencil, Trash2, Eye, SearchX } from 'lucide-react';
 import { usePortfolioStore, JobApplicationData } from '@/store/usePortfolioStore';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { DeleteDialog } from '@/components/admin/DeleteDialog';
@@ -17,8 +17,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { TableCell, TableRow } from '@/components/ui/table';
 import { AddJobDialog } from './AddJobDialog';
 import { KanbanBoard } from './KanbanBoard';
+import { KanbanBoardSkeleton } from './KanbanBoardSkeleton';
 import { JobDetailSheet } from './JobDetailSheet';
-import { JobStatsRow } from './JobStatsRow';
+import { JobStatsRow, JobStatsRowSkeleton } from './JobStatsRow';
 import { JobFunnelChart } from './JobFunnelChart';
 import { UnmatchedEmailsPanel } from './UnmatchedEmailsPanel';
 import {
@@ -65,6 +66,9 @@ export function JobsPageContents() {
       return matchesQuery && matchesSource;
     });
   }, [jobs, search, sourceFilter]);
+
+  const hasActiveFilters = search.trim() !== '' || sourceFilter !== 'all';
+  const clearFilters = () => { setSearch(''); setSourceFilter('all'); };
 
   const openCreate = () => { setEditingJob(null); setDialogOpen(true); };
   const openEdit = (job: JobApplicationData) => { setDetailJob(null); setEditingJob(job); setDialogOpen(true); };
@@ -145,8 +149,17 @@ export function JobsPageContents() {
         </TabsList>
 
         <TabsContent value="stats" className="space-y-6">
-          <JobStatsRow jobs={jobs} />
-          <JobFunnelChart jobs={jobs} />
+          {loading ? (
+            <>
+              <JobStatsRowSkeleton />
+              <JobFunnelChart jobs={jobs} loading />
+            </>
+          ) : (
+            <>
+              <JobStatsRow jobs={jobs} />
+              <JobFunnelChart jobs={jobs} />
+            </>
+          )}
         </TabsContent>
 
         <TabsContent value="board" className="space-y-6">
@@ -166,6 +179,16 @@ export function JobsPageContents() {
                 {JOB_SOURCES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
               </SelectContent>
             </Select>
+
+            {!loading && hasActiveFilters && (
+              <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                {filtered.length} of {jobs.length}
+                <button type="button" onClick={clearFilters} className="font-medium text-foreground underline-offset-2 hover:underline">
+                  Clear filters
+                </button>
+              </span>
+            )}
+
             <Tabs value={view} onValueChange={(v) => setView(v as 'board' | 'table')} className="ml-auto">
               <TabsList>
                 <TabsTrigger value="board"><LayoutGrid className="mr-1.5 h-4 w-4" /> Board</TabsTrigger>
@@ -174,10 +197,19 @@ export function JobsPageContents() {
             </Tabs>
           </div>
 
-          {!loading && filtered.length === 0 ? (
+          {loading && view === 'board' ? (
+            <KanbanBoardSkeleton />
+          ) : !loading && jobs.length === 0 ? (
             <EmptyState
               title="No applications yet"
               description="Click “Add Job” to start tracking your first application."
+            />
+          ) : !loading && filtered.length === 0 ? (
+            <EmptyState
+              icon={SearchX}
+              title="No matches"
+              description="Nothing matches your current search and filters."
+              action={<Button variant="outline" size="sm" onClick={clearFilters}>Clear filters</Button>}
             />
           ) : view === 'board' ? (
             <KanbanBoard

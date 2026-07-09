@@ -10,6 +10,10 @@ interface MobileSidebarProps {
   unreadCount: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  logoUrl?: string | null;
+  logoAlt?: string | null;
+  logoUrlDark?: string | null;
+  logoAltDark?: string | null;
 }
 
 /**
@@ -21,6 +25,10 @@ export function MobileSidebar({
   unreadCount,
   open,
   onOpenChange,
+  logoUrl,
+  logoAlt,
+  logoUrlDark,
+  logoAltDark,
 }: MobileSidebarProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -39,7 +47,7 @@ export function MobileSidebar({
             title="Go to home"
             onClick={() => onOpenChange(false)}
           >
-            <Logo className="h-8 w-auto" />
+            <Logo className="h-8 w-auto" src={logoUrl} alt={logoAlt} srcDark={logoUrlDark} altDark={logoAltDark} />
           </Link>
         </div>
 

@@ -24,6 +24,8 @@ interface ImageUploadProps {
   objectFit?: "cover" | "contain";
   /** Caps the width of the drop zone / preview box (e.g. "max-w-xs") so it doesn't stretch to fill a wide parent. */
   containerClassName?: string;
+  /** Shrinks padding/icon/copy for small boxes (e.g. a compact logo picker) — hides the secondary hint lines that would otherwise overflow. */
+  compact?: boolean;
 }
 
 const ALLOWED_FORMATS = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
@@ -52,6 +54,7 @@ export function ImageUpload({
   hideAlt = false,
   objectFit = "cover",
   containerClassName,
+  compact = false,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -185,6 +188,10 @@ export function ImageUpload({
 
       {!value ? (
         /* ── Drop zone ─────────────────────────────────────────── */
+        /* Matches the filled-state box exactly (previewClassName for aspect
+           ratio + containerClassName for max-width) so there's no layout jump
+           the moment an upload finishes, and multiple boxes in a row/grid stay
+           visually aligned before any of them have an image yet. */
         <div
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
@@ -194,54 +201,68 @@ export function ImageUpload({
           tabIndex={0}
           onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
           className={cn(
-            "relative flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-10 transition-all duration-200 select-none outline-none",
+            "relative flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed transition-all duration-200 select-none outline-none",
+            compact ? "p-4" : "p-6",
+            previewClassName,
+            containerClassName,
             dragging
               ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.005]"
               : uploading
               ? "border-border bg-muted/20 cursor-wait"
-              : "border-border bg-muted/20 hover:border-foreground/30 hover:bg-muted/30 cursor-pointer",
-            containerClassName
+              : "border-border bg-muted/20 hover:border-foreground/30 hover:bg-muted/30 cursor-pointer"
           )}
         >
           {uploading ? (
             /* Upload in progress */
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-3">
               <div className="relative flex items-center justify-center">
-                <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
-                  <Loader2 className="h-7 w-7 text-muted-foreground animate-spin" />
+                <div className={cn("rounded-full bg-muted flex items-center justify-center", compact ? "h-9 w-9" : "h-14 w-14")}>
+                  <Loader2 className={cn("text-muted-foreground animate-spin", compact ? "h-4 w-4" : "h-6 w-6")} />
                 </div>
               </div>
               <div className="text-center space-y-1">
-                <p className="text-sm font-medium text-foreground">Uploading… {progress}%</p>
-                <div className="w-48 h-1.5 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary rounded-full transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
+                <p className={cn("font-medium text-foreground", compact ? "text-[11px]" : "text-sm")}>
+                  {progress}%
+                </p>
+                {!compact && (
+                  <div className="w-40 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary rounded-full transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           ) : (
             /* Idle drop zone */
             <>
               <div className={cn(
-                "rounded-full p-4 transition-colors",
+                "rounded-full transition-colors",
+                compact ? "p-2" : "p-3.5",
                 dragging ? "bg-primary/10" : "bg-muted"
               )}>
                 <Upload className={cn(
-                  "h-7 w-7 transition-colors",
+                  "transition-colors",
+                  compact ? "h-4 w-4" : "h-6 w-6",
                   dragging ? "text-primary" : "text-muted-foreground"
                 )} />
               </div>
 
               <div className="text-center space-y-1">
-                <p className="text-sm font-semibold text-foreground">
-                  {dragging ? "Drop to upload" : (
-                    <>Drop files or <span className="text-primary underline underline-offset-2">browse</span></>
-                  )}
+                <p className={cn("font-semibold text-foreground", compact ? "text-[11px] leading-tight" : "text-sm")}>
+                  {dragging
+                    ? "Drop to upload"
+                    : compact
+                    ? <span className="text-primary underline underline-offset-2">Browse</span>
+                    : <>Drop files or <span className="text-primary underline underline-offset-2">browse</span></>}
                 </p>
-                <p className="text-xs text-muted-foreground">Paste images directly with Ctrl+V / Cmd+V</p>
-                <p className="text-xs text-muted-foreground/70">JPG, PNG, GIF, WebP, SVG · max 5 MB</p>
+                {!compact && (
+                  <>
+                    <p className="text-xs text-muted-foreground">Paste images directly with Ctrl+V / Cmd+V</p>
+                    <p className="text-xs text-muted-foreground/70">JPG, PNG, GIF, WebP, SVG · max 5 MB</p>
+                  </>
+                )}
               </div>
             </>
           )}

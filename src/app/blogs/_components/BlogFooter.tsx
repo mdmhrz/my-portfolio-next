@@ -17,7 +17,14 @@ const socials = [
   { name: "Email", Icon: EnvelopeSimple, href: "mailto:mdmobarakhossainrazu@gmail.com" },
 ];
 
-export function BlogFooter() {
+interface BlogFooterProps {
+  logoUrl?: string | null;
+  logoAlt?: string | null;
+  logoUrlDark?: string | null;
+  logoAltDark?: string | null;
+}
+
+export function BlogFooter({ logoUrl, logoAlt, logoUrlDark, logoAltDark }: BlogFooterProps = {}) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -25,7 +32,7 @@ export function BlogFooter() {
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
           <Link href="/" className="flex items-center">
-            <Logo className="h-7 w-auto" />
+            <Logo className="h-7 w-auto" src={logoUrl} alt={logoAlt} srcDark={logoUrlDark} altDark={logoAltDark} />
           </Link>
 
           <Link

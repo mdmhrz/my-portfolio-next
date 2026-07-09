@@ -374,6 +374,7 @@ export function TestimonialsPageContents() {
           folder="testimonials"
           previewClassName="aspect-square max-w-[8rem]"
           objectFit="cover"
+          compact
           value={card.avatarUrl || ''}
           onChange={(url) => setCard({ ...card, avatarUrl: url })}
           alt={card.avatarAlt || ''}

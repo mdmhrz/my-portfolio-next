@@ -12,7 +12,7 @@ import { AdminTopbar } from "./AdminTopbar";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { threads, fetchThreads } = usePortfolioStore();
+  const { threads, fetchThreads, settings, fetchSettings } = usePortfolioStore();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -33,6 +33,12 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     fetchThreads();
   }, [fetchThreads]);
+
+  // Hydrate branding once on mount — the sidebar brand mark uses the same
+  // dynamic logo as the public site, not a hardcoded one.
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const handleLogout = async () => {
     toast.loading("Logging out...", { id: "logout" });
@@ -73,6 +79,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           unreadCount={unreadCount}
           isCollapsed={isCollapsed}
           onToggleCollapse={handleToggleCollapse}
+          logoUrl={settings?.logoUrl}
+          logoAlt={settings?.logoAlt}
+          logoUrlDark={settings?.logoUrlDark}
+          logoAltDark={settings?.logoAltDark}
         />
       )}
 
@@ -104,6 +114,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           unreadCount={unreadCount}
           open={mobileNavOpen}
           onOpenChange={setMobileNavOpen}
+          logoUrl={settings?.logoUrl}
+          logoAlt={settings?.logoAlt}
+          logoUrlDark={settings?.logoUrlDark}
+          logoAltDark={settings?.logoAltDark}
         />
       )}
     </div>

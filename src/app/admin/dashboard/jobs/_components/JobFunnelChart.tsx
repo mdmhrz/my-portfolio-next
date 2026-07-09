@@ -3,7 +3,9 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Skeleton } from '@/components/ui/skeleton';
 import { JobApplicationData } from '@/store/usePortfolioStore';
+import { JOB_STATUSES } from './job-constants';
 import { computeJobStats } from './job-analytics';
 
 const chartConfig = {
@@ -13,7 +15,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function JobFunnelChart({ jobs }: { jobs: JobApplicationData[] }) {
+// Deterministic-looking bar widths (no randomness) so the skeleton renders
+// identically on server and client instead of flashing/mismatching.
+const SKELETON_BAR_WIDTHS = ['85%', '60%', '45%', '70%', '35%', '50%', '25%', '40%'];
+
+export function JobFunnelChart({ jobs, loading = false }: { jobs: JobApplicationData[]; loading?: boolean }) {
   const { funnel } = computeJobStats(jobs);
 
   return (
@@ -23,7 +29,16 @@ export function JobFunnelChart({ jobs }: { jobs: JobApplicationData[] }) {
         <CardDescription>Where applications are right now, by stage</CardDescription>
       </CardHeader>
       <CardContent>
-        {jobs.length === 0 ? (
+        {loading ? (
+          <div className="flex h-[260px] flex-col justify-around">
+            {JOB_STATUSES.map((status, i) => (
+              <div key={status.value} className="flex items-center gap-3">
+                <Skeleton className="h-3 w-16 shrink-0" />
+                <Skeleton className="h-4 rounded-sm" style={{ width: SKELETON_BAR_WIDTHS[i % SKELETON_BAR_WIDTHS.length] }} />
+              </div>
+            ))}
+          </div>
+        ) : jobs.length === 0 ? (
           <p className="py-10 text-center text-sm text-muted-foreground">No applications yet.</p>
         ) : (
           <ChartContainer config={chartConfig} className="aspect-auto h-[260px] w-full">

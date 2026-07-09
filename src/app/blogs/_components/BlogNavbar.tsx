@@ -9,7 +9,14 @@ import { cn } from "@/lib/utils";
 const navLinkBase =
   "text-[11px] font-medium uppercase tracking-[0.18em] transition-colors duration-300";
 
-export function BlogNavbar() {
+interface BlogNavbarProps {
+  logoUrl?: string | null;
+  logoAlt?: string | null;
+  logoUrlDark?: string | null;
+  logoAltDark?: string | null;
+}
+
+export function BlogNavbar({ logoUrl, logoAlt, logoUrlDark, logoAltDark }: BlogNavbarProps = {}) {
   const pathname = usePathname();
   const onBlogs = pathname.startsWith("/blogs");
 
@@ -17,7 +24,7 @@ export function BlogNavbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" aria-label="Back to portfolio home" className="flex items-center">
-          <Logo className="h-7 w-auto" />
+          <Logo className="h-7 w-auto" src={logoUrl} alt={logoAlt} srcDark={logoUrlDark} altDark={logoAltDark} />
         </Link>
 
         <nav className="flex items-center gap-5 sm:gap-8">

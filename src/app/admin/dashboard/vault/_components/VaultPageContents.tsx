@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { Plus, ShieldCheck } from 'lucide-react';
+import { Plus, ShieldCheck, SearchX } from 'lucide-react';
 import { usePortfolioStore, VaultItemData, VaultFieldData } from '@/store/usePortfolioStore';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { DeleteDialog } from '@/components/admin/DeleteDialog';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { VaultCard } from './VaultCard';
+import { VaultCardSkeletonGrid } from './VaultCardSkeleton';
 import { VaultItemDialog, VaultItemSubmitData } from './VaultItemDialog';
 import { VaultItemSheet } from './VaultItemSheet';
 import { useVaultReveal } from './useVaultReauth';
@@ -63,6 +64,9 @@ export function VaultPageContents() {
     });
     setDialogOpen(false);
   });
+
+  const hasActiveFilters = search.trim() !== '' || categoryFilter !== 'all' || favoritesOnly;
+  const clearFilters = () => { setSearch(''); setCategoryFilter('all'); setFavoritesOnly(false); };
 
   const openCreate = () => { setEditingItem(null); setEditingFields(null); setDialogOpen(true); };
 
@@ -141,13 +145,31 @@ export function VaultPageContents() {
         >
           ⭐ Favorites
         </Button>
+
+        {!loading && hasActiveFilters && (
+          <span className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
+            {filtered.length} of {vaultItems.length}
+            <button type="button" onClick={clearFilters} className="font-medium text-foreground underline-offset-2 hover:underline">
+              Clear filters
+            </button>
+          </span>
+        )}
       </div>
 
-      {!loading && filtered.length === 0 ? (
+      {loading ? (
+        <VaultCardSkeletonGrid count={6} />
+      ) : vaultItems.length === 0 ? (
         <EmptyState
           icon={ShieldCheck}
           title="No secrets yet"
           description="Click “Add Secret” to store your first credential."
+        />
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          icon={SearchX}
+          title="No matches"
+          description="Nothing matches your current search and filters."
+          action={<Button variant="outline" size="sm" onClick={clearFilters}>Clear filters</Button>}
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

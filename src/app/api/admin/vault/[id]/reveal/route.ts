@@ -7,6 +7,7 @@ import { auth } from "@/lib/auth";
 import { decrypt } from "@/lib/vault-crypto";
 import { signReauthToken, verifyReauthToken, VAULT_REAUTH_COOKIE, VAULT_REAUTH_TTL_MS } from "@/lib/vault-reauth";
 import { checkVaultRateLimit, recordVaultAttempt } from "@/lib/vault-rate-limit";
+import { notifyVaultAccess } from "@/lib/vault-notify";
 
 // The only route that ever decrypts field values. Deliberately separate from
 // GET/PATCH so revealing a secret is always a distinct, auditable action —
@@ -47,6 +48,11 @@ export async function POST(
   if (!alreadyReauthed) {
     const rateLimit = await checkVaultRateLimit();
     if (rateLimit.locked) {
+      notifyVaultAccess({
+        action: "locked_out",
+        ipAddress,
+        userAgent: requestHeaders.get("user-agent"),
+      });
       return NextResponse.json({
         success: false,
         requiresPassword: true,
@@ -81,9 +87,11 @@ export async function POST(
       value: decrypt(f.encryptedValue),
     }));
 
+    const userAgent = requestHeaders.get("user-agent");
     await prisma.vaultAuditLog.create({
-      data: { vaultItemId: id, action: "opened", ipAddress, userAgent: requestHeaders.get("user-agent") },
+      data: { vaultItemId: id, action: "opened", ipAddress, userAgent },
     });
+    notifyVaultAccess({ action: "opened", itemTitle: item.title, ipAddress, userAgent });
 
     const response = NextResponse.json({ success: true, data: fields });
     if (!alreadyReauthed) {

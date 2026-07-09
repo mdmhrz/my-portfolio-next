@@ -35,7 +35,11 @@ export default function AdminLoginPage() {
         { email, password },
         {
           onRequest: () => setLoading(true),
-          onSuccess: () => {
+          onSuccess: (ctx) => {
+            if (ctx.data?.twoFactorRedirect) {
+              router.push("/admin/login/two-factor");
+              return;
+            }
             router.push("/admin/dashboard");
             router.refresh();
           },

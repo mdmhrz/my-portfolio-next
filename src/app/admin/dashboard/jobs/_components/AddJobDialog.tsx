@@ -288,6 +288,7 @@ export function AddJobDialog({ open, onOpenChange, job, resumeVersions, coverLet
         previewClassName="aspect-square max-w-[6rem]"
         objectFit="contain"
         hideAlt
+        compact
         value={form.companyLogo || ''}
         onChange={(url) => setForm({ ...form, companyLogo: url })}
       />

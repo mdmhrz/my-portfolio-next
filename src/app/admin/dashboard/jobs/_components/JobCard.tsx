@@ -43,7 +43,7 @@ export function JobCard({ job, onOpenDetail, onEdit, onDelete, onStatusChange }:
     <div
       ref={setNodeRef}
       style={style}
-      className={`space-y-3 rounded-lg border border-l-2 border-border bg-background p-4 shadow-sm transition-shadow hover:shadow-md ${
+      className={`space-y-3 rounded-lg border border-l-2 border-border bg-background p-4 shadow-sm transition-all hover:border-primary/30 hover:shadow-md ${
         JOB_STATUS_BORDER_COLORS[job.status] ?? ''
       } ${isDragging ? 'opacity-50' : ''}`}
     >
