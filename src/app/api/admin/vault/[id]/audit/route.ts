@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { vaultAuditRepo } from "@/modules/vault/queries";
 
 export async function GET(
   request: Request,
@@ -13,11 +13,7 @@ export async function GET(
   }
 
   const { id } = await params;
-  const logs = await prisma.vaultAuditLog.findMany({
-    where: { vaultItemId: id },
-    orderBy: { createdAt: "desc" },
-    take: 50,
-  });
+  const logs = await vaultAuditRepo.list(id);
 
   return NextResponse.json({ success: true, data: logs });
 }
@@ -39,14 +35,12 @@ export async function POST(
   const requestHeaders = await headers();
   const ipAddress = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
 
-  const log = await prisma.vaultAuditLog.create({
-    data: {
-      vaultItemId: id,
-      action: "copied",
-      fieldLabel: body.fieldLabel || null,
-      ipAddress,
-      userAgent: requestHeaders.get("user-agent"),
-    },
+  const log = await vaultAuditRepo.create({
+    vaultItemId: id,
+    action: "copied",
+    fieldLabel: body.fieldLabel || null,
+    ipAddress,
+    userAgent: requestHeaders.get("user-agent"),
   });
 
   return NextResponse.json({ success: true, data: log });

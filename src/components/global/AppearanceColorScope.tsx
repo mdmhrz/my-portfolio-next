@@ -1,5 +1,5 @@
-import { getAppearance } from "@/lib/getSiteSettings";
-import { generateColorCSS } from "@/lib/appearanceInjector";
+import { getAppearance } from "@/modules/settings/appearance/service";
+import { generateColorCSS } from "@/modules/settings/appearance/appearance-injector";
 
 /**
  * Scopes a color palette to a subtree (server-side). The wrapper uses

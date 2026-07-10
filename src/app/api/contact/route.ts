@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { isGmailConnected, getGmailClient, sendGmailMime } from "@/lib/gmail";
+import { isGmailConnected, getGmailClient, sendGmailMime } from "@/modules/gmail/service/client";
+import { threadsRepo } from "@/modules/gmail/queries";
+import { messagesRepo } from "@/modules/portfolio/contact/queries";
 import * as z from "zod";
 
 export const runtime = "nodejs";
@@ -29,23 +30,20 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validated = contactSchema.parse(body);
 
-    const message = await prisma.message.create({
-      data: {
+    const message = await messagesRepo.createWithThread(
+      {
         name: validated.name,
         email: validated.email,
         subject: validated.subject,
         type: validated.type,
         message: validated.message,
-        thread: {
-          create: {
-            contactEmail: validated.email,
-            contactName: validated.name,
-            subject: validated.subject,
-          },
-        },
       },
-      include: { thread: true },
-    });
+      {
+        contactEmail: validated.email,
+        contactName: validated.name,
+        subject: validated.subject,
+      }
+    );
 
     // Best-effort: forward the message into the admin's real Gmail inbox so it
     // triggers a normal notification and can be replied to from either Gmail
@@ -60,10 +58,7 @@ export async function POST(request: Request) {
           subject: `New portfolio message${validated.subject ? `: ${validated.subject}` : ""}`,
           bodyHtml: notificationHtml(validated),
         });
-        await prisma.thread.update({
-          where: { id: message.thread.id },
-          data: { gmailThreadId: sent.threadId },
-        });
+        await threadsRepo.update(message.thread.id, { gmailThreadId: sent.threadId });
       } catch (error) {
         console.error("Failed to forward contact message to Gmail (message was still saved):", error);
       }

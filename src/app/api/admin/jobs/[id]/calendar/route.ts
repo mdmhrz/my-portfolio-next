@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/auth-helpers";
-import { createJobCalendarEvent, deleteJobCalendarEvent } from "@/lib/job-calendar";
+import { createJobCalendarEvent, deleteJobCalendarEvent } from "@/modules/jobs/service/calendar";
 
 export const runtime = "nodejs";
 

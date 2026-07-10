@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { vaultHistoryRepo } from "@/modules/vault/queries";
 
 interface HistorySnapshotField {
   label: string;
@@ -22,10 +22,7 @@ export async function GET(
   }
 
   const { id } = await params;
-  const history = await prisma.vaultItemHistory.findMany({
-    where: { vaultItemId: id },
-    orderBy: { changedAt: "desc" },
-  });
+  const history = await vaultHistoryRepo.list(id);
 
   const data = history.map((h) => {
     const snapshot = h.snapshot as unknown as HistorySnapshotField[];

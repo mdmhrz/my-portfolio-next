@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { jobsRepo } from "@/modules/jobs/queries";
 
 export async function GET(
   request: Request,
@@ -12,10 +12,7 @@ export async function GET(
   }
 
   const { id } = await params;
-  const job = await prisma.jobApplication.findUnique({
-    where: { id },
-    include: { events: { orderBy: { createdAt: "desc" } } },
-  });
+  const job = await jobsRepo.get(id);
 
   if (!job) {
     return NextResponse.json({ success: false, error: "Job not found" }, { status: 404 });
@@ -37,37 +34,33 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
-    const existing = await prisma.jobApplication.findUnique({ where: { id } });
+    const existing = await jobsRepo.getRaw(id);
     if (!existing) {
       return NextResponse.json({ success: false, error: "Job not found" }, { status: 404 });
     }
 
     const statusChanged = typeof body.status === "string" && body.status !== existing.status;
 
-    const job = await prisma.jobApplication.update({
-      where: { id },
-      data: {
-        ...(body.company !== undefined && { company: body.company }),
-        ...(body.position !== undefined && { position: body.position }),
-        ...(body.companyLogo !== undefined && { companyLogo: body.companyLogo || null }),
-        ...(body.jobUrl !== undefined && { jobUrl: body.jobUrl || null }),
-        ...(body.source !== undefined && { source: body.source }),
-        ...(body.applicationType !== undefined && { applicationType: body.applicationType }),
-        ...(body.status !== undefined && { status: body.status }),
-        ...(body.deadline !== undefined && { deadline: body.deadline ? new Date(body.deadline) : null }),
-        ...(body.salaryMin !== undefined && { salaryMin: body.salaryMin }),
-        ...(body.salaryMax !== undefined && { salaryMax: body.salaryMax }),
-        ...(body.salaryCurrency !== undefined && { salaryCurrency: body.salaryCurrency || null }),
-        ...(body.location !== undefined && { location: body.location || null }),
-        ...(body.workMode !== undefined && { workMode: body.workMode || null }),
-        ...(body.resumeVersion !== undefined && { resumeVersion: body.resumeVersion || null }),
-        ...(body.coverLetterVersion !== undefined && { coverLetterVersion: body.coverLetterVersion || null }),
-        ...(body.notes !== undefined && { notes: body.notes || null }),
-        ...(body.appliedAt !== undefined && { appliedAt: body.appliedAt ? new Date(body.appliedAt) : null }),
-        ...(body.order !== undefined && { order: body.order }),
-        ...(statusChanged && { events: { create: { status: body.status, source: "manual" } } }),
-      },
-      include: { events: { orderBy: { createdAt: "desc" } } },
+    const job = await jobsRepo.update(id, {
+      ...(body.company !== undefined && { company: body.company }),
+      ...(body.position !== undefined && { position: body.position }),
+      ...(body.companyLogo !== undefined && { companyLogo: body.companyLogo || null }),
+      ...(body.jobUrl !== undefined && { jobUrl: body.jobUrl || null }),
+      ...(body.source !== undefined && { source: body.source }),
+      ...(body.applicationType !== undefined && { applicationType: body.applicationType }),
+      ...(body.status !== undefined && { status: body.status }),
+      ...(body.deadline !== undefined && { deadline: body.deadline ? new Date(body.deadline) : null }),
+      ...(body.salaryMin !== undefined && { salaryMin: body.salaryMin }),
+      ...(body.salaryMax !== undefined && { salaryMax: body.salaryMax }),
+      ...(body.salaryCurrency !== undefined && { salaryCurrency: body.salaryCurrency || null }),
+      ...(body.location !== undefined && { location: body.location || null }),
+      ...(body.workMode !== undefined && { workMode: body.workMode || null }),
+      ...(body.resumeVersion !== undefined && { resumeVersion: body.resumeVersion || null }),
+      ...(body.coverLetterVersion !== undefined && { coverLetterVersion: body.coverLetterVersion || null }),
+      ...(body.notes !== undefined && { notes: body.notes || null }),
+      ...(body.appliedAt !== undefined && { appliedAt: body.appliedAt ? new Date(body.appliedAt) : null }),
+      ...(body.order !== undefined && { order: body.order }),
+      ...(statusChanged && { events: { create: { status: body.status, source: "manual" } } }),
     });
 
     return NextResponse.json({ success: true, data: job });
@@ -88,7 +81,7 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    await prisma.jobApplication.delete({ where: { id } });
+    await jobsRepo.remove(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("DELETE job error:", error);

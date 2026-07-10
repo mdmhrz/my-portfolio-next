@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { OAuth2Client } from "google-auth-library";
-import { syncGmailHistory } from "@/lib/gmail-sync";
+import { syncGmailHistory } from "@/modules/gmail/service/sync";
 
 export const runtime = "nodejs";
 

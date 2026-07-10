@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+import { siteSettingsRepo } from "@/modules/settings/site-settings/queries";
 
 /**
  * Restore = clear the override so the target falls back to the built-in
@@ -26,11 +26,7 @@ export async function POST(req: NextRequest) {
       data.dashboardColors = Prisma.DbNull;
     }
 
-    await prisma.siteSettings.upsert({
-      where: { id: "singleton" },
-      create: { id: "singleton", ...data },
-      update: data,
-    });
+    await siteSettingsRepo.upsert(data, { id: "singleton", ...data });
 
     revalidatePath("/");
     revalidatePath("/blogs");

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { blogRepo } from "@/modules/portfolio/blog/queries";
 
 export async function POST(
   _request: Request,
@@ -7,11 +7,7 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
-    const blog = await prisma.blog.update({
-      where: { slug, published: true },
-      data: { views: { increment: 1 } },
-      select: { views: true },
-    });
+    const blog = await blogRepo.incrementViews(slug);
     return NextResponse.json({ views: blog.views });
   } catch {
     // Silently fail — view count is non-critical

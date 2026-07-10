@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
+import { jobsRepo } from "@/modules/jobs/queries";
 import {
   JOB_SOURCES,
   JOB_APPLICATION_TYPES,
   JOB_WORK_MODES,
-} from "@/app/admin/dashboard/jobs/_components/job-constants";
+} from "@/modules/jobs/components/job-constants";
 
 // Only admin route reachable from outside the session-authed dashboard UI
 // (the browser extension, Phase 5), so unlike every other /api/admin/* route
@@ -62,33 +62,27 @@ export async function POST(request: Request) {
 
   try {
     if (body.jobUrl) {
-      const existing = await prisma.jobApplication.findFirst({
-        where: { jobUrl: body.jobUrl },
-        include: { events: { orderBy: { createdAt: "desc" } } },
-      });
+      const existing = await jobsRepo.findByJobUrl(body.jobUrl);
       if (existing) {
         return json({ success: true, data: existing, duplicate: true });
       }
     }
 
-    const job = await prisma.jobApplication.create({
-      data: {
-        company: body.company,
-        position: body.position,
-        companyLogo: body.companyLogo || null,
-        jobUrl: body.jobUrl || null,
-        source: body.source || "career_site",
-        applicationType: body.applicationType || "external_website",
-        status: "found",
-        salaryMin: body.salaryMin ?? null,
-        salaryMax: body.salaryMax ?? null,
-        salaryCurrency: body.salaryCurrency || null,
-        location: body.location || null,
-        workMode: body.workMode || null,
-        order: await prisma.jobApplication.count(),
-        events: { create: { status: "found", source: "extension" } },
-      },
-      include: { events: { orderBy: { createdAt: "desc" } } },
+    const job = await jobsRepo.create({
+      company: body.company,
+      position: body.position,
+      companyLogo: body.companyLogo || null,
+      jobUrl: body.jobUrl || null,
+      source: body.source || "career_site",
+      applicationType: body.applicationType || "external_website",
+      status: "found",
+      salaryMin: body.salaryMin ?? null,
+      salaryMax: body.salaryMax ?? null,
+      salaryCurrency: body.salaryCurrency || null,
+      location: body.location || null,
+      workMode: body.workMode || null,
+      order: await jobsRepo.count(),
+      events: { create: { status: "found", source: "extension" } },
     });
 
     return json({ success: true, data: job, duplicate: false });

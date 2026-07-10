@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { testimonialsRepo } from "@/modules/portfolio/testimonials/queries";
 
 export async function PUT(
   request: Request,
@@ -18,20 +18,17 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const testimonial = await prisma.testimonial.update({
-      where: { id },
-      data: {
-        name: body.name,
-        role: body.role || null,
-        company: body.company || null,
-        quote: body.quote,
-        avatarUrl: body.avatarUrl || null,
-        avatarAlt: body.avatarAlt || null,
-        rating: body.rating || null,
-        videoUrl: body.videoUrl || null,
-        highlight: body.highlight || null,
-        highlightLabel: body.highlightLabel || null,
-      },
+    const testimonial = await testimonialsRepo.update(id, {
+      name: body.name,
+      role: body.role || null,
+      company: body.company || null,
+      quote: body.quote,
+      avatarUrl: body.avatarUrl || null,
+      avatarAlt: body.avatarAlt || null,
+      rating: body.rating || null,
+      videoUrl: body.videoUrl || null,
+      highlight: body.highlight || null,
+      highlightLabel: body.highlightLabel || null,
     });
 
     revalidatePath("/");
@@ -59,9 +56,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await prisma.testimonial.delete({
-      where: { id },
-    });
+    await testimonialsRepo.remove(id);
 
     revalidatePath("/");
     return NextResponse.json({ success: true });

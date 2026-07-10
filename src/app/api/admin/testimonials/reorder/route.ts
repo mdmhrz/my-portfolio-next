@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { testimonialsRepo } from "@/modules/portfolio/testimonials/queries";
 
 export async function PUT(request: Request) {
   try {
@@ -23,14 +23,7 @@ export async function PUT(request: Request) {
       );
     }
 
-    await prisma.$transaction(
-      items.map((item: { id: string; order: number }) =>
-        prisma.testimonial.update({
-          where: { id: item.id },
-          data: { order: item.order },
-        })
-      )
-    );
+    await testimonialsRepo.reorder(items);
 
     revalidatePath("/");
     return NextResponse.json({ success: true });

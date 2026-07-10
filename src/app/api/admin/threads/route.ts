@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { threadsRepo } from "@/modules/gmail/queries";
 
 export async function GET() {
   try {
@@ -9,13 +9,7 @@ export async function GET() {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const threads = await prisma.thread.findMany({
-      orderBy: { lastMessageAt: "desc" },
-      include: {
-        message: true,
-        emails: { orderBy: { sentAt: "desc" }, take: 1, include: { attachments: true } },
-      },
-    });
+    const threads = await threadsRepo.list();
 
     return NextResponse.json({ success: true, data: threads });
   } catch (error) {

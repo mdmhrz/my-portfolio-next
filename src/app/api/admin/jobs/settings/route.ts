@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { jobSettingsRepo } from "@/modules/jobs/queries";
 
 export async function GET() {
   const admin = await verifyAdmin();
@@ -8,11 +8,7 @@ export async function GET() {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const settings = await prisma.jobTrackerSettings.upsert({
-    where: { id: "singleton" },
-    update: {},
-    create: { id: "singleton" },
-  });
+  const settings = await jobSettingsRepo.get();
   return NextResponse.json({ success: true, data: settings });
 }
 
@@ -24,11 +20,7 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const settings = await prisma.jobTrackerSettings.upsert({
-      where: { id: "singleton" },
-      update: { gmailLabel: body.gmailLabel },
-      create: { id: "singleton", gmailLabel: body.gmailLabel },
-    });
+    const settings = await jobSettingsRepo.update(body.gmailLabel);
     return NextResponse.json({ success: true, data: settings });
   } catch (error) {
     console.error("PATCH job tracker settings error:", error);

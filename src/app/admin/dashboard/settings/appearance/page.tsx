@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { AppearanceTab } from "../_components/AppearanceTab";
+import { AppearanceTab } from "@/modules/settings/appearance/components/AppearanceTab";
 import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 
 export const dynamic = "force-dynamic";

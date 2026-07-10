@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/auth-helpers";
-import { prisma } from "@/lib/prisma";
-import { getGmailClient, sendGmailMime } from "@/lib/gmail";
+import { getGmailClient, sendGmailMime } from "@/modules/gmail/service/client";
+import { threadsRepo, emailMessagesRepo } from "@/modules/gmail/queries";
 
 export const runtime = "nodejs";
 
@@ -41,12 +41,7 @@ export async function POST(request: Request) {
 
     let gmailThreadId: string | undefined;
     let inReplyTo: string | undefined;
-    let thread = body.threadId
-      ? await prisma.thread.findUnique({
-          where: { id: body.threadId },
-          include: { emails: { orderBy: { sentAt: "desc" }, take: 1 } },
-        })
-      : null;
+    let thread = body.threadId ? await threadsRepo.getWithLastEmail(body.threadId) : null;
 
     if (thread) {
       gmailThreadId = thread.gmailThreadId ?? undefined;
@@ -74,48 +69,39 @@ export async function POST(request: Request) {
     });
 
     if (!thread) {
-      thread = await prisma.thread.create({
-        data: {
-          contactEmail: body.to,
-          contactName: body.toName,
-          subject: body.subject,
-          gmailThreadId: sent.threadId,
-          unread: false,
-          lastMessageAt: new Date(),
-        },
-        include: { emails: true },
+      thread = await threadsRepo.create({
+        contactEmail: body.to,
+        contactName: body.toName,
+        subject: body.subject,
+        gmailThreadId: sent.threadId,
+        unread: false,
+        lastMessageAt: new Date(),
       });
     } else {
-      await prisma.thread.update({
-        where: { id: thread.id },
-        data: {
-          gmailThreadId: thread.gmailThreadId ?? sent.threadId,
-          lastMessageAt: new Date(),
-        },
+      await threadsRepo.update(thread.id, {
+        gmailThreadId: thread.gmailThreadId ?? sent.threadId,
+        lastMessageAt: new Date(),
       });
     }
 
-    const emailMessage = await prisma.emailMessage.create({
-      data: {
-        threadId: thread.id,
-        gmailMessageId: sent.id,
-        rfcMessageId: sent.rfcMessageId,
-        direction: "outbound",
-        fromEmail: account.email,
-        toEmail: body.to,
-        subject: body.subject,
-        bodyHtml: body.bodyHtml,
-        snippet: toSnippet(body.bodyHtml),
-        sentAt: new Date(),
-        attachments: {
-          create: (body.attachments ?? []).map((att) => ({
-            fileName: att.fileName,
-            mimeType: att.mimeType,
-            url: att.url,
-          })),
-        },
+    const emailMessage = await emailMessagesRepo.createWithAttachments({
+      threadId: thread.id,
+      gmailMessageId: sent.id,
+      rfcMessageId: sent.rfcMessageId,
+      direction: "outbound",
+      fromEmail: account.email,
+      toEmail: body.to,
+      subject: body.subject,
+      bodyHtml: body.bodyHtml,
+      snippet: toSnippet(body.bodyHtml),
+      sentAt: new Date(),
+      attachments: {
+        create: (body.attachments ?? []).map((att) => ({
+          fileName: att.fileName,
+          mimeType: att.mimeType,
+          url: att.url,
+        })),
       },
-      include: { attachments: true },
     });
 
     return NextResponse.json({ success: true, data: { threadId: thread.id, email: emailMessage } });

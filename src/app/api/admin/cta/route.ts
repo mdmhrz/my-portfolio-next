@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { ctaRepo } from "@/modules/portfolio/cta/queries";
 
 export async function GET() {
   try {
-    const cta = await prisma.cta.findUnique({ where: { id: "singleton" } });
+    const cta = await ctaRepo.get();
     return NextResponse.json({ success: true, data: cta });
   } catch (error) {
     console.error("GET cta error:", error);
@@ -28,11 +28,7 @@ export async function POST(request: Request) {
     if ("buttonLabel" in body) data.buttonLabel = body.buttonLabel || "Get in touch";
     if ("buttonHref" in body) data.buttonHref = body.buttonHref || "#contact";
 
-    const cta = await prisma.cta.upsert({
-      where: { id: "singleton" },
-      update: data,
-      create: { id: "singleton", ...data },
-    });
+    const cta = await ctaRepo.upsert(data, { id: "singleton", ...data });
 
     revalidatePath("/");
     return NextResponse.json({ success: true, data: cta });

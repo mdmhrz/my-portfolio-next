@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { unmatchedEmailsRepo } from "@/modules/jobs/queries";
 
 export async function GET() {
   const admin = await verifyAdmin();
@@ -8,8 +8,6 @@ export async function GET() {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const emails = await prisma.unmatchedJobEmail.findMany({
-    orderBy: { receivedAt: "desc" },
-  });
+  const emails = await unmatchedEmailsRepo.list();
   return NextResponse.json({ success: true, data: emails });
 }

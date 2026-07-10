@@ -1,4 +1,4 @@
-import { ProfilePageContents } from "./_components/ProfilePageContents";
+import { ProfilePageContents } from "@/modules/portfolio/profile/components/ProfilePageContents";
 
 export const dynamic = "force-dynamic";
 

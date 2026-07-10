@@ -1,4 +1,4 @@
-import { BrandingTab } from "../_components/BrandingTab";
+import { BrandingTab } from "@/modules/settings/branding/components/BrandingTab";
 
 export const dynamic = "force-dynamic";
 

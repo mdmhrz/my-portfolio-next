@@ -7,7 +7,6 @@ import {
   KanbanSquare,
   FolderKanban,
   BookOpen,
-  Sliders,
   Mail,
   Wrench,
   Settings,
@@ -31,7 +30,6 @@ export type TabValue =
   | "nav-links"
   | "settings"
   | "blogs"
-  | "blogs-display-settings"
   | "testimonials"
   | "messages"
   | "jobs"
@@ -74,13 +72,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { value: "testimonials", label: "Testimonials", href: "/admin/dashboard/testimonials", icon: MessageSquareQuote },
       { value: "footer", label: "Footer", href: "/admin/dashboard/footer", icon: PanelBottom },
       { value: "nav-links", label: "Navigation Links", href: "/admin/dashboard/nav-links", icon: Link2 },
-    ],
-  },
-  {
-    label: "Blog",
-    items: [
-      { value: "blogs", label: "Posts", href: "/admin/dashboard/blogs", icon: BookOpen },
-      { value: "blogs-display-settings", label: "Display Settings", href: "/admin/dashboard/blogs/display-settings", icon: Sliders },
+      { value: "blogs", label: "Blog", href: "/admin/dashboard/blogs", icon: BookOpen },
     ],
   },
   {

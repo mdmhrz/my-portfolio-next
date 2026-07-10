@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
 import { slugify } from "@/lib/utils";
+import { blogRepo } from "@/modules/portfolio/blog/queries";
 
 export async function PUT(
   request: Request,
@@ -66,7 +66,7 @@ export async function PUT(
       );
     }
 
-    const blog = await prisma.blog.update({ where: { id }, data });
+    const blog = await blogRepo.update(id, data);
 
     revalidatePath(`/blogs/${blog.slug}`);
     revalidatePath("/blogs");
@@ -120,7 +120,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await prisma.blog.delete({ where: { id } });
+    await blogRepo.remove(id);
 
     revalidatePath("/blogs");
     revalidatePath("/");

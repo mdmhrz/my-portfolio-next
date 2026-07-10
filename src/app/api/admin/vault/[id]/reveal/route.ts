@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { APIError } from "better-auth";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
 import { auth } from "@/lib/auth";
-import { decrypt } from "@/lib/vault-crypto";
-import { signReauthToken, verifyReauthToken, VAULT_REAUTH_COOKIE, VAULT_REAUTH_TTL_MS } from "@/lib/vault-reauth";
-import { checkVaultRateLimit, recordVaultAttempt } from "@/lib/vault-rate-limit";
-import { notifyVaultAccess } from "@/lib/vault-notify";
+import { decrypt } from "@/modules/vault/service/crypto";
+import { signReauthToken, verifyReauthToken, VAULT_REAUTH_COOKIE, VAULT_REAUTH_TTL_MS } from "@/modules/vault/service/reauth";
+import { checkVaultRateLimit, recordVaultAttempt } from "@/modules/vault/service/rate-limit";
+import { notifyVaultAccess } from "@/modules/vault/service/notify";
+import { vaultItemsRepo, vaultAuditRepo } from "@/modules/vault/queries";
 
 // The only route that ever decrypts field values. Deliberately separate from
 // GET/PATCH so revealing a secret is always a distinct, auditable action —
@@ -26,10 +26,7 @@ export async function POST(
   }
 
   const { id } = await params;
-  const item = await prisma.vaultItem.findUnique({
-    where: { id },
-    include: { fields: { orderBy: { order: "asc" } } },
-  });
+  const item = await vaultItemsRepo.getWithOrderedFields(id);
   if (!item) {
     return NextResponse.json({ success: false, error: "Vault item not found" }, { status: 404 });
   }
@@ -88,9 +85,7 @@ export async function POST(
     }));
 
     const userAgent = requestHeaders.get("user-agent");
-    await prisma.vaultAuditLog.create({
-      data: { vaultItemId: id, action: "opened", ipAddress, userAgent },
-    });
+    await vaultAuditRepo.create({ vaultItemId: id, action: "opened", ipAddress, userAgent });
     notifyVaultAccess({ action: "opened", itemTitle: item.title, ipAddress, userAgent });
 
     const response = NextResponse.json({ success: true, data: fields });

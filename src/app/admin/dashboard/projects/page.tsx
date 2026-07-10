@@ -1,4 +1,4 @@
-import { ProjectsPageContents } from "./_components/ProjectsPageContents";
+import { ProjectsPageContents } from "@/modules/portfolio/projects/components/ProjectsPageContents";
 
 export default function ProjectsPage() {
   return <ProjectsPageContents />;

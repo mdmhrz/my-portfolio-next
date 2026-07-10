@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { unmatchedEmailsRepo } from "@/modules/jobs/queries";
 
 // Dismiss — the email isn't job-related (or isn't worth tracking); just discard it.
 export async function DELETE(
@@ -14,7 +14,7 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    await prisma.unmatchedJobEmail.delete({ where: { id } });
+    await unmatchedEmailsRepo.remove(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("DELETE unmatched job email error:", error);

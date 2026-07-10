@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { verifyAdmin } from "@/lib/auth-helpers";
-import { parseJobDescription } from "@/lib/job-jd-parser";
+import { parseJobDescription } from "@/modules/jobs/service/jd-parser";
 
 const bodySchema = z.object({
   description: z.string().trim().min(20, "Paste more of the job description"),

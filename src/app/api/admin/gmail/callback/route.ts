@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { google } from "googleapis";
 import { verifyAdmin } from "@/lib/auth-helpers";
-import { prisma } from "@/lib/prisma";
-import { encrypt } from "@/lib/crypto";
-import { exchangeCodeForTokens, startWatch } from "@/lib/gmail";
+import { encrypt } from "@/modules/gmail/service/crypto";
+import { exchangeCodeForTokens, startWatch } from "@/modules/gmail/service/client";
+import { gmailAccountRepo } from "@/modules/gmail/queries";
 
 export const runtime = "nodejs";
 
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       throw new Error("Google did not return an access token");
     }
 
-    const existing = await prisma.gmailAccount.findUnique({ where: { userId: admin.user.id } });
+    const existing = await gmailAccountRepo.findByUserId(admin.user.id);
     if (!tokens.refresh_token && !existing) {
       throw new Error("Google did not return a refresh token. Revoke app access at https://myaccount.google.com/permissions and try again.");
     }
@@ -42,9 +42,9 @@ export async function GET(request: Request) {
     const gmail = google.gmail({ version: "v1", auth: client });
     const profile = await gmail.users.getProfile({ userId: "me" });
 
-    const account = await prisma.gmailAccount.upsert({
-      where: { userId: admin.user.id },
-      create: {
+    const account = await gmailAccountRepo.upsert(
+      admin.user.id,
+      {
         userId: admin.user.id,
         email: profile.data.emailAddress || "",
         accessToken: tokens.access_token,
@@ -52,14 +52,14 @@ export async function GET(request: Request) {
         accessTokenExpiresAt: new Date(tokens.expiry_date),
         scope: tokens.scope || "",
       },
-      update: {
+      {
         email: profile.data.emailAddress || "",
         accessToken: tokens.access_token,
         accessTokenExpiresAt: new Date(tokens.expiry_date),
         scope: tokens.scope || "",
         ...(tokens.refresh_token ? { refreshTokenEnc: encrypt(tokens.refresh_token) } : {}),
-      },
-    });
+      }
+    );
 
     await startWatch(gmail, account.id);
 

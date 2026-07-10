@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { projectsRepo } from "@/modules/portfolio/projects/queries";
 
 export async function GET() {
   try {
-    const projects = await prisma.project.findMany({
-      orderBy: { order: "asc" },
-    });
+    const projects = await projectsRepo.list();
     return NextResponse.json({ success: true, data: projects });
   } catch (error) {
     console.error("GET projects error:", error);
@@ -23,32 +21,30 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const project = await prisma.project.create({
-      data: {
-        slug: body.slug,
-        title: body.title,
-        subtitle: body.subtitle,
-        category: body.category,
-        role: body.role,
-        company: body.company,
-        timeline: body.timeline,
-        desc: body.desc,
-        fullDesc: body.fullDesc,
-        tech: body.tech || [],
-        features: body.features || [],
-        contributions: body.contributions || [],
-        live: body.live,
-        image: body.image,
-        imageAlt: body.imageAlt || null,
-        featured: Boolean(body.featured),
-        span: body.span,
-        architectureTitle: body.architectureTitle,
-        architectureDesc: body.architectureDesc,
-        architectureTree: body.architectureTree,
-        metrics: body.metrics || [],
-        order: Number(body.order) || 0,
-        experienceId: body.experienceId || null,
-      },
+    const project = await projectsRepo.create({
+      slug: body.slug,
+      title: body.title,
+      subtitle: body.subtitle,
+      category: body.category,
+      role: body.role,
+      company: body.company,
+      timeline: body.timeline,
+      desc: body.desc,
+      fullDesc: body.fullDesc,
+      tech: body.tech || [],
+      features: body.features || [],
+      contributions: body.contributions || [],
+      live: body.live,
+      image: body.image,
+      imageAlt: body.imageAlt || null,
+      featured: Boolean(body.featured),
+      span: body.span,
+      architectureTitle: body.architectureTitle,
+      architectureDesc: body.architectureDesc,
+      architectureTree: body.architectureTree,
+      metrics: body.metrics || [],
+      order: Number(body.order) || 0,
+      experienceId: body.experienceId || null,
     });
 
     revalidatePath("/");

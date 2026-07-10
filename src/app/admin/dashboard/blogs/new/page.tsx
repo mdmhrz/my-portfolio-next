@@ -1,4 +1,4 @@
-import { BlogEditor } from "../_components/BlogEditor";
+import { BlogEditor } from "@/modules/portfolio/blog/components/BlogEditor";
 
 export default function NewBlogPage() {
   return <BlogEditor />;

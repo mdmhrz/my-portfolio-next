@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { BlogEditor } from "../../_components/BlogEditor";
+import { blogRepo } from "@/modules/portfolio/blog/queries";
+import { BlogEditor } from "@/modules/portfolio/blog/components/BlogEditor";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -8,7 +8,7 @@ interface Props {
 
 export default async function EditBlogPage({ params }: Props) {
   const { id } = await params;
-  const blog = await prisma.blog.findUnique({ where: { id } });
+  const blog = await blogRepo.get(id);
   if (!blog) notFound();
 
   // Serialize dates for client boundary

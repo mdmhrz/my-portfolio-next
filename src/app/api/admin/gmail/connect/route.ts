@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { verifyAdmin } from "@/lib/auth-helpers";
-import { buildOAuthUrl, isGmailOAuthConfigured } from "@/lib/gmail";
+import { buildOAuthUrl, isGmailOAuthConfigured } from "@/modules/gmail/service/client";
 
 export const runtime = "nodejs";
 

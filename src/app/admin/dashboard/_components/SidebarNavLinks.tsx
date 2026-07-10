@@ -42,7 +42,7 @@ export function SidebarNavLinks({
               onClick={onNavigate}
               className={`relative mx-auto flex h-11 w-12 items-center justify-center rounded-lg transition-colors cursor-pointer ${
                 isActive
-                  ? "bg-accent text-accent-foreground font-semibold"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               }`}
             >
@@ -67,7 +67,7 @@ export function SidebarNavLinks({
         onClick={onNavigate}
         className={`flex w-full items-center justify-between rounded-lg px-3.5 py-2 text-sm font-medium transition-colors cursor-pointer ${
           isActive
-            ? "bg-accent text-accent-foreground font-semibold"
+            ? "bg-primary text-primary-foreground shadow-sm"
             : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         }`}
       >
@@ -103,8 +103,8 @@ export function SidebarNavLinks({
         ) : (
           groups.map((group) => (
             <div key={group.label} className="space-y-1.5">
-              {!collapsed && (
-                <p className="px-3.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              {!collapsed && group.items.length > 1 && (
+                <p className="px-3.5 text-[11px] font-normal uppercase tracking-wide text-muted-foreground/60">
                   {group.label}
                 </p>
               )}

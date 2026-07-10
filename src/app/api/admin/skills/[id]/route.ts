@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { skillsRepo } from "@/modules/portfolio/skills/queries";
 
 export async function PUT(
   request: Request,
@@ -16,14 +16,11 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    const skill = await prisma.skill.update({
-      where: { id },
-      data: {
-        name: body.name,
-        category: body.category,
-        icon: body.icon || null,
-        order: Number(body.order) || 0,
-      },
+    const skill = await skillsRepo.update(id, {
+      name: body.name,
+      category: body.category,
+      icon: body.icon || null,
+      order: Number(body.order) || 0,
     });
 
     revalidatePath("/");
@@ -45,7 +42,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await prisma.skill.delete({ where: { id } });
+    await skillsRepo.remove(id);
 
     revalidatePath("/");
     return NextResponse.json({ success: true, message: "Skill deleted successfully" });

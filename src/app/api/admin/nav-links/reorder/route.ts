@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { navLinksRepo } from "@/modules/portfolio/nav-links/queries";
 
 interface ReorderItem {
   id: string;
@@ -23,11 +23,7 @@ export async function PUT(request: Request) {
 
     // Whole-list transaction — a drag-reorder settles into one final array, so this
     // persists it atomically instead of racing N independent per-row requests.
-    await prisma.$transaction(
-      items.map((item) =>
-        prisma.navLink.update({ where: { id: item.id }, data: { order: item.order } })
-      )
-    );
+    await navLinksRepo.reorder(items);
 
     revalidatePath("/");
     revalidatePath("/about");

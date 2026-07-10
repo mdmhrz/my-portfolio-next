@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { siteSettingsRepo } from "@/modules/settings/site-settings/queries";
 
 export async function GET() {
   try {
-    const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+    const settings = await siteSettingsRepo.get();
     return NextResponse.json({ success: true, data: settings });
   } catch (error) {
     console.error("GET settings error:", error);
@@ -44,11 +44,7 @@ export async function POST(request: Request) {
     if ("homepageTestimonialsCtaText" in body) data.homepageTestimonialsCtaText = body.homepageTestimonialsCtaText || null;
     if ("homepageTestimonialsCtaLink" in body) data.homepageTestimonialsCtaLink = body.homepageTestimonialsCtaLink || null;
 
-    const settings = await prisma.siteSettings.upsert({
-      where: { id: "singleton" },
-      update: data,
-      create: { id: "singleton", ...data },
-    });
+    const settings = await siteSettingsRepo.upsert(data, { id: "singleton", ...data });
 
     // Favicon lives in the root layout, which every route shares — revalidate the
     // whole layout tree for it instead of just the homepage/about/contact paths.

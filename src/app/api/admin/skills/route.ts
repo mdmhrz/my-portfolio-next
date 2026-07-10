@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { skillsRepo } from "@/modules/portfolio/skills/queries";
 
 export async function GET() {
   try {
-    const skills = await prisma.skill.findMany({
-      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-    });
+    const skills = await skillsRepo.list();
     return NextResponse.json({ success: true, data: skills });
   } catch (error) {
     console.error("GET skills error:", error);
@@ -23,13 +21,11 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const skill = await prisma.skill.create({
-      data: {
-        name: body.name,
-        category: body.category,
-        icon: body.icon || null,
-        order: Number(body.order) || 0,
-      },
+    const skill = await skillsRepo.create({
+      name: body.name,
+      category: body.category,
+      icon: body.icon || null,
+      order: Number(body.order) || 0,
     });
 
     revalidatePath("/");

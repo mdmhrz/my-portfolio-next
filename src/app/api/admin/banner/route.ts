@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { bannerRepo } from "@/modules/portfolio/banner/queries";
 
 export async function GET() {
   try {
-    const banner = await prisma.banner.findFirst();
+    const banner = await bannerRepo.get();
     return NextResponse.json({ success: true, data: banner });
   } catch (error) {
     console.error("GET banner error:", error);
@@ -42,15 +42,11 @@ export async function POST(request: Request) {
     if ("heroImageAlt" in body) data.heroImageAlt = body.heroImageAlt || null;
     if ("showcaseImageSide" in body) data.showcaseImageSide = body.showcaseImageSide || "left";
 
-    const banner = await prisma.banner.upsert({
-      where: { id: "singleton" },
-      update: data,
-      create: {
-        id: "singleton",
-        description: body.description ?? "",
-        chips: body.chips ?? [],
-        ...data,
-      },
+    const banner = await bannerRepo.upsert(data, {
+      id: "singleton",
+      description: body.description ?? "",
+      chips: body.chips ?? [],
+      ...data,
     });
 
     revalidatePath("/");

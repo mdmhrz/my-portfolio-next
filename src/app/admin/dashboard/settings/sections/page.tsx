@@ -1,4 +1,4 @@
-import { SectionsTab } from "../_components/SectionsTab";
+import { SectionsTab } from "@/modules/portfolio/sections/components/SectionsTab";
 
 export const dynamic = "force-dynamic";
 

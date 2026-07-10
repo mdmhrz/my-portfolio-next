@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { testimonialsRepo } from "@/modules/portfolio/testimonials/queries";
 
 export async function GET() {
   try {
-    const testimonials = await prisma.testimonial.findMany({
-      orderBy: { order: "asc" },
-    });
+    const testimonials = await testimonialsRepo.list();
     return NextResponse.json({ success: true, data: testimonials });
   } catch (error) {
     console.error("GET testimonials error:", error);
@@ -30,20 +28,18 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const testimonial = await prisma.testimonial.create({
-      data: {
-        name: body.name,
-        role: body.role || null,
-        company: body.company || null,
-        quote: body.quote,
-        avatarUrl: body.avatarUrl || null,
-        avatarAlt: body.avatarAlt || null,
-        rating: body.rating || null,
-        videoUrl: body.videoUrl || null,
-        highlight: body.highlight || null,
-        highlightLabel: body.highlightLabel || null,
-        order: body.order ?? (await prisma.testimonial.count()),
-      },
+    const testimonial = await testimonialsRepo.create({
+      name: body.name,
+      role: body.role || null,
+      company: body.company || null,
+      quote: body.quote,
+      avatarUrl: body.avatarUrl || null,
+      avatarAlt: body.avatarAlt || null,
+      rating: body.rating || null,
+      videoUrl: body.videoUrl || null,
+      highlight: body.highlight || null,
+      highlightLabel: body.highlightLabel || null,
+      order: body.order ?? (await testimonialsRepo.count()),
     });
 
     revalidatePath("/");

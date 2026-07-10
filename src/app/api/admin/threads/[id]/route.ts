@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { threadsRepo } from "@/modules/gmail/queries";
 
 export async function GET(
   request: Request,
@@ -12,13 +12,7 @@ export async function GET(
   }
 
   const { id } = await params;
-  const thread = await prisma.thread.findUnique({
-    where: { id },
-    include: {
-      message: true,
-      emails: { orderBy: { sentAt: "asc" }, include: { attachments: true } },
-    },
-  });
+  const thread = await threadsRepo.get(id);
 
   if (!thread) {
     return NextResponse.json({ success: false, error: "Thread not found" }, { status: 404 });
@@ -40,10 +34,7 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    const thread = await prisma.thread.update({
-      where: { id },
-      data: { unread: body.unread },
-    });
+    const thread = await threadsRepo.update(id, { unread: body.unread });
 
     return NextResponse.json({ success: true, data: thread });
   } catch (error) {
@@ -63,15 +54,12 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    const thread = await prisma.thread.findUnique({ where: { id } });
+    const thread = await threadsRepo.getRaw(id);
     if (!thread) {
       return NextResponse.json({ success: false, error: "Thread not found" }, { status: 404 });
     }
 
-    await prisma.$transaction([
-      prisma.thread.delete({ where: { id } }),
-      ...(thread.messageId ? [prisma.message.delete({ where: { id: thread.messageId } })] : []),
-    ]);
+    await threadsRepo.removeWithMessage(id, thread.messageId);
 
     return NextResponse.json({ success: true, message: "Thread deleted successfully" });
   } catch (error) {

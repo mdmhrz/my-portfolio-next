@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { projectsRepo } from "@/modules/portfolio/projects/queries";
 
 export async function PUT(
   request: Request,
@@ -18,33 +18,30 @@ export async function PUT(
 
     console.log("Updating project with data:", { id, imageAlt: body.imageAlt });
 
-    const project = await prisma.project.update({
-      where: { id },
-      data: {
-        slug: body.slug,
-        title: body.title,
-        subtitle: body.subtitle,
-        category: body.category,
-        role: body.role,
-        company: body.company,
-        timeline: body.timeline,
-        desc: body.desc,
-        fullDesc: body.fullDesc,
-        tech: body.tech || [],
-        features: body.features || [],
-        contributions: body.contributions || [],
-        live: body.live,
-        image: body.image,
-        imageAlt: body.imageAlt || null,
-        featured: Boolean(body.featured),
-        span: body.span,
-        architectureTitle: body.architectureTitle,
-        architectureDesc: body.architectureDesc,
-        architectureTree: body.architectureTree,
-        metrics: body.metrics || [],
-        order: Number(body.order) || 0,
-        experienceId: body.experienceId || null,
-      },
+    const project = await projectsRepo.update(id, {
+      slug: body.slug,
+      title: body.title,
+      subtitle: body.subtitle,
+      category: body.category,
+      role: body.role,
+      company: body.company,
+      timeline: body.timeline,
+      desc: body.desc,
+      fullDesc: body.fullDesc,
+      tech: body.tech || [],
+      features: body.features || [],
+      contributions: body.contributions || [],
+      live: body.live,
+      image: body.image,
+      imageAlt: body.imageAlt || null,
+      featured: Boolean(body.featured),
+      span: body.span,
+      architectureTitle: body.architectureTitle,
+      architectureDesc: body.architectureDesc,
+      architectureTree: body.architectureTree,
+      metrics: body.metrics || [],
+      order: Number(body.order) || 0,
+      experienceId: body.experienceId || null,
     });
 
     revalidatePath("/");
@@ -70,9 +67,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await prisma.project.delete({
-      where: { id },
-    });
+    await projectsRepo.remove(id);
 
     revalidatePath("/");
     return NextResponse.json({ success: true, message: "Project deleted successfully" });

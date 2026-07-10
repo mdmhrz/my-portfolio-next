@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/auth-helpers";
-import { scanJobGmail } from "@/lib/job-gmail-scan";
+import { scanJobGmail } from "@/modules/jobs/service/gmail-scan";
 
 export const runtime = "nodejs";
 

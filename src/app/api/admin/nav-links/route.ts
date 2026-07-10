@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { navLinksRepo } from "@/modules/portfolio/nav-links/queries";
 
 export async function GET() {
   try {
-    const navLinks = await prisma.navLink.findMany({ orderBy: { order: "asc" } });
+    const navLinks = await navLinksRepo.list();
     return NextResponse.json({ success: true, data: navLinks });
   } catch (error) {
     console.error("GET nav-links error:", error);
@@ -21,15 +21,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const count = await prisma.navLink.count();
-    const navLink = await prisma.navLink.create({
-      data: {
-        label: body.label,
-        href: body.href,
-        order: count,
-        showInNav: body.showInNav ?? true,
-        showInFooter: body.showInFooter ?? true,
-      },
+    const count = await navLinksRepo.count();
+    const navLink = await navLinksRepo.create({
+      label: body.label,
+      href: body.href,
+      order: count,
+      showInNav: body.showInNav ?? true,
+      showInFooter: body.showInFooter ?? true,
     });
 
     revalidatePath("/");

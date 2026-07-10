@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { footerRepo } from "@/modules/portfolio/footer/queries";
 
 export async function GET() {
   try {
-    const footer = await prisma.footer.findUnique({ where: { id: "singleton" } });
+    const footer = await footerRepo.get();
     return NextResponse.json({ success: true, data: footer });
   } catch (error) {
     console.error("GET footer error:", error);
@@ -30,11 +30,7 @@ export async function POST(request: Request) {
     if ("primaryStack" in body) data.primaryStack = body.primaryStack || "";
     if ("copyrightName" in body) data.copyrightName = body.copyrightName || "MHR.DEV";
 
-    const footer = await prisma.footer.upsert({
-      where: { id: "singleton" },
-      update: data,
-      create: { id: "singleton", ...data },
-    });
+    const footer = await footerRepo.upsert(data, { id: "singleton", ...data });
 
     revalidatePath("/");
     revalidatePath("/about");

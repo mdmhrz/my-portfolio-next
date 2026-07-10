@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { APIError } from "better-auth";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
 import { auth } from "@/lib/auth";
-import { signReauthToken, verifyReauthToken, VAULT_REAUTH_COOKIE, VAULT_REAUTH_TTL_MS } from "@/lib/vault-reauth";
-import { checkVaultRateLimit, recordVaultAttempt } from "@/lib/vault-rate-limit";
+import { signReauthToken, verifyReauthToken, VAULT_REAUTH_COOKIE, VAULT_REAUTH_TTL_MS } from "@/modules/vault/service/reauth";
+import { checkVaultRateLimit, recordVaultAttempt } from "@/modules/vault/service/rate-limit";
+import { vaultItemsRepo, vaultHistoryRepo, vaultAuditRepo, restoreVaultItemFromHistory } from "@/modules/vault/queries";
 
 interface HistorySnapshotField {
   label: string;
@@ -13,13 +13,6 @@ interface HistorySnapshotField {
   encryptedValue: string;
   order: number;
 }
-
-const maskedItemInclude = {
-  fields: {
-    select: { id: true, label: true, type: true, order: true },
-    orderBy: { order: "asc" as const },
-  },
-};
 
 // Re-auth gated the same way /reveal is — restoring an old version is exactly
 // as sensitive as revealing one (it overwrites the live secret), so it earns
@@ -34,11 +27,11 @@ export async function POST(
   }
 
   const { id, historyId } = await params;
-  const target = await prisma.vaultItemHistory.findFirst({ where: { id: historyId, vaultItemId: id } });
+  const target = await vaultHistoryRepo.findOne(historyId, id);
   if (!target) {
     return NextResponse.json({ success: false, error: "History entry not found" }, { status: 404 });
   }
-  const current = await prisma.vaultItem.findUnique({ where: { id }, include: { fields: true } });
+  const current = await vaultItemsRepo.getWithFields(id);
   if (!current) {
     return NextResponse.json({ success: false, error: "Vault item not found" }, { status: 404 });
   }
@@ -85,39 +78,18 @@ export async function POST(
   try {
     const snapshotFields = target.snapshot as unknown as HistorySnapshotField[];
 
-    const item = await prisma.$transaction(async (tx) => {
-      // Push the current (about-to-be-replaced) state onto history first —
-      // restoring is itself undo-able, not a one-way trip.
-      await tx.vaultItemHistory.create({
-        data: {
-          vaultItemId: id,
-          snapshot: current.fields.map((f) => ({
-            label: f.label,
-            type: f.type,
-            encryptedValue: f.encryptedValue,
-            order: f.order,
-          })),
-        },
-      });
-      await tx.vaultField.deleteMany({ where: { vaultItemId: id } });
+    const item = await restoreVaultItemFromHistory(
+      id,
+      current.fields.map((f) => ({
+        label: f.label,
+        type: f.type,
+        encryptedValue: f.encryptedValue,
+        order: f.order,
+      })),
+      snapshotFields
+    );
 
-      return tx.vaultItem.update({
-        where: { id },
-        data: {
-          fields: {
-            create: snapshotFields.map((f) => ({
-              label: f.label,
-              type: f.type,
-              encryptedValue: f.encryptedValue,
-              order: f.order,
-            })),
-          },
-        },
-        include: maskedItemInclude,
-      });
-    });
-
-    await prisma.vaultAuditLog.create({ data: { vaultItemId: id, action: "restored" } });
+    await vaultAuditRepo.create({ vaultItemId: id, action: "restored" });
 
     const response = NextResponse.json({ success: true, data: item });
     if (!alreadyReauthed) {

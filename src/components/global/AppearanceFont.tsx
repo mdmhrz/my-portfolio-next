@@ -1,5 +1,5 @@
-import { getAppearance } from "@/lib/getSiteSettings";
-import { generateFontCSS } from "@/lib/appearanceInjector";
+import { getAppearance } from "@/modules/settings/appearance/service";
+import { generateFontCSS } from "@/modules/settings/appearance/appearance-injector";
 
 /**
  * Global font injection (server-side). Renders nothing for the built-in Satoshi

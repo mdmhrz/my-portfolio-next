@@ -1,4 +1,4 @@
-import { VaultPageContents } from "./_components/VaultPageContents";
+import { VaultPageContents } from "@/modules/vault/components/VaultPageContents";
 
 export default function VaultPage() {
   return <VaultPageContents />;

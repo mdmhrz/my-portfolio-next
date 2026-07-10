@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { jobsRepo } from "@/modules/jobs/queries";
 
 export async function GET() {
   const admin = await verifyAdmin();
@@ -9,10 +9,7 @@ export async function GET() {
   }
 
   try {
-    const jobs = await prisma.jobApplication.findMany({
-      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-      include: { events: { orderBy: { createdAt: "asc" } } },
-    });
+    const jobs = await jobsRepo.list();
     return NextResponse.json({ success: true, data: jobs });
   } catch (error) {
     console.error("GET jobs error:", error);
@@ -30,29 +27,26 @@ export async function POST(request: Request) {
     const body = await request.json();
     const status = body.status || "saved";
 
-    const job = await prisma.jobApplication.create({
-      data: {
-        company: body.company,
-        position: body.position,
-        companyLogo: body.companyLogo || null,
-        jobUrl: body.jobUrl || null,
-        source: body.source,
-        applicationType: body.applicationType,
-        status,
-        deadline: body.deadline ? new Date(body.deadline) : null,
-        salaryMin: body.salaryMin ?? null,
-        salaryMax: body.salaryMax ?? null,
-        salaryCurrency: body.salaryCurrency || null,
-        location: body.location || null,
-        workMode: body.workMode || null,
-        resumeVersion: body.resumeVersion || null,
-        coverLetterVersion: body.coverLetterVersion || null,
-        notes: body.notes || null,
-        appliedAt: body.appliedAt ? new Date(body.appliedAt) : null,
-        order: body.order ?? (await prisma.jobApplication.count()),
-        events: { create: { status, source: "manual" } },
-      },
-      include: { events: { orderBy: { createdAt: "desc" } } },
+    const job = await jobsRepo.create({
+      company: body.company,
+      position: body.position,
+      companyLogo: body.companyLogo || null,
+      jobUrl: body.jobUrl || null,
+      source: body.source,
+      applicationType: body.applicationType,
+      status,
+      deadline: body.deadline ? new Date(body.deadline) : null,
+      salaryMin: body.salaryMin ?? null,
+      salaryMax: body.salaryMax ?? null,
+      salaryCurrency: body.salaryCurrency || null,
+      location: body.location || null,
+      workMode: body.workMode || null,
+      resumeVersion: body.resumeVersion || null,
+      coverLetterVersion: body.coverLetterVersion || null,
+      notes: body.notes || null,
+      appliedAt: body.appliedAt ? new Date(body.appliedAt) : null,
+      order: body.order ?? (await jobsRepo.count()),
+      events: { create: { status, source: "manual" } },
     });
 
     return NextResponse.json({ success: true, data: job });

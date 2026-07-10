@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { profileRepo } from "@/modules/portfolio/profile/queries";
 
 export async function GET() {
   try {
-    const profile = await prisma.profile.findUnique({ where: { id: "singleton" } });
+    const profile = await profileRepo.get();
     return NextResponse.json({ success: true, data: profile });
   } catch (error) {
     console.error("GET profile error:", error);
@@ -38,11 +38,7 @@ export async function POST(request: Request) {
       facebook: body.facebook || null,
     };
 
-    const profile = await prisma.profile.upsert({
-      where: { id: "singleton" },
-      update: data,
-      create: { id: "singleton", ...data },
-    });
+    const profile = await profileRepo.upsert(data, { id: "singleton", ...data });
 
     revalidatePath("/");
     revalidatePath("/about");

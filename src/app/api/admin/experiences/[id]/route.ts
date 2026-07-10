@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { experienceRepo } from "@/modules/portfolio/experience/queries";
 
 export async function PUT(
   request: Request,
@@ -16,16 +16,13 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    const experience = await prisma.experience.update({
-      where: { id },
-      data: {
-        company: body.company,
-        role: body.role,
-        location: body.location,
-        timeline: body.timeline,
-        description: body.description,
-        order: Number(body.order) || 0,
-      },
+    const experience = await experienceRepo.update(id, {
+      company: body.company,
+      role: body.role,
+      location: body.location,
+      timeline: body.timeline,
+      description: body.description,
+      order: Number(body.order) || 0,
     });
 
     revalidatePath("/");
@@ -47,9 +44,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await prisma.experience.delete({
-      where: { id },
-    });
+    await experienceRepo.remove(id);
 
     revalidatePath("/");
     return NextResponse.json({ success: true, message: "Experience deleted successfully" });

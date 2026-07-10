@@ -5,8 +5,8 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { FileText, Wand2 } from "lucide-react";
-import { ContentTab } from "./_components/ContentTab";
-import { TemplateTab } from "./_components/TemplateTab";
+import { ContentTab } from "@/modules/portfolio/banner/components/ContentTab";
+import { TemplateTab } from "@/modules/portfolio/banner/components/TemplateTab";
 import { FormPageSkeleton } from "@/components/admin/FormPageSkeleton";
 
 export const dynamic = "force-dynamic";

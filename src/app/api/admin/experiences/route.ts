@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { experienceRepo } from "@/modules/portfolio/experience/queries";
 
 export async function GET() {
   try {
-    const experiences = await prisma.experience.findMany({
-      include: { projects: true },
-      orderBy: { order: "asc" },
-    });
+    const experiences = await experienceRepo.list();
     return NextResponse.json({ success: true, data: experiences });
   } catch (error) {
     console.error("GET experiences error:", error);
@@ -24,15 +21,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const experience = await prisma.experience.create({
-      data: {
-        company: body.company,
-        role: body.role,
-        location: body.location,
-        timeline: body.timeline,
-        description: body.description,
-        order: Number(body.order) || 0,
-      },
+    const experience = await experienceRepo.create({
+      company: body.company,
+      role: body.role,
+      location: body.location,
+      timeline: body.timeline,
+      description: body.description,
+      order: Number(body.order) || 0,
     });
 
     revalidatePath("/");

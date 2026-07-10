@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { navLinksRepo } from "@/modules/portfolio/nav-links/queries";
 
 export async function PUT(
   request: Request,
@@ -16,14 +16,11 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    const navLink = await prisma.navLink.update({
-      where: { id },
-      data: {
-        label: body.label,
-        href: body.href,
-        showInNav: body.showInNav ?? true,
-        showInFooter: body.showInFooter ?? true,
-      },
+    const navLink = await navLinksRepo.update(id, {
+      label: body.label,
+      href: body.href,
+      showInNav: body.showInNav ?? true,
+      showInFooter: body.showInFooter ?? true,
     });
 
     revalidatePath("/");
@@ -47,7 +44,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await prisma.navLink.delete({ where: { id } });
+    await navLinksRepo.remove(id);
 
     revalidatePath("/");
     revalidatePath("/about");

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { jobsRepo } from "@/modules/jobs/queries";
 
 export async function PUT(request: Request) {
   const admin = await verifyAdmin();
@@ -16,14 +16,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ success: false, error: "Invalid items array" }, { status: 400 });
     }
 
-    await prisma.$transaction(
-      items.map((item: { id: string; order: number }) =>
-        prisma.jobApplication.update({
-          where: { id: item.id },
-          data: { order: item.order },
-        })
-      )
-    );
+    await jobsRepo.reorder(items);
 
     return NextResponse.json({ success: true });
   } catch (error) {

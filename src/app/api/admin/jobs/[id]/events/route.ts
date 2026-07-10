@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { jobsRepo, jobEventsRepo } from "@/modules/jobs/queries";
 
 // Manual note/status log entry — does not touch the job's own `status` field,
 // for logging things like "followed up" without moving the pipeline stage.
@@ -17,18 +17,16 @@ export async function POST(
     const { id } = await params;
     const body = await request.json();
 
-    const job = await prisma.jobApplication.findUnique({ where: { id } });
+    const job = await jobsRepo.getRaw(id);
     if (!job) {
       return NextResponse.json({ success: false, error: "Job not found" }, { status: 404 });
     }
 
-    const event = await prisma.jobStatusEvent.create({
-      data: {
-        jobId: id,
-        status: body.status || job.status,
-        note: body.note || null,
-        source: "manual",
-      },
+    const event = await jobEventsRepo.create({
+      jobId: id,
+      status: body.status || job.status,
+      note: body.note || null,
+      source: "manual",
     });
 
     return NextResponse.json({ success: true, data: event });

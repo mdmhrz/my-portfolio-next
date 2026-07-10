@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/auth-helpers";
-import { syncGmailHistory } from "@/lib/gmail-sync";
+import { syncGmailHistory } from "@/modules/gmail/service/sync";
 
 export const runtime = "nodejs";
 
