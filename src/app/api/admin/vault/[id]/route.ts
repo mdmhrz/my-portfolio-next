@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/auth-helpers";
+import { prisma } from "@/lib/prisma";
 import { encrypt } from "@/modules/vault/service/crypto";
+import { getStorageProvider } from "@/lib/storage";
 import { vaultItemsRepo, vaultAuditRepo, updateVaultItemWithHistory } from "@/modules/vault/queries";
 
 export async function GET(
@@ -96,6 +98,22 @@ export async function DELETE(
 
   try {
     const { id } = await params;
+
+    // No DB-level cascade across the module boundary (FileAsset.relatedId is
+    // a soft link, not an FK) — attachments must be deleted explicitly,
+    // storage object first, before the owning VaultItem goes away. Query
+    // catches both the r2 original and any Drive backup (both carry the
+    // same relatedModule/relatedId) — each must go through its own
+    // provider, not a hardcoded r2Provider, or a Drive-backed attachment's
+    // real Drive file is silently never deleted.
+    const attachments = await prisma.fileAsset.findMany({ where: { relatedModule: "vault", relatedId: id } });
+    for (const attachment of attachments) {
+      await getStorageProvider(attachment.provider).delete(attachment.providerFileId);
+    }
+    if (attachments.length > 0) {
+      await prisma.fileAsset.deleteMany({ where: { id: { in: attachments.map((a) => a.id) } } });
+    }
+
     await vaultItemsRepo.remove(id);
     await vaultAuditRepo.create({ vaultItemId: id, action: "deleted" });
     return NextResponse.json({ success: true });

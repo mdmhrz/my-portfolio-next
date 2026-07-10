@@ -123,3 +123,10 @@ export function useVaultRestore() {
   const restore = (id: string, historyId: string) => run((password) => restoreVaultItemVersion(id, historyId, password));
   return { restore, PasswordPrompt };
 }
+
+export function useVaultAttachmentReveal() {
+  const { revealVaultAttachment } = usePortfolioStore();
+  const { run, PasswordPrompt } = useVaultReauthFlow<{ url: string; name: string; mimeType: string }>();
+  const reveal = (vaultItemId: string, fileId: string) => run((password) => revealVaultAttachment(vaultItemId, fileId, password));
+  return { reveal, PasswordPrompt };
+}

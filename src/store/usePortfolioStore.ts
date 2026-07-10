@@ -308,6 +308,58 @@ export interface VaultItemData {
   updatedAt: string;
 }
 
+export interface VaultAttachmentData {
+  id: string;
+  name: string;
+  mimeType: string;
+  size: number | null;
+  provider: string; // "r2" | "drive"
+  mirrorOfId?: string | null; // set on a Drive backup copy, points at the R2 FileAsset it mirrors
+  shareEnabled?: boolean; // File Manager "Share" action — unused by Vault attachments
+  shareToken?: string | null;
+  shareExpiresAt?: string | null; // null = shared until manually revoked
+  createdAt: string;
+}
+
+// Same "200 even when re-auth is needed" shape as VaultRevealResult — an
+// attachment download is gated identically to a field reveal.
+export interface VaultAttachmentRevealResult {
+  success: boolean;
+  requiresPassword?: boolean;
+  error?: string;
+  data?: { url: string; name: string; mimeType: string };
+}
+
+// --- File Manager ---
+// Standalone document explorer at /admin/dashboard/files — a second
+// consumer of the same FileAsset primitive Vault attachments use, scoped to
+// relatedModule: "file-manager" and organized by folderId instead of a
+// vault item. See file-manager-plan.md.
+export interface FileManagerFolderData {
+  id: string;
+  name: string;
+  parentId: string | null;
+  subfolderCount: number;
+  fileCount: number;
+  createdAt: string;
+}
+
+export interface FolderTreeItem {
+  id: string;
+  name: string;
+  parentId: string | null;
+}
+
+export interface FileManagerFileData extends VaultAttachmentData {
+  folderId: string | null;
+}
+
+export interface FolderContentsResult {
+  breadcrumb: { id: string; name: string }[];
+  subfolders: FileManagerFolderData[];
+  files: FileManagerFileData[];
+}
+
 export interface JobApplicationData {
   id: string;
   company: string;
@@ -434,6 +486,28 @@ interface PortfolioStore {
   logVaultCopy: (id: string, fieldLabel?: string) => void;
   fetchVaultHistory: (id: string) => Promise<VaultHistoryData[]>;
   restoreVaultItemVersion: (id: string, historyId: string, password?: string) => Promise<VaultRestoreResult>;
+
+  fetchVaultAttachments: (vaultItemId: string) => Promise<VaultAttachmentData[]>;
+  uploadVaultAttachment: (vaultItemId: string, file: File) => Promise<VaultAttachmentData>;
+  deleteVaultAttachment: (fileId: string) => Promise<void>;
+  revealVaultAttachment: (vaultItemId: string, fileId: string, password?: string) => Promise<VaultAttachmentRevealResult>;
+  backupFileToDrive: (fileId: string) => Promise<VaultAttachmentData>;
+  getFileUrl: (fileId: string) => Promise<{ url: string; name: string; mimeType: string }>;
+  createShareLink: (fileId: string, expiresInHours: number | null) => Promise<{ url: string; shareEnabled: boolean; shareExpiresAt: string | null }>;
+  revokeShareLink: (fileId: string) => Promise<void>;
+  fetchRecentFiles: (limit?: number) => Promise<FileManagerFileData[]>;
+  fetchStorageStats: () => Promise<{ totalBytes: number; fileCount: number }>;
+
+  fetchFolderTree: () => Promise<FolderTreeItem[]>;
+  fetchFolderContents: (folderId: string | null) => Promise<FolderContentsResult>;
+  createFolder: (name: string, parentId: string | null) => Promise<FileManagerFolderData>;
+  renameFolder: (id: string, name: string) => Promise<FileManagerFolderData>;
+  moveFolder: (id: string, parentId: string | null) => Promise<FileManagerFolderData>;
+  deleteFolder: (id: string) => Promise<{ deletedFolders: number; deletedFiles: number }>;
+  uploadFileManagerFile: (file: File, folderId: string | null) => Promise<FileManagerFileData>;
+  renameFile: (id: string, name: string) => Promise<FileManagerFileData>;
+  moveFile: (id: string, folderId: string | null) => Promise<FileManagerFileData>;
+  deleteFile: (id: string) => Promise<void>;
 
   fetchThreads: () => Promise<void>;
   fetchThread: (id: string) => Promise<ThreadData | null>;
@@ -1179,5 +1253,115 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
       set((state) => ({ vaultItems: state.vaultItems.map((v) => (v.id === id ? res.data.data : v)) }));
     }
     return res.data as VaultRestoreResult;
+  },
+
+  fetchVaultAttachments: async (vaultItemId) => {
+    const res = await api.get("/admin/files", { params: { relatedModule: "vault", relatedId: vaultItemId } });
+    return res.data.data as VaultAttachmentData[];
+  },
+  uploadVaultAttachment: async (vaultItemId, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("relatedModule", "vault");
+    formData.append("relatedId", vaultItemId);
+    const res = await api.post("/admin/files", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data.data as VaultAttachmentData;
+  },
+  deleteVaultAttachment: async (fileId) => {
+    await api.delete(`/admin/files/${fileId}`);
+  },
+  // Deliberately does not touch any store state — same reasoning as
+  // revealVaultItem, plus the URL is short-lived and only ever used once.
+  revealVaultAttachment: async (vaultItemId, fileId, password) => {
+    const res = await api.post(
+      `/admin/vault/${vaultItemId}/attachments/${fileId}/download`,
+      password ? { password } : {},
+      { showToast: false }
+    );
+    return res.data as VaultAttachmentRevealResult;
+  },
+  backupFileToDrive: async (fileId) => {
+    const res = await api.post(`/admin/files/${fileId}/backup-to-drive`);
+    return res.data.data as VaultAttachmentData;
+  },
+
+  getFileUrl: async (fileId) => {
+    const res = await api.get(`/admin/files/${fileId}`);
+    return res.data.data as { url: string; name: string; mimeType: string };
+  },
+  createShareLink: async (fileId, expiresInHours) => {
+    const res = await api.post(`/admin/files/${fileId}/share`, { expiresInHours });
+    return res.data.data as { url: string; shareEnabled: boolean; shareExpiresAt: string | null };
+  },
+  revokeShareLink: async (fileId) => {
+    await api.delete(`/admin/files/${fileId}/share`);
+  },
+  fetchRecentFiles: async (limit = 8) => {
+    const res = await api.get("/admin/files", { params: { relatedModule: "file-manager", limit } });
+    return (res.data.data as FileManagerFileData[]).filter((f) => f.provider === "r2");
+  },
+  // Real total across every folder — no fabricated quota/percentage. R2 has
+  // no fixed cap, so a fake "X of Y GB" bar would just be misleading.
+  fetchStorageStats: async () => {
+    const res = await api.get("/admin/files", { params: { relatedModule: "file-manager" } });
+    const r2Files = (res.data.data as FileManagerFileData[]).filter((f) => f.provider === "r2");
+    const totalBytes = r2Files.reduce((sum, f) => sum + (f.size ?? 0), 0);
+    return { totalBytes, fileCount: r2Files.length };
+  },
+  fetchFolderTree: async () => {
+    const res = await api.get("/admin/folders", { params: { tree: "1" } });
+    return res.data.data as FolderTreeItem[];
+  },
+  fetchFolderContents: async (folderId) => {
+    const folderParam = folderId ?? "root";
+    const [subfoldersRes, filesRes, breadcrumbRes] = await Promise.all([
+      api.get("/admin/folders", { params: { parentId: folderParam } }),
+      api.get("/admin/files", { params: { relatedModule: "file-manager", folderId: folderParam } }),
+      folderId ? api.get(`/admin/folders/${folderId}`) : Promise.resolve(null),
+    ]);
+    return {
+      subfolders: subfoldersRes.data.data as FileManagerFolderData[],
+      files: filesRes.data.data as FileManagerFileData[],
+      breadcrumb: breadcrumbRes ? breadcrumbRes.data.data.breadcrumb : [],
+    };
+  },
+  createFolder: async (name, parentId) => {
+    const res = await api.post("/admin/folders", { name, parentId: parentId ?? "root" });
+    return res.data.data as FileManagerFolderData;
+  },
+  renameFolder: async (id, name) => {
+    const res = await api.patch(`/admin/folders/${id}`, { name });
+    return res.data.data as FileManagerFolderData;
+  },
+  moveFolder: async (id, parentId) => {
+    const res = await api.patch(`/admin/folders/${id}`, { parentId: parentId ?? "root" });
+    return res.data.data as FileManagerFolderData;
+  },
+  deleteFolder: async (id) => {
+    const res = await api.delete(`/admin/folders/${id}`);
+    return res.data.data as { deletedFolders: number; deletedFiles: number };
+  },
+  uploadFileManagerFile: async (file, folderId) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("relatedModule", "file-manager");
+    formData.append("folderId", folderId ?? "root");
+    const res = await api.post("/admin/files", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data.data as FileManagerFileData;
+  },
+  renameFile: async (id, name) => {
+    const res = await api.patch(`/admin/files/${id}`, { name });
+    return res.data.data as FileManagerFileData;
+  },
+  moveFile: async (id, folderId) => {
+    const res = await api.patch(`/admin/files/${id}`, { folderId: folderId ?? "root" });
+    return res.data.data as FileManagerFileData;
+  },
+  deleteFile: async (id) => {
+    await api.delete(`/admin/files/${id}`);
   },
 }));

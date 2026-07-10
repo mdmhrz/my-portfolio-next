@@ -15,6 +15,7 @@ import {
   Link2,
   MessageSquareQuote,
   ShieldCheck,
+  FolderOpen,
 } from "lucide-react";
 
 export type TabValue =
@@ -33,7 +34,8 @@ export type TabValue =
   | "testimonials"
   | "messages"
   | "jobs"
-  | "vault";
+  | "vault"
+  | "files";
 
 export interface NavItem {
   value: TabValue;
@@ -91,6 +93,12 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Vault",
     items: [
       { value: "vault", label: "Secrets", href: "/admin/dashboard/vault", icon: ShieldCheck },
+    ],
+  },
+  {
+    label: "File Manager",
+    items: [
+      { value: "files", label: "Files", href: "/admin/dashboard/files", icon: FolderOpen },
     ],
   },
 ];

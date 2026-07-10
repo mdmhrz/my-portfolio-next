@@ -23,6 +23,13 @@ export function slugify(value: string): string {
     .replace(/^-+|-+$/g, "");      // trim leading/trailing hyphens
 }
 
+export function formatFileSize(bytes?: number | null): string {
+  if (!bytes || bytes <= 0) return "—";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export function mapDbProjectToProjectDetails(p: any): ProjectDetails {
   return {
     id: p.slug, // Map database slug to id for frontend compatibility

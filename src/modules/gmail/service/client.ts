@@ -8,6 +8,10 @@ export const GMAIL_SCOPES = [
   "https://www.googleapis.com/auth/gmail.send",
   "https://www.googleapis.com/auth/gmail.readonly",
   "https://www.googleapis.com/auth/calendar.events",
+  // Per-file access only — the app can read/write/delete files *it* creates
+  // in Drive, not the whole Drive. Matches how every other scope here is
+  // kept as narrow as the feature actually needs.
+  "https://www.googleapis.com/auth/drive.file",
 ];
 
 export function isGmailOAuthConfigured() {
@@ -96,6 +100,14 @@ export async function getGmailClient() {
 export async function getCalendarClient() {
   const { client, account } = await getAuthorizedClient();
   return { calendar: google.calendar({ version: "v3", auth: client }), account };
+}
+
+// Returns an authenticated Google Drive client for the same connected
+// account — requires the `drive.file` scope, added alongside the existing
+// Gmail/Calendar scopes; same reconnect-once caveat as getCalendarClient().
+export async function getDriveClient() {
+  const { client, account } = await getAuthorizedClient();
+  return { drive: google.drive({ version: "v3", auth: client }), account };
 }
 
 interface SendGmailMimeParams {

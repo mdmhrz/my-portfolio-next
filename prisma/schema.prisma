@@ -584,3 +584,58 @@ model VaultLoginAttempt {
 
   @@map("vault_login_attempt")
 }
+
+// --- File storage ---
+// Generic file record for anything not served through Cloudinary's image
+// pipeline. provider/providerFileId point at wherever the bytes actually
+// live (R2 today, Drive later); relatedModule/relatedId is a soft,
+// unconstrained polymorphic link — deleting the owning row (e.g. a
+// VaultItem) must explicitly also delete its FileAssets in application
+// code, there is no cascading FK across modules.
+model FileAsset {
+  id             String              @id @default(uuid())
+  provider       String // "r2" | "drive"
+  providerFileId String
+  folder         String // provider-side path prefix (e.g. "vault", "file-manager") — unrelated to folderId below
+  name           String
+  mimeType       String
+  size           Int?
+  relatedModule  String // "vault" | "jobs" | "blogs" | "file-manager" | ...
+  relatedId      String?
+  mirrorOfId     String? // set on a Drive backup copy, points at the R2 FileAsset it mirrors
+  folderId       String? // File Manager tree location; null for every other module's rows
+  folderRef      FileManagerFolder?  @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  // Public share link (File Manager "Share" action, r2-only). shareToken is
+  // a short, permanent, unguessable id — the actual bytes are still served
+  // through a freshly-minted short-lived R2 presigned URL on every visit
+  // (see GET /s/[token]), so this can safely stay valid indefinitely without
+  // hitting R2 presign's own max-expiry limit.
+  shareEnabled   Boolean             @default(false)
+  shareToken     String?             @unique
+  shareExpiresAt DateTime? // null = shared until manually revoked
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@map("file_asset")
+}
+
+// --- File Manager ---
+// Real folder tree for the standalone /admin/dashboard/files explorer (see
+// file-manager-plan.md). FileAsset.folderId points here; every other
+// module's FileAsset rows (Vault attachments, Drive mirrors, ...) leave it
+// null and are unaffected. Deleting a folder cascades its subtree at the DB
+// level — application code must delete the underlying storage bytes for
+// every FileAsset in that subtree *before* issuing the cascading delete.
+model FileManagerFolder {
+  id        String              @id @default(uuid())
+  name      String
+  parentId  String?
+  parent    FileManagerFolder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children  FileManagerFolder[] @relation("FolderTree")
+  files     FileAsset[]
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@unique([parentId, name])
+  @@map("file_manager_folder")
+}

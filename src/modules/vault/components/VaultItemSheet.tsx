@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Pencil, Trash2, Eye, EyeOff, Copy, ShieldCheck, FileText, History as HistoryIcon } from 'lucide-react';
-import { usePortfolioStore, VaultItemData, VaultFieldData, VaultAuditLogData, VaultHistoryData } from '@/store/usePortfolioStore';
+import { Pencil, Trash2, Eye, EyeOff, Copy, ShieldCheck, FileText, History as HistoryIcon, Paperclip, Download, Loader2, UploadCloud, Check } from 'lucide-react';
+import { usePortfolioStore, VaultItemData, VaultFieldData, VaultAuditLogData, VaultHistoryData, VaultAttachmentData } from '@/store/usePortfolioStore';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FormDialog } from '@/components/admin/FormDialog';
-import { formatDate, prettyJson, CategoryIcon } from './vault-constants';
-import { useVaultReveal, useVaultRestore } from './useVaultReauth';
+import { formatDate, formatFileSize, prettyJson, CategoryIcon } from './vault-constants';
+import { useVaultReveal, useVaultRestore, useVaultAttachmentReveal } from './useVaultReauth';
 
 interface VaultItemSheetProps {
   item: VaultItemData | null;
@@ -53,9 +53,10 @@ function scheduleClipboardClear(copiedValue: string) {
 // a different item, so plain useState is enough to reset revealed/visible —
 // no effect needed, and plaintext never persists past the item it belongs to.
 export function VaultItemSheet({ item, onOpenChange, onEdit, onDelete, onRestored }: VaultItemSheetProps) {
-  const { fetchVaultAuditLog, fetchVaultHistory, logVaultCopy } = usePortfolioStore();
+  const { fetchVaultAuditLog, fetchVaultHistory, fetchVaultAttachments, uploadVaultAttachment, deleteVaultAttachment, backupFileToDrive, logVaultCopy } = usePortfolioStore();
   const { reveal, PasswordPrompt } = useVaultReveal();
   const { restore, PasswordPrompt: RestorePasswordPrompt } = useVaultRestore();
+  const { reveal: revealAttachment, PasswordPrompt: AttachmentPasswordPrompt } = useVaultAttachmentReveal();
   const [revealed, setRevealed] = useState<VaultFieldData[] | null>(null);
   const [revealing, setRevealing] = useState(false);
   const [visible, setVisible] = useState<Record<string, boolean>>({});
@@ -63,22 +64,89 @@ export function VaultItemSheet({ item, onOpenChange, onEdit, onDelete, onRestore
   const [history, setHistory] = useState<VaultHistoryData[] | null>(null);
   const [restoreTarget, setRestoreTarget] = useState<VaultHistoryData | null>(null);
   const [restoring, setRestoring] = useState(false);
+  const [attachments, setAttachments] = useState<VaultAttachmentData[] | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [backingUpId, setBackingUpId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Hooks must run unconditionally, so the data fetches live above the `if
   // (!item)` guard below — it's a no-op render (Sheet closed) either way.
   useEffect(() => {
     if (!item) return;
     let cancelled = false;
-    Promise.all([fetchVaultAuditLog(item.id), fetchVaultHistory(item.id)]).then(([logs, hist]) => {
-      if (!cancelled) {
-        setAuditLog(logs);
-        setHistory(hist);
+    Promise.all([fetchVaultAuditLog(item.id), fetchVaultHistory(item.id), fetchVaultAttachments(item.id)]).then(
+      ([logs, hist, files]) => {
+        if (!cancelled) {
+          setAuditLog(logs);
+          setHistory(hist);
+          setAttachments(files);
+        }
       }
-    });
+    );
     return () => { cancelled = true; };
-  }, [item, fetchVaultAuditLog, fetchVaultHistory]);
+  }, [item, fetchVaultAuditLog, fetchVaultHistory, fetchVaultAttachments]);
 
   if (!item) return null;
+
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploading(true);
+    try {
+      const asset = await uploadVaultAttachment(item.id, file);
+      setAttachments((prev) => [asset, ...(prev ?? [])]);
+      toast.success('Attachment uploaded.');
+    } catch {
+      toast.error('Failed to upload attachment.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const downloadAttachment = async (attachment: VaultAttachmentData) => {
+    setDownloadingId(attachment.id);
+    try {
+      const result = await revealAttachment(item.id, attachment.id);
+      if (result) window.open(result.url, '_blank', 'noopener,noreferrer');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  const removeAttachment = async (attachment: VaultAttachmentData) => {
+    try {
+      await deleteVaultAttachment(attachment.id);
+      setAttachments((prev) => (prev ?? []).filter((a) => a.id !== attachment.id));
+      toast.success('Attachment deleted.');
+    } catch {
+      toast.error('Failed to delete attachment.');
+    }
+  };
+
+  const backupAttachment = async (attachment: VaultAttachmentData) => {
+    setBackingUpId(attachment.id);
+    try {
+      const mirror = await backupFileToDrive(attachment.id);
+      setAttachments((prev) => [...(prev ?? []), mirror]);
+      toast.success('Backed up to Drive.');
+    } catch {
+      toast.error('Failed to back up to Drive.');
+    } finally {
+      setBackingUpId(null);
+    }
+  };
+
+  // Only R2-original rows are ever listed/interactive — a Drive-mirror row's
+  // download would need the reauth gate carried into the generic download
+  // proxy first (see storage-integration-plan.md Phase 3's "known gap"), so
+  // for now a mirror only ever shows up as a badge on its R2 source, never
+  // as its own list item.
+  const r2Attachments = (attachments ?? []).filter((a) => a.provider === 'r2');
+  const mirroredSourceIds = new Set(
+    (attachments ?? []).filter((a) => a.provider === 'drive' && a.mirrorOfId).map((a) => a.mirrorOfId)
+  );
 
   const doReveal = async () => {
     setRevealing(true);
@@ -247,6 +315,74 @@ export function VaultItemSheet({ item, onOpenChange, onEdit, onDelete, onRestore
           </div>
 
           <div className="space-y-3 border-t border-border pt-4">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold text-foreground">Attachments</p>
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                {uploading ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Paperclip className="mr-1.5 h-3.5 w-3.5" />}
+                {uploading ? 'Uploading…' : 'Add file'}
+              </Button>
+              <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileSelected} />
+            </div>
+
+            {!attachments ? (
+              <div className="space-y-2">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <div key={i} className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
+                    <Skeleton className="h-3 w-2/5" />
+                    <Skeleton className="h-7 w-16 shrink-0 rounded-md" />
+                  </div>
+                ))}
+              </div>
+            ) : r2Attachments.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No attachments yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {r2Attachments.map((attachment) => {
+                  const backedUp = mirroredSourceIds.has(attachment.id);
+                  return (
+                    <li key={attachment.id} className="flex items-center justify-between gap-3 rounded-lg border border-border p-3 text-xs">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-foreground">{attachment.name}</p>
+                        <p className="text-muted-foreground">{formatFileSize(attachment.size)}</p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-1">
+                        {backedUp ? (
+                          <Badge variant="outline" className="gap-1">
+                            <Check className="h-3 w-3" /> Backed up to Drive
+                          </Badge>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 w-7 p-0"
+                            title="Back up to Drive"
+                            onClick={() => backupAttachment(attachment)}
+                            disabled={backingUpId === attachment.id}
+                          >
+                            {backingUpId === attachment.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UploadCloud className="h-3.5 w-3.5" />}
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0"
+                          onClick={() => downloadAttachment(attachment)}
+                          disabled={downloadingId === attachment.id}
+                        >
+                          {downloadingId === attachment.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => removeAttachment(attachment)}>
+                          <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                        </Button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          <div className="space-y-3 border-t border-border pt-4">
             <p className="text-xs font-semibold text-foreground">Activity</p>
             {!auditLog ? (
               <div className="space-y-3">
@@ -335,6 +471,7 @@ export function VaultItemSheet({ item, onOpenChange, onEdit, onDelete, onRestore
 
       {PasswordPrompt}
       {RestorePasswordPrompt}
+      {AttachmentPasswordPrompt}
     </Sheet>
   );
 }
